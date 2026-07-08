@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NodeJS-Pack: Middleware · Forward/Redirect · Cookies — WE-Klausur Gen A</title>
+<style>
+  :root{--bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;--acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1050px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}h2{font-size:19px;margin:34px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:15px;margin:16px 0 6px;color:var(--acc)}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--ok);margin-right:6px}
+  .tag.def{color:var(--warn)}.tag.mc{color:var(--acc)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .codebox{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px;overflow:auto;font-size:13px;line-height:1.7}
+  .kw{color:#ff7b72}.fn{color:#d2a8ff}.st{color:#a5d6ff}.num{color:#79c0ff}.com{color:#8b949e}.pr{color:#7ee787}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted)}table.t td:first-child{font-family:monospace;color:#7ee787;white-space:nowrap}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:780px){.two{grid-template-columns:1fr}}
+  /* flow diagram */
+  .flow{position:relative;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:18px;min-height:230px}
+  .node{position:absolute;width:120px;text-align:center;padding:10px 6px;border-radius:8px;font-weight:700;font-size:13px}
+  .client{left:18px;top:90px;background:#1f6feb33;border:1px solid #1f6feb}
+  .server{right:18px;top:90px;background:#2ea04333;border:1px solid #2ea043}
+  .target{right:18px;top:18px;background:#8957e533;border:1px solid #8957e5;font-size:11px}
+  .arrow{position:absolute;height:0;border-top:2px solid var(--acc);opacity:0;transition:.5s}
+  .arrow.show{opacity:1}
+  .arrow .lbl{position:absolute;top:-20px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;color:var(--acc);font-weight:700;background:var(--code);padding:0 4px}
+  .arrow:after{content:"";position:absolute;right:-1px;top:-5px;border-left:8px solid var(--acc);border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .arrow.rev:after{left:-1px;right:auto;border-left:0;border-right:8px solid var(--acc);border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .btn{background:var(--acc);color:#06121f;border:0;border-radius:7px;padding:8px 14px;font-weight:700;cursor:pointer}
+  .btn2{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:8px 14px;cursor:pointer}
+  .exp{background:var(--panel2);border-left:3px solid var(--acc);border-radius:0 8px 8px 0;padding:9px 13px;margin-top:10px;font-size:14px;min-height:40px}
+  .badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;font-weight:700}
+  .bl{background:#1f6feb33;color:#79c0ff}.gr{background:#2ea04333;color:#7ee787}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NodeJS / Express — Aufgabe 5</h1>
+  <p class="sub">WE-Klausur Generation A (Haefner 2023/24/25 + Probe). Middleware, Forward/Redirect, Cookies, URLs — fast jedes Jahr identisch.</p>
+
+  <!-- FORWARD VS REDIRECT -->
+  <h2><span class="tag def">Beschreiben</span> 5a — Forward (serverintern) vs. Redirect (Client)</h2>
+  <div class="two">
+    <div class="panel">
+      <div class="flow" id="flow">
+        <div class="node client">Browser<br><span style="font-weight:400;font-size:11px">(Client)</span></div>
+        <div class="node server">Server</div>
+        <div class="node target">interne Ressource<br>/ neue URL</div>
+        <div class="arrow" id="a1" style="left:138px;top:108px;width:0"><span class="lbl">1. Request</span></div>
+        <div class="arrow rev" id="a2" style="left:138px;top:135px;width:0"><span class="lbl">2. Response</span></div>
+        <div class="arrow" id="a3" style="left:138px;top:165px;width:0"><span class="lbl">2. Request (neue URL)</span></div>
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn" id="fwd">▶ Forward zeigen</button>
+        <button class="btn" id="red">▶ Redirect zeigen</button>
+        <button class="btn2" id="freset">⟲</button>
+      </div>
+      <div class="exp" id="fexp">Wähle Forward oder Redirect.</div>
+    </div>
+    <div class="panel">
+      <table class="t">
+        <tr><th></th><th><span class="badge bl">Forward</span></th><th><span class="badge gr">Redirect</span></th></tr>
+        <tr><td>Wo</td><td>serverintern</td><td>über den Client</td></tr>
+        <tr><td>URL im Browser</td><td>bleibt gleich</td><td>ändert sich</td></tr>
+        <tr><td>Roundtrips</td><td>1 (Client merkt nichts)</td><td>2 (Browser stellt neue Anfrage)</td></tr>
+        <tr><td>HTTP</td><td>kein eigener Status</td><td>3xx + <code>Location</code>-Header</td></tr>
+        <tr><td>Express</td><td><code>app.use</code>/Handler ruft intern weiter</td><td><code>res.redirect(url)</code></td></tr>
+      </table>
+      <div class="falle"><b>Kernsatz:</b> Forward = Server reicht den Request intern weiter, 1 Roundtrip, URL bleibt. Redirect = Server schickt <code>3xx</code>+neue URL, Browser stellt 2. Request, URL ändert sich.</div>
+    </div>
+  </div>
+
+  <!-- MIDDLEWARE -->
+  <h2><span class="tag">Erstellen</span> 5b — Middleware (param==42 → Redirect /spezial)</h2>
+  <p class="sub">Aufgabe: Bei Anfrage auf <code>/anfrage</code> prüfen, ob der Body den Parameter <code>param</code> mit Wert <code>42</code> hat. Wenn ja → Weiterleitung zu <code>/spezial</code>, sonst normal weiterlaufen lassen.</p>
+  <div class="codebox"><pre><span class="com">// req.body braucht einen Body-Parser, z.B. davor: app.use(express.json())</span>
+app.<span class="fn">use</span>(<span class="st">"/anfrage"</span>, (req, res, next) <span class="kw">=&gt;</span> {
+  <span class="kw">if</span> (req.body.param <span class="kw">==</span> <span class="st">"42"</span>) {      <span class="com">// param vorhanden & == 42</span>
+    res.<span class="fn">redirect</span>(<span class="st">"/spezial"</span>);       <span class="com">// → 302, Browser geht zu /spezial</span>
+  } <span class="kw">else</span> {
+    <span class="fn">next</span>();                          <span class="com">// sonst: nächste Middleware/Route</span>
+  }
+});</pre></div>
+  <details>
+    <summary>✅ Verhalten (gegen Logik geprüft)</summary>
+    <table class="t">
+      <tr><th>Body</th><th>Reaktion</th></tr>
+      <tr><td>{param:"42"}</td><td>302 Redirect zu /spezial</td></tr>
+      <tr><td>{param:"99"}</td><td>next() — normale Anfrage</td></tr>
+      <tr><td>{} (kein param)</td><td>next() — normale Anfrage</td></tr>
+    </table>
+  </details>
+  <div class="falle"><b>Falle:</b> Ohne <code>next()</code> im else-Zweig „hängt" die Anfrage (keine Antwort). Immer entweder antworten ODER <code>next()</code> aufrufen.</div>
+  <div class="falle"><b>Falle:</b> <code>req.body</code> ist nur befüllt, wenn ein Body-Parser aktiv ist (<code>express.json()</code> / <code>express.urlencoded()</code>). Laut Aufgabe „Body existiert immer" → vorausgesetzt.</div>
+
+  <h3>Variante: Request-Handler mit Redirect (Probeklausur)</h3>
+  <p class="sub">GET <code>/weiterleitung</code> → Client auf <code>https://example.com/</code> weiterleiten.</p>
+  <div class="codebox"><pre>app.<span class="fn">get</span>(<span class="st">"/weiterleitung"</span>, (req, res) <span class="kw">=&gt;</span> {
+  res.<span class="fn">redirect</span>(<span class="st">"https://example.com/"</span>);
+});</pre></div>
+
+  <!-- COOKIES -->
+  <h2><span class="tag def">Erklären</span> 5g — Wie funktionieren Cookies technisch?</h2>
+  <div class="two">
+    <div class="panel">
+      <div class="flow" id="cflow">
+        <div class="node client">Browser</div>
+        <div class="node server">Server</div>
+        <div class="arrow" id="c1" style="left:138px;top:70px;width:0"><span class="lbl">1. Request</span></div>
+        <div class="arrow rev" id="c2" style="left:138px;top:108px;width:0"><span class="lbl">2. Response + Set-Cookie: id=abc</span></div>
+        <div class="arrow" id="c3" style="left:138px;top:150px;width:0"><span class="lbl">3. Request + Cookie: id=abc</span></div>
+        <div style="position:absolute;left:18px;top:135px;font-size:10px;color:var(--ok)">🍪 speichert id=abc</div>
+      </div>
+      <div style="margin-top:12px"><button class="btn" id="cstep">Schritt ▶</button> <button class="btn2" id="creset">⟲</button></div>
+      <div class="exp" id="cexp">Cookie-Ablauf Schritt für Schritt.</div>
+    </div>
+    <div class="panel">
+      <p><b>Ablauf:</b> Server sendet im Response den Header <code>Set-Cookie: name=wert</code> → Browser speichert ihn → bei JEDEM passenden Folge-Request hängt der Browser automatisch <code>Cookie: name=wert</code> an.</p>
+      <p><b>Wozu:</b> HTTP ist <b>zustandslos</b> (jeder Request unabhängig). Cookies erweitern das Request-Response-Paar um <b>Zustand</b> → Wiedererkennung (Login, Warenkorb, Session-ID).</p>
+      <div class="falle"><b>Klausur-Kernsatz:</b> Cookies machen das zustandslose HTTP zustandsbehaftet — Server setzt via <code>Set-Cookie</code>, Browser schickt automatisch zurück.</div>
+      <p class="sub">Sichere Attribute: <code>HttpOnly</code> (kein JS-Zugriff), <code>Secure</code> (nur HTTPS), <code>SameSite</code> (CSRF-Schutz).</p>
+    </div>
+  </div>
+
+  <!-- URLS -->
+  <h2><span class="tag mc">MC / Benennen</span> 5d/e/f — Relative vs. absolute URLs</h2>
+  <table class="t">
+    <tr><th>Art</th><th>Form</th><th>Beispiel</th></tr>
+    <tr><td>absolut</td><td>Protokoll + Host + Pfad</td><td><code>https://x.de/a/b</code></td></tr>
+    <tr><td>protokoll-relativ</td><td>beginnt mit <code>//</code></td><td><code>//cdn.x.de/a</code></td></tr>
+    <tr><td>root-relativ (host-relativ)</td><td>beginnt mit <code>/</code></td><td><code>/img/a.png</code></td></tr>
+    <tr><td>dokument-relativ</td><td>relativ zur aktuellen URL</td><td><code>bild.png</code>, <code>../a</code></td></tr>
+  </table>
+  <div class="falle"><b>Vorteile relativer URLs:</b> portabel bei Domain-/Pfadwechsel (Umzug ohne Anpassung), kürzer. <b>Eine relative URL-Art nennen:</b> z.B. dokument-relativ <code>../bild.png</code>.</div>
+  <div class="falle"><b>MC-Falle:</b> <code>/start</code> ist <b>relativ</b> (root-relativ), NICHT absolut — es fehlt Protokoll+Host.</div>
+
+  <!-- WEBSOCKETS + SCOPES -->
+  <h2><span class="tag def">Beschreiben</span> 5e (2024) — WebSockets vs HTTP · NodeJS-Scopes</h2>
+  <div class="two">
+    <div class="panel">
+      <h3>WebSocket vs. HTTP (2 Unterschiede)</h3>
+      <table class="t">
+        <tr><th>HTTP</th><th>WebSocket</th></tr>
+        <tr><td>Request→Response (halb-duplex)</td><td>bidirektional / voll-duplex</td></tr>
+        <tr><td>kurzlebig pro Anfrage</td><td>persistente Verbindung</td></tr>
+        <tr><td>nur Client fragt an</td><td>Server kann pushen</td></tr>
+      </table>
+      <p class="sub">Start per HTTP-<b>Upgrade</b>-Handshake, danach <code>ws://</code> / <code>wss://</code>.</p>
+      <div class="falle">⚠️ Folienfehler-Hinweis: WebSocket-Schema ist <code>ws://</code>/<code>wss://</code>, NICHT <code>http://</code>.</div>
+    </div>
+    <div class="panel">
+      <h3>5e (2023) — Zwei Variablen-Gültigkeitsbereiche in NodeJS</h3>
+      <p><b>Lokaler (Modul-)Scope</b> und <b>globaler Scope</b>. In Node ist jede Datei ein eigenes Modul → Top-Level-Variablen sind modul-lokal, nicht global (anders als im Browser).</p>
+      <p class="sub">Zusätzlich klassisch: Funktions-Scope (<code>var</code>) und Block-Scope (<code>let</code>/<code>const</code>).</p>
+      <h3 style="margin-top:14px">5c — Templates / Pragmas</h3>
+      <p class="sub">Template = HTML-Gerüst mit Platzhaltern/Pragmas; beim Rendern werden Pragmas durch Daten ersetzt → Ergebnis ist fertiges, statisches HTML, das an den Client geht.</p>
+    </div>
+  </div>
+
+  <!-- DRILL -->
+  <h2>Drill</h2>
+  <details><summary>[Erstellen] Express-Route: GET <code>/home</code> → Redirect auf <code>/start</code>.</summary>
+    <div class="codebox"><pre>app.<span class="fn">get</span>(<span class="st">"/home"</span>, (req,res) <span class="kw">=&gt;</span> res.<span class="fn">redirect</span>(<span class="st">"/start"</span>));</pre></div></details>
+  <details><summary>[MC] Forward oder Redirect: Die Browser-URL bleibt unverändert.</summary><p>Forward (serverintern). Redirect würde die URL ändern.</p></details>
+  <details><summary>[MC] absolut oder relativ: <code>//cdn.x.de/a</code>, <code>/img/a.png</code>, <code>https://x.de</code>, <code>../b</code>?</summary><p>protokoll-relativ, root-relativ, absolut, dokument-relativ.</p></details>
+  <details><summary>[Erklären] Warum braucht man Cookies, obwohl es Request-Parameter gibt?</summary><p>HTTP ist zustandslos; Parameter gelten nur für einen Request. Cookies werden vom Browser automatisch bei jedem Folge-Request mitgeschickt → dauerhafte Wiedererkennung ohne manuelles Mitschicken.</p></details>
+
+  <p class="sub" style="margin-top:30px">Middleware-Logik gegen Node geprüft. WE-Klausur-Lernpaket · Säule 5 (NodeJS) · <code>Materialien/NodeJS/</code></p>
+</div>
+
+<script>
+// Forward/Redirect flow
+const W=180;
+function setArrow(id,show,w){const a=document.getElementById(id);a.style.width=(w||0)+'px';a.classList.toggle('show',show);}
+function resetFlow(){['a1','a2','a3'].forEach(id=>setArrow(id,false,0));document.getElementById('fexp').textContent='Wähle Forward oder Redirect.';}
+document.getElementById('fwd').onclick=()=>{
+  resetFlow();
+  setTimeout(()=>setArrow('a1',true,W),50);
+  setTimeout(()=>{setArrow('a2',true,W);document.getElementById('fexp').innerHTML='<b>Forward:</b> Server reicht den Request INTERN weiter und antwortet direkt. Nur 1 Roundtrip, die URL im Browser bleibt gleich.';},700);
+};
+document.getElementById('red').onclick=()=>{
+  resetFlow();
+  setTimeout(()=>setArrow('a1',true,W),50);
+  setTimeout(()=>{setArrow('a2',true,W);document.getElementById('fexp').innerHTML='<b>Redirect Schritt 1:</b> Server antwortet mit <code>302 + Location</code> (neue URL).';},700);
+  setTimeout(()=>{setArrow('a3',true,W);document.getElementById('fexp').innerHTML='<b>Redirect Schritt 2:</b> Browser stellt automatisch eine ZWEITE Anfrage an die neue URL → URL ändert sich. 2 Roundtrips.';},1500);
+};
+document.getElementById('freset').onclick=resetFlow;
+
+// Cookie flow
+let cs=0;
+const csteps=[
+  {id:'c1',ex:'1. Browser schickt normalen Request (noch ohne Cookie).'},
+  {id:'c2',ex:'2. Server antwortet mit Header Set-Cookie: id=abc. Browser speichert ihn (🍪).'},
+  {id:'c3',ex:'3. Bei jedem Folge-Request hängt der Browser automatisch Cookie: id=abc an → Server erkennt den Nutzer wieder.'}
+];
+function cReset(){cs=0;['c1','c2','c3'].forEach(id=>setArrow(id,false,0));document.getElementById('cexp').textContent='Cookie-Ablauf Schritt für Schritt.';}
+document.getElementById('cstep').onclick=()=>{
+  if(cs<csteps.length){const s=csteps[cs];setArrow(s.id,true,W);document.getElementById('cexp').innerHTML=s.ex;cs++;}
+  else cReset();
+};
+document.getElementById('creset').onclick=cReset;
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS-Rest: AJAX · Promises · Events · == — WE-Klausur</title>
+<style>
+  :root{--bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;--acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1050px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}h2{font-size:19px;margin:34px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:15px;margin:16px 0 6px;color:var(--acc)}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--ok);margin-right:6px}
+  .tag.def{color:var(--warn)}.tag.mc{color:var(--acc)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .codebox{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px;overflow:auto;font-size:13px;line-height:1.7}
+  .kw{color:#ff7b72}.fn{color:#d2a8ff}.st{color:#a5d6ff}.num{color:#79c0ff}.com{color:#8b949e}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted)}table.t td:first-child{font-family:monospace;white-space:nowrap}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:780px){.two{grid-template-columns:1fr}}
+  .btn{background:var(--acc);color:#06121f;border:0;border-radius:7px;padding:8px 14px;font-weight:700;cursor:pointer}
+  .demo{background:var(--panel2);border-radius:8px;padding:12px;margin-top:8px;font-size:14px}
+  .ok{color:var(--ok)}.bad{color:var(--red)}
+  .clickbox{display:inline-block;padding:14px 18px;background:#1f6feb33;border:1px solid #1f6feb;border-radius:8px;cursor:pointer;user-select:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>JavaScript — Rest-Themen</h1>
+  <p class="sub">AJAX/Fetch, Promises, Arrow/Classes, Events, Gleichheit. Vor allem in Generation A (Aufgabe 3) + 2019 (jQuery/AJAX) relevant.</p>
+
+  <!-- == vs === -->
+  <h2><span class="tag mc">Tracen / MC</span> Gleichheit: <code>==</code> vs. <code>===</code></h2>
+  <p class="sub">2019-Aufgabe: <code>if (a == 42) …</code> gibt „a ist 42" aus — wegen <b>automatischer Typumwandlung</b> bei <code>==</code>.</p>
+  <table class="t">
+    <tr><th>Ausdruck</th><th>Ergebnis</th><th>warum</th></tr>
+    <tr><td>42 == "42"</td><td class="ok">true</td><td><code>==</code> wandelt String→Number</td></tr>
+    <tr><td>42 === "42"</td><td class="bad">false</td><td><code>===</code> prüft auch den Typ → number ≠ string</td></tr>
+    <tr><td>0 == false</td><td class="ok">true</td><td>false → 0</td></tr>
+    <tr><td>"" == false</td><td class="ok">true</td><td>beide → 0</td></tr>
+    <tr><td>null == undefined</td><td class="ok">true</td><td>Sonderregel von ==</td></tr>
+    <tr><td>null === undefined</td><td class="bad">false</td><td>verschiedene Typen</td></tr>
+    <tr><td>[] == false</td><td class="ok">true</td><td>[]→""→0, false→0</td></tr>
+  </table>
+  <div class="falle"><b>Regel:</b> <code>==</code> wandelt Typen um (loose), <code>===</code> nicht (strict). In der Praxis fast immer <code>===</code> nutzen. Werte gegen Node verifiziert.</div>
+
+  <!-- AJAX -->
+  <h2><span class="tag">Erstellen</span> AJAX — XMLHttpRequest vs. Fetch</h2>
+  <p class="sub">2019-Aufgabe: GET-Request an <code>http://example.org?param=value</code>, Antworttext in <code>answer</code> speichern.</p>
+  <div class="two">
+    <div class="panel">
+      <h3>Fetch (modern)</h3>
+      <div class="codebox"><pre><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">"http://example.org?param=value"</span>);
+<span class="kw">const</span> answer = <span class="kw">await</span> res.<span class="fn">text</span>();
+<span class="com">// answer enthält den Antworttext</span></pre></div>
+      <p class="sub">Ohne await mit .then(): <code>fetch(url).then(r=&gt;r.text()).then(a=&gt;answer=a)</code></p>
+    </div>
+    <div class="panel">
+      <h3>XMLHttpRequest (klassisch)</h3>
+      <div class="codebox"><pre><span class="kw">const</span> xhr = <span class="kw">new</span> <span class="fn">XMLHttpRequest</span>();
+xhr.<span class="fn">open</span>(<span class="st">"GET"</span>, <span class="st">"http://example.org?param=value"</span>);
+xhr.<span class="fn">onload</span> = () <span class="kw">=&gt;</span> { <span class="kw">let</span> answer = xhr.responseText; };
+xhr.<span class="fn">send</span>();</pre></div>
+    </div>
+  </div>
+  <div class="falle"><b>Kontrast:</b> Fetch ist Promise-basiert (async/await, sauberer). XHR ist callback-basiert (älter, umständlicher). Beide: GET-Parameter direkt an die URL anhängen.</div>
+
+  <!-- Promises -->
+  <h2><span class="tag def">Beschreiben</span> Promises & async/await</h2>
+  <div class="codebox"><pre><span class="kw">function</span> <span class="fn">ladeDaten</span>() {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) <span class="kw">=&gt;</span> {
+    <span class="fn">setTimeout</span>(() <span class="kw">=&gt;</span> <span class="fn">resolve</span>(<span class="st">"fertig"</span>), <span class="num">100</span>);   <span class="com">// erfolgreich</span>
+  });
+}
+<span class="com">// Verbrauch mit .then / .catch:</span>
+<span class="fn">ladeDaten</span>().<span class="fn">then</span>(d <span class="kw">=&gt;</span> console.<span class="fn">log</span>(d)).<span class="fn">catch</span>(e <span class="kw">=&gt;</span> …);
+<span class="com">// oder mit async/await:</span>
+<span class="kw">async function</span> <span class="fn">main</span>() { <span class="kw">const</span> d = <span class="kw">await</span> <span class="fn">ladeDaten</span>(); }</pre></div>
+  <p class="sub">Promise-Zustände: <b>pending → fulfilled (resolve)</b> oder <b>rejected (reject)</b>. <code>await</code> pausiert bis das Promise erfüllt ist (nur in <code>async</code>-Funktionen).</p>
+
+  <!-- Arrow + Classes -->
+  <h2><span class="tag def">Kontrast</span> Arrow Functions & ES6-Classes</h2>
+  <div class="two">
+    <div class="panel">
+      <h3>Arrow vs. normale Funktion</h3>
+      <div class="codebox"><pre><span class="com">// normal</span>
+<span class="kw">function</span> <span class="fn">add</span>(a,b){ <span class="kw">return</span> a+b; }
+<span class="com">// arrow (kurz)</span>
+<span class="kw">const</span> add = (a,b) <span class="kw">=&gt;</span> a+b;</pre></div>
+      <p class="sub">Arrow hat <b>kein eigenes <code>this</code></b> — übernimmt das <code>this</code> der Umgebung. Wichtig bei Callbacks.</p>
+    </div>
+    <div class="panel">
+      <h3>ES6-Class vs. Konstruktor-Funktion</h3>
+      <div class="codebox"><pre><span class="kw">class</span> <span class="fn">Auto</span> {
+  <span class="fn">constructor</span>(marke){ <span class="kw">this</span>.marke = marke; }
+  <span class="fn">hupe</span>(){ <span class="kw">return</span> <span class="st">"tuut"</span>; }
+}
+<span class="kw">const</span> a = <span class="kw">new</span> <span class="fn">Auto</span>(<span class="st">"VW"</span>);</pre></div>
+      <p class="sub">Syntax-Zucker über Prototypen. <code>new</code> Pflicht (sonst Fehler).</p>
+    </div>
+  </div>
+
+  <!-- Events -->
+  <h2><span class="tag">Erstellen / Beschreiben</span> Events</h2>
+  <div class="two">
+    <div class="panel">
+      <div class="codebox"><pre>btn.<span class="fn">addEventListener</span>(<span class="st">"click"</span>, () <span class="kw">=&gt;</span> {
+  console.<span class="fn">log</span>(<span class="st">"geklickt!"</span>);
+});</pre></div>
+      <p class="sub"><b>Bubbling:</b> Event läuft vom Ziel-Element nach oben zu den Eltern (innen → außen). Mit <code>event.stopPropagation()</code> stoppbar.</p>
+    </div>
+    <div class="panel">
+      <h3>Live-Demo</h3>
+      <div class="clickbox" id="clk">Klick mich (Bubbling-Demo)</div>
+      <div class="demo" id="evout">Noch nichts geklickt.</div>
+    </div>
+  </div>
+
+  <!-- JSON -->
+  <h2><span class="tag def">Beschreiben</span> JSON & Browser-APIs</h2>
+  <div class="codebox"><pre><span class="kw">const</span> obj = {name:<span class="st">"Mika"</span>, alter:<span class="num">20</span>};
+<span class="kw">const</span> text = <span class="fn">JSON</span>.<span class="fn">stringify</span>(obj);   <span class="com">// Objekt → String: '{"name":"Mika","alter":20}'</span>
+<span class="kw">const</span> zurueck = <span class="fn">JSON</span>.<span class="fn">parse</span>(text);   <span class="com">// String → Objekt</span></pre></div>
+  <p class="sub">Standard-Browser-APIs (für Aufgabe 3b „Objekt benennen + beschreiben"): <code>document</code> (DOM-Zugriff), <code>console</code> (Logging), <code>window</code> (Browserfenster), <code>localStorage</code> (Speicher), <code>fetch</code> (HTTP).</p>
+
+  <!-- DRILL -->
+  <h2>Drill</h2>
+  <details><summary>[Tracen] Was gibt <code>console.log(1 == "1", 1 === "1")</code> aus?</summary><p><code>true false</code> — == wandelt um, === prüft Typ mit.</p></details>
+  <details><summary>[Erstellen] Fetch-GET an <code>/api/daten</code>, Antwort als JSON in <code>data</code>.</summary>
+    <div class="codebox"><pre><span class="kw">const</span> r = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">"/api/daten"</span>);
+<span class="kw">const</span> data = <span class="kw">await</span> r.<span class="fn">json</span>();</pre></div></details>
+  <details><summary>[Beschreiben] Was ist der Unterschied zwischen Promise-Zuständen fulfilled und rejected?</summary><p>fulfilled = erfolgreich abgeschlossen (resolve, Wert verfügbar). rejected = fehlgeschlagen (reject, Fehler). Davor: pending.</p></details>
+
+  <p class="sub" style="margin-top:30px">Coercion-Werte gegen Node verifiziert. WE-Klausur-Lernpaket · Säule 3 (JavaScript) · <code>Materialien/JS/</code></p>
+</div>
+<script>
+let n=0;
+document.getElementById('clk').addEventListener('click',()=>{n++;document.getElementById('evout').innerHTML='Klick Nr. '+n+' — Event ausgelöst, Listener reagiert. (Bei verschachtelten Elementen würde es jetzt zu den Eltern „bubblen".)';});
+</script>
+</body>
+</html>

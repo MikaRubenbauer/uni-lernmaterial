@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thema 5 – Regression &amp; Interpolation (Newton/Lagrange)</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.4rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}
+  nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  .aufg{font-weight:600;color:#2a3645}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:8px 13px;font-size:.9rem;cursor:pointer;margin:3px}
+  button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  input[type=text]{padding:8px 10px;border:1px solid var(--bd);border-radius:7px;font-size:.95rem;font-family:"JetBrains Mono",Consolas,monospace}
+  select{padding:8px;border:1px solid var(--bd);border-radius:7px}
+  .out{margin-top:10px;padding:12px 14px;background:var(--ok);border-radius:9px;font-size:.95rem;display:none;overflow-x:auto}
+  .out.show{display:block}
+  .mono{font-family:"JetBrains Mono",Consolas,monospace}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+  table{border-collapse:collapse;width:auto;font-size:.92rem;margin:8px 0}
+  th,td{border:1px solid var(--bd);padding:6px 10px;text-align:center} th{background:var(--note)}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 5 — Regression &amp; Interpolation (Newton / Lagrange)</h1>
+  <p>Analysis · Prof. Reischl · Klausur 23.07.2026 · <b>Lernblock So 05.07</b> · Blatt 7 (Übung 7.2)</p>
+  <p>Klausur-Anker: 2024 Aufgabe 5 (7 P) · 2023 Aufgabe 6 (10 P) — Aufstellen von A, x, y + Interpolation sind Pflichtpunkte.</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a><a href="#baukasten">A,x,y Schritt-für-Schritt</a><a href="#rezept">Rezepte</a><a href="#newton">Newton-Rechner</a>
+  <a href="#regr">Regressions-Rechner</a><a href="#k2024">Klausur 2024</a><a href="#k2023">Klausur 2023</a>
+  <a href="#blatt">Blatt 7.2</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <table style="width:100%">
+    <tr><th></th><th>Interpolation</th><th>Regression (Ausgleich)</th></tr>
+    <tr><td style="text-align:left"><b>Ziel</b></td><td>Kurve geht <b>exakt durch alle</b> Punkte</td><td>Kurve liegt „bestmöglich" an den Punkten (kleinste Fehlerquadrate)</td></tr>
+    <tr><td style="text-align:left"><b>Wann</b></td><td>#Parameter = #Punkte</td><td>#Punkte &gt; #Parameter (überbestimmt)</td></tr>
+    <tr><td style="text-align:left"><b>Verfahren</b></td><td>Newton-Ansatz · Lagrange-Basispolynome</td><td>$A,\,x,\,y$ aufstellen → Normalgleichungen</td></tr>
+  </table>
+  <div class="box note"><b>„Linear" bei linearer Regression</b> heißt: linear <b>in den Koeffizienten</b> $a_i$ —
+  die Basisfunktionen dürfen beliebig sein ($1, x, x^2, e^x, \dots$). Deshalb funktioniert der $A$-Matrix-Formalismus
+  auch für $a_0e^{-x}+a_1e^x$.</div>
+</section>
+
+<section id="baukasten">
+  <style>#baukasten .st{background:var(--note);border-radius:8px;padding:4px 9px;font-size:.82rem;font-weight:700;color:var(--akz2)}#baukasten h3{margin-top:16px}#baukasten .der{color:#2563eb;font-weight:700}#baukasten .src{color:#2a9d5c;font-size:.86em}#baukasten td .der{font-weight:700}</style>
+  <h2>1b · A, x, y Schritt für Schritt — jede Zahl erklärt</h2>
+  <div class="box note">Der Kern jeder Regressionsaufgabe ist das Aufstellen von $A$. Damit keine Zahl „aus dem Nichts" kommt, einmal langsam:
+  <b>Punkte</b> $(1|1),(2|3),(3|3),(4|1)$, Ansatz <b>Polynom 2. Grades</b> $f(x)=a_0\cdot 1+a_1\cdot x+a_2\cdot x^2$.</div>
+
+  <h3><span class="st">Schritt 1</span> &nbsp;Basisfunktionen ablesen (= die Spalten von $A$)</h3>
+  <p>$f=a_0\varphi_0+a_1\varphi_1+a_2\varphi_2$ &nbsp;mit&nbsp; $\varphi_0=1,\ \varphi_1=x,\ \varphi_2=x^2$.</p>
+
+  <h3><span class="st">Schritt 2</span> &nbsp;$A$ füllen: jeder Eintrag $=$ Basisfunktion am Punkt, $A_{ij}=\varphi_j(x_i)$</h3>
+  <table>
+    <tr><th>Punkt $(x_i\,|\,y_i)$</th><th>$\varphi_0=1$</th><th>$\varphi_1=x$</th><th>$\varphi_2=x^2$</th></tr>
+    <tr><td>$(1\,|\,1)$</td><td>1</td><td>1</td><td><span class="der">1²=1</span></td></tr>
+    <tr><td>$(2\,|\,3)$</td><td>1</td><td>2</td><td><span class="der">2²=4</span></td></tr>
+    <tr><td>$(3\,|\,3)$</td><td>1</td><td>3</td><td><span class="der">3²=9</span></td></tr>
+    <tr><td>$(4\,|\,1)$</td><td>1</td><td>4</td><td><span class="der">4²=16</span></td></tr>
+  </table>
+  <p>$A=\begin{pmatrix}1&1&1\\1&2&4\\1&3&9\\1&4&16\end{pmatrix}$ &nbsp;<span class="src">← Spalte 1 immer $1$ ($\varphi_0=1$), Spalte 2 die $x_i$, Spalte 3 die $x_i^2$. <b>Daher die 4, 9, 16.</b></span></p>
+
+  <h3><span class="st">Schritt 3</span> &nbsp;$x$ und $y$ hinschreiben</h3>
+  <p>$x=\begin{pmatrix}a_0\\a_1\\a_2\end{pmatrix}$ <span class="src">← die gesuchten Koeffizienten</span> &nbsp;&nbsp;
+  $y=\begin{pmatrix}1\\3\\3\\1\end{pmatrix}$ <span class="src">← die gemessenen $y_i$</span> &nbsp;&nbsp; Modell: $A\,x\approx y$.</p>
+
+  <h3><span class="st">Schritt 4</span> &nbsp;Nicht-linearer Ansatz? Dann $y$ MITtransformieren</h3>
+  <p>Nur nötig, wenn der Ansatz nicht linear in den $a_i$ ist — erst umformen, dann den <b>$y$-Vektor genauso</b> umrechnen (das ist der Klausur-Twist):</p>
+  <ul>
+    <li>$f=e^{a_0+a_1x}$ → $\ln$ nehmen: $\ln y=a_0+a_1x$, also $y=(\ln y_i)=(\ln1,\ln3,\ln3,\ln1)=(0,\ln3,\ln3,0)$.</li>
+    <li>$f=\sqrt{1+a_0+a_1x}$ → quadrieren: $y^2-1=a_0+a_1x$, also $y=(y_i^2-1)$.</li>
+  </ul>
+  <div class="box ok"><b>Merksatz:</b> Zeile $=$ Punkt, Spalte $=$ Basisfunktion, Eintrag $=$ Basisfunktion an diesem $x$. Mehr ist $A$ nicht.</div>
+</section>
+
+<section id="rezept">
+  <h2>2 · Die Rezepte</h2>
+  <h3>R1 — Regression aufstellen (die sicheren Klausurpunkte)</h3>
+  <ol>
+    <li>Ansatz $f(x) = a_0\varphi_0(x) + a_1\varphi_1(x) + \dots$ — Basisfunktionen $\varphi_j$ identifizieren.</li>
+    <li>$A$: <b>eine Zeile pro Messpunkt, eine Spalte pro Basisfunktion</b>, Eintrag $\varphi_j(x_i)$.</li>
+    <li>$x = (a_0, a_1, \dots)^T$ (Koeffizienten), $y = (y_1, \dots, y_n)^T$ (Messwerte). Modell: $A\,x \approx y$.</li>
+    <li>Lösung (Vertiefung, selten gefragt): Normalgleichungen $A^TA\,x = A^Ty$.</li>
+  </ol>
+  <div class="box ok"><b>Spezialfall Polynom 0. Grades:</b> $f(x)=a_0$ → Lösung ist der <b>Mittelwert</b> der $y_i$ (waagrechte Gerade).</div>
+  <h3>R2 — Nicht-linearer Ansatz? Erst LINEARISIEREN (der Klausur-Twist!)</h3>
+  <ul>
+    <li>$f(x) = e^{a_0 + a_1 x}$ → <b>logarithmieren:</b> $\ln y = a_0 + a_1x$ → Regression mit $y$-Vektor $(\ln y_i)$. (2023/A6c)</li>
+    <li>$f(x) = \sqrt{1 + a_0 + a_1 x}$ → <b>quadrieren:</b> $y^2 - 1 = a_0 + a_1x$ → $y$-Vektor $(y_i^2 - 1)$. (2024/A5.5)</li>
+  </ul>
+  <h3>R3 — Newton-Interpolation (2024/A5 verlangt genau diese 4 Schritte)</h3>
+  <ol>
+    <li><b>Ansatz:</b> $p(x) = b_0 + b_1(x-x_0) + b_2(x-x_0)(x-x_1) + b_3(x-x_0)(x-x_1)(x-x_2)$.</li>
+    <li><b>Gleichungssystem:</b> Punkte der Reihe nach einsetzen — es ist gestaffelt (Dreiecksform).</li>
+    <li><b>Parameter:</b> von oben nach unten auflösen — oder schneller per <b>dividierte Differenzen</b> (Tabelle).</li>
+    <li><b>Zusammenfassen:</b> ausmultiplizieren → kompaktes Polynom, Probe mit allen Punkten.</li>
+  </ol>
+  <h3>R4 — Lagrange-Interpolation (2023/A6e)</h3>
+  <p>$p(x) = \sum_i y_i L_i(x)$ mit $L_i(x) = \prod_{j\ne i}\frac{x - x_j}{x_i - x_j}$ — jedes $L_i$ ist 1 an „seinem" Punkt, 0 an allen anderen. Dann ausmultiplizieren.</p>
+</section>
+
+<section id="newton">
+  <h2>3 · Newton-Rechner (dividierte Differenzen)</h2>
+  <p>Punkte als <code>x,y; x,y; …</code> — zeigt Tabelle, Koeffizienten, Ansatz und kompaktes Polynom.</p>
+  <input type="text" id="nPts" value="-1,1; 0,1; 1,1; 2,7" size="34">
+  <button onclick="newtonCalc()">Rechnen</button>
+  <button class="sec" onclick="document.getElementById('nPts').value='-1,4; 0,-2; 1,12';newtonCalc()">Preset 2023/A6e</button>
+  <div id="nOut" class="out"></div>
+</section>
+
+<section id="regr">
+  <h2>4 · Regressions-Rechner (Normalgleichungen)</h2>
+  <p>Punkte + Polynomgrad — zeigt $A$, $A^TA$, $A^Ty$ und die Lösung. (In der Klausur meist nur das Aufstellen gefragt — der Rechner ist deine Kontrolle.)</p>
+  <input type="text" id="rPts" value="1,1; 2,3; 3,3; 4,1" size="34">
+  <select id="rDeg"><option value="0">Grad 0</option><option value="1">Grad 1</option><option value="2" selected>Grad 2</option></select>
+  <button onclick="regrCalc()">Rechnen</button>
+  <div id="rOut" class="out"></div>
+</section>
+
+<section id="k2024">
+  <h2>5 · Klausur 2024, Aufgabe 5 (7 P) — komplett vorgerechnet</h2>
+  <p class="aufg">Punkte: $P_0(-1|1),\; P_1(0|1),\; P_2(1|1),\; P_3(2|7)$.</p>
+  <details><summary>5.1 Newton-Ansatz aufstellen</summary><div class="det-body">
+    <p>$p(x) = b_0 + b_1(x+1) + b_2(x+1)x + b_3(x+1)x(x-1)$</p>
+    <p>(Faktoren wachsen mit den $x$-Werten der Punkte mit: $x_0=-1 \Rightarrow (x+1)$, $x_1=0 \Rightarrow x$, $x_2=1 \Rightarrow (x-1)$.)</p>
+  </div></details>
+  <details><summary>5.2 Gleichungssystem (gestaffelt)</summary><div class="det-body">
+    <p>$P_0$: $b_0 = 1$<br>
+    $P_1$: $b_0 + b_1(0+1) = 1$<br>
+    $P_2$: $b_0 + 2b_1 + 2b_2 = 1$<br>
+    $P_3$: $b_0 + 3b_1 + 6b_2 + 6b_3 = 7$</p>
+  </div></details>
+  <details><summary>5.3 Parameter berechnen</summary><div class="det-body">
+    <p>Von oben nach unten: $b_0 = 1$ → $b_1 = 0$ → $b_2 = \frac{1-1-0}{2} = 0$ → $b_3 = \frac{7-1-0-0}{6} = 1$.</p>
+    <p><b>Schnellweg dividierte Differenzen:</b> Stufe 1: $(0, 0, 6)$ · Stufe 2: $(0, 3)$ · Stufe 3: $(1)$ → Kopfzeile $(1, 0, 0, 1)$ ✓ (Rechner oben).</p>
+  </div></details>
+  <details><summary>5.4 Kompakt zusammenfassen</summary><div class="det-body">
+    <p>$p(x) = 1 + 1\cdot(x+1)x(x-1) = 1 + x(x^2-1) = \mathbf{x^3 - x + 1}$</p>
+    <p>Probe: $p(-1) = -1+1+1 = 1$ ✓, $p(0)=1$ ✓, $p(1)=1$ ✓, $p(2)=8-2+1=7$ ✓</p>
+  </div></details>
+  <details><summary>5.5 Regression mit y(x) = √(1+a₀+a₁x): A, x, y angeben (2 P)</summary><div class="det-body">
+    <p><b>Nicht linear → quadrieren:</b> $y^2 = 1 + a_0 + a_1x \;\Rightarrow\; y^2 - 1 = a_0 + a_1x$.</p>
+    <p>$A = \begin{pmatrix}1&-1\\1&0\\1&1\\1&2\end{pmatrix},\quad x = \begin{pmatrix}a_0\\a_1\end{pmatrix},\quad
+    y = \begin{pmatrix}1^2-1\\1^2-1\\1^2-1\\7^2-1\end{pmatrix} = \begin{pmatrix}0\\0\\0\\48\end{pmatrix}$</p>
+    <div class="box warn"><b>Die 2 Punkte stecken im Trick:</b> $y$-Vektor enthält die <b>transformierten</b> Werte $y_i^2-1$, nicht die rohen $y_i$.</div>
+  </div></details>
+  <details><summary>5.6 Warum wäre Polynom 0. Ordnung nicht sinnvoll?</summary><div class="det-body">
+    <p>Die Daten sind nicht konstant — $P_3(2|7)$ springt deutlich nach oben (klarer Trend). Eine waagrechte Gerade
+    (Mittelwert $= 2{,}5$) kann diesen Verlauf strukturell nicht abbilden.</p>
+  </div></details>
+</section>
+
+<section id="k2023">
+  <h2>6 · Klausur 2023, Aufgabe 6 (10 P) — komplett vorgerechnet</h2>
+  <p class="aufg">Messpunkte $(1|1), (2|3), (3|3), (4|1)$ — dieselben wie Blatt 7.2.</p>
+  <details><summary>a) A, x, y für drei Ansätze</summary><div class="det-body">
+    <p><b>(a) Polynom 0. Grades</b> $f=a_0$: $\;A = \begin{pmatrix}1\\1\\1\\1\end{pmatrix}$, $x=(a_0)$, $y=\begin{pmatrix}1\\3\\3\\1\end{pmatrix}$</p>
+    <p><b>(b) Polynom 1. Grades</b> $f=a_0+a_1x$: $\;A = \begin{pmatrix}1&1\\1&2\\1&3\\1&4\end{pmatrix}$, $x=\begin{pmatrix}a_0\\a_1\end{pmatrix}$, $y$ wie oben</p>
+    <p><b>(c) $e^{a_0+a_1x}$ → logarithmieren:</b> $\ln y = a_0+a_1x$: $A$ wie (b), aber $y = \begin{pmatrix}\ln 1\\\ln 3\\\ln 3\\\ln 1\end{pmatrix} = \begin{pmatrix}0\\\ln 3\\\ln 3\\0\end{pmatrix}$</p>
+  </div></details>
+  <details><summary>b) Warum sind die Ansätze vermutlich nicht sinnvoll?</summary><div class="det-body">
+    <p>Die Daten steigen erst und fallen dann (1→3→3→1) — sie sind <b>weder konstant noch monoton</b>.
+    Grad 0 (konstant), Grad 1 (monoton) und $e^{a_0+a_1x}$ (streng monoton) können ein Auf-und-Ab nicht darstellen.</p>
+  </div></details>
+  <details><summary>c) Besserer Ansatz + A, x, y</summary><div class="det-body">
+    <p><b>Polynom 2. Grades</b> (Parabel — passt zu „rauf, dann runter"):</p>
+    <p>$A = \begin{pmatrix}1&1&1\\1&2&4\\1&3&9\\1&4&16\end{pmatrix},\quad x = \begin{pmatrix}a_0\\a_1\\a_2\end{pmatrix},\quad y = \begin{pmatrix}1\\3\\3\\1\end{pmatrix}$</p>
+    <p>(Vertiefung mit dem Rechner: Lösung $a = (-3,\, 5,\, -1)$ → $f(x) = -3+5x-x^2$.)</p>
+  </div></details>
+  <details><summary>d) Lösung für Polynom 0. Grades</summary><div class="det-body">
+    <p>Mittelwert: $a_0 = \frac{1+3+3+1}{4} = \mathbf{2}$ (waagrechte Gerade $y=2$).</p>
+  </div></details>
+  <details><summary>e) Lagrange-Interpolation durch (−1|4), (0|−2), (1|12) — kompakt (4 P)</summary><div class="det-body">
+    <p>$L_0 = \frac{(x-0)(x-1)}{(-1-0)(-1-1)} = \frac{x(x-1)}{2},\quad
+       L_1 = \frac{(x+1)(x-1)}{(0+1)(0-1)} = -(x^2-1),\quad
+       L_2 = \frac{(x+1)x}{(1+1)(1-0)} = \frac{x(x+1)}{2}$</p>
+    <p>$p(x) = 4L_0 - 2L_1 + 12L_2 = 2x(x-1) + 2(x^2-1) + 6x(x+1) = \mathbf{10x^2 + 4x - 2}$</p>
+    <p>Probe: $p(-1)=10-4-2=4$ ✓, $p(0)=-2$ ✓, $p(1)=10+4-2=12$ ✓</p>
+  </div></details>
+</section>
+
+<section id="blatt">
+  <h2>7 · Blatt 7, Übung 7.2 — komplett</h2>
+  <p class="aufg">Messpunkte $(1|1), (2|3), (3|3), (4|1)$.</p>
+  <details><summary>1a) A, x, y für Polynom 2. Grades · 1b) für a₀e⁻ˣ + a₁eˣ</summary><div class="det-body">
+    <p>(a) wie 2023/A6c oben. &nbsp; (b) Basisfunktionen $e^{-x}, e^{x}$ — <b>schon linear in $a_0,a_1$</b>, nichts zu linearisieren:</p>
+    <p>$A = \begin{pmatrix}e^{-1}&e\\ e^{-2}&e^2\\ e^{-3}&e^3\\ e^{-4}&e^4\end{pmatrix},\quad x=\begin{pmatrix}a_0\\a_1\end{pmatrix},\quad y=\begin{pmatrix}1\\3\\3\\1\end{pmatrix}$</p>
+  </div></details>
+  <details><summary>2) Warum ist Grad 1 nicht sinnvoll? · 3) Lösung Grad 0 · 4) Skizze</summary><div class="det-body">
+    <p>2) Daten nicht monoton (Musterlösung: „offensichtlich keine monoton steigende Funktion").
+    3) Mittelwert $= 2$. 4) Waagrechte Gerade $y=2$ durch die Punktwolke.</p>
+    <p class="mono" style="color:#5a6675">Nebenbefund (Rechner, Grad 1): a = (2, 0) — die Ausgleichsgerade ist selbst waagrecht, weil die Daten symmetrisch liegen.</p>
+  </div></details>
+</section>
+
+<section id="quiz">
+  <h2>8 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>9 · Stolpersteine</h2>
+  <ol>
+    <li>$A$: <b>Zeile = Messpunkt, Spalte = Basisfunktion.</b> Zeilenzahl = Punktzahl (nicht andersrum).</li>
+    <li><b>Linear = linear in den Koeffizienten.</b> $a_0e^{-x}+a_1e^x$ ist linear; $e^{a_0+a_1x}$ und $\sqrt{1+a_0+a_1x}$ nicht → erst transformieren (ln bzw. quadrieren) und die <b>$y$-Werte mittransformieren</b>.</li>
+    <li>Newton-Faktoren <b>der Reihe nach aus den $x_i$</b> aufbauen: $(x-x_0)$, dann $(x-x_0)(x-x_1)$, … — nicht alle gleich.</li>
+    <li>Dividierte Differenzen: <b>durch die Spannweite $x_{i+k}-x_i$ teilen</b>, nicht durch benachbarte Differenz.</li>
+    <li>Lagrange-Nenner: an den <b>Stützstellen</b> auswerten ($x_i - x_j$), Zähler sind die $(x - x_j)$.</li>
+    <li>Am Ende <b>immer Probe</b>: alle Punkte ins kompakte Polynom einsetzen (kostet 30 s, sichert die Punkte).</li>
+    <li>Polynom 0. Grades = Mittelwert — 1 Gratispunkt, wenn man es weiß.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Thema 5 · Master-Session (2026-07-04) · Quellen: Blatt 7 (Übung 7.2 + Musterlösung), Altklausur 2024 A5,
+  Altklausur 2023 A6. Alle Rechnungen symbolisch gegen SymPy verifiziert (Newton-Koeffizienten, Lagrange-Polynom,
+  Linearisierungen, Normalgleichungs-Lösungen); Rechner gegen dieselben Referenzwerte getestet. (MathJax via CDN.)
+</footer>
+<script>
+/* ===== Helfer ===== */
+function parsePts(s){
+  return s.split(';').map(function(t){ var a=t.split(',').map(function(v){return parseFloat(v.trim());}); return [a[0],a[1]]; })
+          .filter(function(p){return !isNaN(p[0])&&!isNaN(p[1]);});
+}
+function fmt(v){ var r=Math.round(v*100000)/100000; return (Object.is(r,-0)?0:r); }
+/* Bruch-Anzeige für schöne Werte */
+function frac(v){
+  for(var d=1; d<=48; d++){ var n=v*d; if(Math.abs(n-Math.round(n))<1e-9) return d===1? String(Math.round(n)) : Math.round(n)+'/'+d; }
+  return String(fmt(v));
+}
+
+/* ===== Newton / dividierte Differenzen ===== */
+function divdiff(pts){
+  var xs=pts.map(function(p){return p[0];}), tab=[pts.map(function(p){return p[1];})];
+  for(var k=1;k<pts.length;k++){
+    var row=[];
+    for(var i=0;i<pts.length-k;i++) row.push((tab[k-1][i+1]-tab[k-1][i])/(xs[i+k]-xs[i]));
+    tab.push(row);
+  }
+  return tab;
+}
+/* Polynom als Koeffizienten-Array [c0,c1,...] */
+function polyMul(p,q){ var r=new Array(p.length+q.length-1).fill(0);
+  for(var i=0;i<p.length;i++)for(var j=0;j<q.length;j++)r[i+j]+=p[i]*q[j]; return r; }
+function polyAdd(p,q){ var r=[]; for(var i=0;i<Math.max(p.length,q.length);i++)r.push((p[i]||0)+(q[i]||0)); return r; }
+function polyStr(c){
+  var out='';
+  for(var i=c.length-1;i>=0;i--){
+    if(Math.abs(c[i])<1e-12)continue;
+    var v=frac(Math.abs(c[i])), sgn=c[i]<0?' − ':' + ';
+    var term=(v==='1'&&i>0?'':v)+(i>0?'x':'')+(i>1?'<sup>'+i+'</sup>':'');
+    out += out===''? (c[i]<0?'−':'')+term : sgn+term;
+  }
+  return out||'0';
+}
+function newtonCalc(){
+  var pts=parsePts(document.getElementById('nPts').value);
+  var out=document.getElementById('nOut');
+  if(pts.length<2){out.className='out show';out.innerHTML='Mindestens 2 Punkte.';return;}
+  var tab=divdiff(pts), b=tab.map(function(r){return r[0];}), xs=pts.map(function(p){return p[0];});
+  // Tabelle
+  var html='<b>Dividierte-Differenzen-Tabelle</b> (Kopf jeder Spalte = b-Koeffizient):<table><tr><th>xᵢ</th><th>yᵢ</th>';
+  for(var k=1;k<pts.length;k++)html+='<th>Stufe '+k+'</th>'; html+='</tr>';
+  for(var i=0;i<pts.length;i++){
+    html+='<tr><td>'+pts[i][0]+'</td><td>'+pts[i][1]+'</td>';
+    for(var k2=1;k2<pts.length;k2++) html+='<td>'+(i<tab[k2].length? frac(tab[k2][i]) : '')+'</td>';
+    html+='</tr>';
+  }
+  html+='</table><b>Koeffizienten:</b> <span class="mono">b = ('+b.map(frac).join(', ')+')</span><br>';
+  // Ansatz
+  var ansatz='p(x) = b₀'; var fs='';
+  for(var k3=1;k3<pts.length;k3++){ fs+='(x'+(xs[k3-1]<0?'+'+(-xs[k3-1]):xs[k3-1]===0?'':'−'+xs[k3-1])+')'; ansatz+=' + b'+k3+'·'+fs; }
+  html+='<b>Ansatz:</b> <span class="mono">'+ansatz+'</span><br>';
+  // kompakt
+  var poly=[b[0]], factor=[1];
+  for(var k4=1;k4<pts.length;k4++){ factor=polyMul(factor,[-xs[k4-1],1]); poly=polyAdd(poly,factor.map(function(c){return c*b[k4];})); }
+  html+='<b>Kompakt:</b> p(x) = <span class="mono">'+polyStr(poly)+'</span><br>';
+  // Probe
+  var okAll=pts.every(function(p){ var v=0; for(var i=poly.length-1;i>=0;i--)v=v*p[0]+poly[i]; return Math.abs(v-p[1])<1e-8; });
+  html+='<b>Probe (alle Punkte eingesetzt):</b> '+(okAll?'✓ erfüllt':'⚠️ FEHLER');
+  out.className='out show'; out.innerHTML=html;
+}
+
+/* ===== Regression: Normalgleichungen ===== */
+function matMul(A,B){ var r=[]; for(var i=0;i<A.length;i++){ r.push([]); for(var j=0;j<B[0].length;j++){ var s=0; for(var k=0;k<B.length;k++)s+=A[i][k]*B[k][j]; r[i].push(s);} } return r; }
+function transp(A){ return A[0].map(function(_,j){return A.map(function(row){return row[j];});}); }
+function solveLin(M,v){ // Gauß mit Pivot, n<=3
+  var n=M.length, A=M.map(function(r,i){return r.concat([v[i]]);});
+  for(var c=0;c<n;c++){
+    var piv=c; for(var r2=c+1;r2<n;r2++)if(Math.abs(A[r2][c])>Math.abs(A[piv][c]))piv=r2;
+    var t=A[c];A[c]=A[piv];A[piv]=t;
+    if(Math.abs(A[c][c])<1e-12)return null;
+    for(var r3=0;r3<n;r3++){ if(r3===c)continue; var f=A[r3][c]/A[c][c]; for(var c2=c;c2<=n;c2++)A[r3][c2]-=f*A[c][c2]; }
+  }
+  return A.map(function(row,i){return row[n]/A[i][i];});
+}
+function matStr(M){ return '['+M.map(function(r){return '['+r.map(frac).join(', ')+']';}).join(', ')+']'; }
+function regrCalc(){
+  var pts=parsePts(document.getElementById('rPts').value), deg=parseInt(document.getElementById('rDeg').value);
+  var out=document.getElementById('rOut');
+  if(isNaN(deg)||!(pts.length>=deg+1)){out.className='out show';out.innerHTML='Zu wenige Punkte für Grad '+deg+'.';return;}
+  var A=pts.map(function(p){ var row=[]; for(var j=0;j<=deg;j++)row.push(Math.pow(p[0],j)); return row; });
+  var yv=pts.map(function(p){return [p[1]];});
+  var At=transp(A), AtA=matMul(At,A), Aty=matMul(At,yv).map(function(r){return r[0];});
+  var sol=solveLin(AtA,Aty);
+  var html='<b>A</b> ('+pts.length+'×'+(deg+1)+', Spalten: '+['1','x','x²'].slice(0,deg+1).join(', ')+') = <span class="mono">'+matStr(A)+'</span><br>'+
+    '<b>AᵀA</b> = <span class="mono">'+matStr(AtA)+'</span> &nbsp; <b>Aᵀy</b> = <span class="mono">('+Aty.map(frac).join(', ')+')</span><br>';
+  if(sol){
+    html+='<b>Lösung a</b> = <span class="mono">('+sol.map(frac).join(', ')+')</span> → f(x) = <span class="mono">'+polyStr(sol)+'</span>';
+    if(deg===0) html+=' &nbsp;<span style="color:#5a6675">(= Mittelwert der y-Werte)</span>';
+  } else html+='⚠️ System singulär.';
+  out.className='out show'; out.innerHTML=html;
+}
+
+/* ===== Quiz ===== */
+var Q=[
+ {q:"Die Datenmatrix A hat …",
+  o:["eine Zeile pro Basisfunktion","eine Zeile pro Messpunkt, eine Spalte pro Basisfunktion","immer 2 Spalten","so viele Zeilen wie Koeffizienten"],c:1,
+  fb:"Zeile i enthält alle Basisfunktionen am Punkt xᵢ: (φ₀(xᵢ), φ₁(xᵢ), …)."},
+ {q:"Regression mit f(x)=e^(a₀+a₁x) — erster Schritt?",
+  o:["direkt A aufstellen","logarithmieren: ln y = a₀+a₁x","quadrieren","ableiten"],c:1,
+  fb:"Nicht linear in a₀,a₁ → ln macht es linear; y-Vektor = (ln yᵢ)."},
+ {q:"Regression mit f(x)=√(1+a₀+a₁x) (Klausur 2024): der y-Vektor enthält …",
+  o:["die yᵢ","die √yᵢ","die yᵢ²−1","die ln yᵢ"],c:2,
+  fb:"Quadrieren: y² − 1 = a₀+a₁x → transformierte Werte yᵢ²−1 (hier: 0,0,0,48)."},
+ {q:"Lösung der Regression mit Polynom 0. Grades?",
+  o:["0","der Mittelwert der y-Werte","der Median","das erste y"],c:1,
+  fb:"f = a₀ konstant → kleinste Fehlerquadrate ⇒ arithmetisches Mittel."},
+ {q:"Newton-Interpolation, Punkte (−1,1),(0,1),(1,1),(2,7): b = ?",
+  o:["(1, 0, 0, 1)","(1, 1, 1, 7)","(0, 0, 0, 1)","(1, 0, 3, 6)"],c:0,
+  fb:"Dividierte Differenzen: Stufe 1 (0,0,6) → Stufe 2 (0,3) → Stufe 3 (1). p(x)=x³−x+1."},
+ {q:"Wie viele Punkte legt ein Polynom 2. Grades bei einer INTERPOLATION exakt fest?",
+  o:["2","3","4","beliebig viele"],c:1,
+  fb:"3 Parameter (a₀,a₁,a₂) ↔ 3 Punkte. Mit 4 Punkten wird es Regression."},
+ {q:"Das Lagrange-Basispolynom L₁ zu x₁ erfüllt …",
+  o:["L₁(x₁)=0","L₁(xⱼ)=1 für alle j","L₁(x₁)=1 und L₁(xⱼ)=0 für j≠1","L₁ ist konstant"],c:2,
+  fb:"Genau dadurch gilt p(x)=Σ yᵢLᵢ(x) exakt durch alle Punkte."}
+];
+(function(){
+  var c=document.getElementById('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div');
+    var pq=document.createElement('p'); pq.innerHTML='<b>'+(qi+1)+'.</b> '+item.q; w.appendChild(pq);
+    item.o.forEach(function(opt,oi){
+      var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){
+        var fb=w.querySelector('.qfb');
+        Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(el){el.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}
+        else{b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+      };
+      w.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='qfb'; w.appendChild(fb);
+    c.appendChild(w);
+  });
+})();
+newtonCalc(); regrCalc();
+</script>
+</body>
+</html>

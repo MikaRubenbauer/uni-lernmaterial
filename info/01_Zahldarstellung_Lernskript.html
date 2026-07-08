@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info Thema 1 – Zahldarstellung &amp; IEEE-754 half</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.4rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}
+  nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  .aufg{font-weight:600;color:#2a3645}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:9px 13px;font-size:.9rem;cursor:pointer;margin:3px}
+  button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  input[type=text],input[type=number]{padding:8px 10px;border:1px solid var(--bd);border-radius:7px;font-size:.95rem;font-family:"JetBrains Mono",Consolas,monospace}
+  .calc-row{display:flex;gap:8px;margin:6px 0;align-items:center;flex-wrap:wrap}
+  .calc-row label{font-size:.85rem;color:#5a6675;min-width:150px}
+  .out{margin-top:10px;padding:12px 14px;background:var(--ok);border-radius:9px;font-size:.95rem;display:none;overflow-x:auto}
+  .out.show{display:block}
+  .steps{margin-top:8px;padding:10px 14px;background:var(--note);border-radius:9px;font-size:.92rem;display:none;overflow-x:auto}
+  .steps.show{display:block}
+  mono,.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em;font-family:"JetBrains Mono",Consolas,monospace}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;margin:8px 0}
+  th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)}
+  td.mono,th.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  .bits{font-family:"JetBrains Mono",Consolas,monospace;font-size:1.05rem;letter-spacing:1px}
+  .bv{color:#b3261e;font-weight:700}.be{color:#1a6b3c;font-weight:700}.bm{color:#28508c;font-weight:700}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  .badge{display:inline-block;background:#28508c;color:#fff;border-radius:6px;padding:2px 8px;font-size:.78rem;font-weight:700;margin-right:6px}
+  .badge.top{background:#b3261e}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 1 — Zahldarstellung &amp; IEEE-754 „half"</h1>
+  <p>Theoretische Informatik II · Prof. Ritterbusch · Klausur 31.07.2026, 09:00 · <b>Lernblock Fr 24.07</b></p>
+  <p><span class="badge top">TOP-Prio</span> 15 P in Prof-Altklausur 2024 (Aufgabe 2) · Arbeitsheft 13–20 · Skript Kap. 2.1</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a><a href="#rezepte">Rezepte</a><a href="#umrechner">Umrechner</a>
+  <a href="#zk">Zweierkomplement</a><a href="#ieee">IEEE-754</a><a href="#klausur">Klausur 2024</a>
+  <a href="#drills">AH-Drills</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <p>Jede Zahl lässt sich in jedem <b>Stellenwertsystem</b> zur Basis $b$ schreiben: jede Stelle zählt
+  eine Potenz von $b$ — links vom Komma $b^0, b^1, b^2, \dots$, rechts davon $b^{-1}, b^{-2}, \dots$
+  Beispiel: <span class="mono">29.875₁₀ = 2·10¹ + 9·10⁰ + 8·10⁻¹ + 7·10⁻² + 5·10⁻³</span>.</p>
+  <table>
+    <tr><th>System</th><th>Basis</th><th>Ziffern</th><th>Klausur-Kürzel</th></tr>
+    <tr><td>Binär (dual)</td><td>2</td><td class="mono">0 1</td><td class="mono">z₂</td></tr>
+    <tr><td>Oktal</td><td>8</td><td class="mono">0–7</td><td class="mono">z₈</td></tr>
+    <tr><td>Dezimal</td><td>10</td><td class="mono">0–9</td><td class="mono">z₁₀</td></tr>
+    <tr><td>Hexadezimal</td><td>16</td><td class="mono">0–9 A–F</td><td class="mono">z₁₆</td></tr>
+  </table>
+  <div class="box note"><b>Merke — die Binär-Brücke.</b> Oktal und Hex sind nur „gebündeltes Binär":
+  <b>1 Oktalziffer = 3 Bits</b>, <b>1 Hexziffer = 4 Bits</b>. Der schnellste Weg zwischen Oktal und Hex
+  führt IMMER über Binär — nie direkt umrechnen. Gruppen werden <b>vom Komma aus</b> nach außen gebildet
+  (links UND rechts), fehlende Stellen mit Nullen auffüllen.</div>
+</section>
+
+<section id="rezepte">
+  <h2>2 · Die 4 Rezepte</h2>
+
+  <h3>R1 — Dezimal → Basis $b$ (Potenz-Schema, so macht es die Musterlösung)</h3>
+  <ol>
+    <li><b>Vorkomma:</b> größte Potenz $b^k \le z$ suchen. Zeile für Zeile: wie oft passt $b^k$? Koeffizient notieren, Rest weiterreichen, nächstkleinere Potenz.<br>
+    Beispiel −68 → 188 (s. R3): <span class="mono">188 = 1·2⁷ + 60; 60 = 0·2⁶ + 60; 60 = 1·2⁵ + 28; …</span></li>
+    <li><b>Nachkomma:</b> gleiches Schema mit negativen Potenzen: <span class="mono">0.4375 = 3·8⁻¹ + 0.0625; 0.0625 = 4·8⁻² → 0.34₈</span>.<br>
+    Alternative fürs Binäre (gleich schnell): Nachkommateil wiederholt <b>×2</b>, die Vorkommastelle ist das nächste Bit.</li>
+    <li><b>Alternative Vorkomma:</b> fortlaufende Division durch $b$, Reste <b>rückwärts</b> lesen.</li>
+  </ol>
+
+  <h3>R2 — Binär ↔ Oktal/Hex (Gruppen-Trick)</h3>
+  <ol>
+    <li>Binärzahl am Komma ausrichten. Nach links in <b>3er</b>- (oktal) bzw. <b>4er</b>-Gruppen (hex), nach rechts genauso. Ränder mit Nullen auffüllen.</li>
+    <li>Jede Gruppe einzeln übersetzen. Rückrichtung: jede Oktal-/Hexziffer als 3/4 Bits ausschreiben.</li>
+  </ol>
+  <div class="box note mono">29.875₁₀ = 11101.111₂ → 011|101 . 111|0 = 35.7₈ &nbsp;·&nbsp; 0001|1101 . 1110 = 1D.E₁₆</div>
+
+  <h3>R3 — 8-Bit-Zweierkomplement (Notation: z₂ₖ)</h3>
+  <ol>
+    <li>$z \ge 0$: einfach binär auf 8 Bit (führendes Bit muss 0 sein → Bereich 0…127).</li>
+    <li>$z &lt; 0$: <b>256 − |z|</b> binär darstellen (Musterlösungs-Weg). Gleichwertig: |z| binär → alle Bits kippen → +1.</li>
+    <li><b>Rückweg:</b> führendes Bit 1? Dann Wert = (Binärwert) − 256. Führendes Bit 0 → Wert direkt.</li>
+    <li><b>Addition:</b> schriftlich binär addieren, <b>Übertrag aus Bit 8 fällt weg</b> (mod 256).</li>
+  </ol>
+  <div class="box warn"><b>Stolperstein.</b> Zweierkomplement ist NICHT „Betrag + Vorzeichenbit". <span class="mono">−68 ≠ 11000100₂ₖ</span>, sondern <span class="mono">256−68 = 188 = 10111100₂ₖ</span>. Bereich: <b>−128 … +127</b>.</div>
+
+  <h3>R4 — IEEE-754 „half" (16 Bit): <span class="bits"><span class="bv">v</span>&thinsp;<span class="be">eeeee</span>&thinsp;<span class="bm">mmmmmmmmmm</span></span></h3>
+  <p><span class="bv">1 Vorzeichenbit</span> · <span class="be">5 Exponentenbits (Bias 15)</span> · <span class="bm">10 Mantissenbits</span>. Wert (normalisiert): $(-1)^v \cdot 1.m \cdot 2^{e-15}$.</p>
+  <p><b>Hinweg (Dezimal → half):</b></p>
+  <ol>
+    <li>Vorzeichen merken → <span class="bv">v</span> (negativ = 1). Weiter mit dem Betrag.</li>
+    <li>Betrag binär darstellen (R1): z.B. <span class="mono">117.25 = 1110101.01₂</span>.</li>
+    <li><b>Normalisieren</b> auf $1.\text{xxx} \cdot 2^k$: Komma hinter die führende 1 → <span class="mono">1.11010101 · 2⁶</span>.</li>
+    <li>Exponent: $e = k + 15$, als 5 Bits → <span class="mono">6+15 = 21 = <span class="be">10101</span></span>.</li>
+    <li>Mantisse = die Nachkommastellen (die führende 1 ist <b>implizit</b>, fällt weg!), rechts auf 10 Bits mit Nullen auffüllen → <span class="mono"><span class="bm">1101010100</span></span>.</li>
+    <li>16 Bits zusammensetzen, in 4er-Gruppen → Hex. Passt die Mantisse nicht in 10 Bits → <b>runden zur nächsten geraden Mantisse</b> („round half to even", so die Musterlösung).</li>
+  </ol>
+  <p><b>Rückweg (Hex → Dezimal):</b> Hex → 16 Bits → in <span class="bv">1</span>|<span class="be">5</span>|<span class="bm">10</span> zerlegen → $k = e - 15$ → $1.m \cdot 2^k$ ausrechnen (führende 1 wieder dazu!), Vorzeichen anwenden.</p>
+  <div class="box warn"><b>Sonderfälle (nur erkennen können):</b> <span class="mono">e = 00000</span> → subnormal/Null (keine implizite 1, Faktor $2^{-14}$); <span class="mono">e = 11111</span> → ±∞ bzw. NaN. Größte normale half-Zahl: 65504.</div>
+</section>
+
+<section id="umrechner">
+  <h2>3 · Umrechnungs-Trainer (Dezimal ↔ Binär/Oktal/Hex)</h2>
+  <p>Dezimalzahl (auch mit Nachkommateil, Punkt als Trenner) eingeben — der Trainer zeigt den kompletten Rechenweg im Musterlösungs-Stil.</p>
+  <div class="calc-row"><label>Dezimalzahl</label><input type="text" id="convIn" value="29.875" size="12">
+    <button onclick="convCalc()">Umrechnen</button>
+    <button class="sec" onclick="convRandom()">🎲 Zufallsaufgabe</button>
+  </div>
+  <div id="convOut" class="out"></div>
+  <div id="convSteps" class="steps"></div>
+  <h3>Rückrichtung (Hex/Oktal/Binär → Dezimal)</h3>
+  <div class="calc-row"><label>Zahl</label><input type="text" id="backIn" value="1A.1" size="10">
+    <label style="min-width:auto">Basis</label>
+    <select id="backBase" style="padding:8px;border:1px solid var(--bd);border-radius:7px">
+      <option value="2">2 (binär)</option><option value="8">8 (oktal)</option><option value="16" selected>16 (hex)</option>
+    </select>
+    <button onclick="backCalc()">→ Dezimal</button>
+  </div>
+  <div id="backOut" class="out"></div>
+</section>
+
+<section id="zk">
+  <h2>4 · Zweierkomplement-Trainer (8 Bit)</h2>
+  <div class="calc-row"><label>Zahl (−128 … 127)</label><input type="number" id="zkIn" value="-68" min="-128" max="127">
+    <button onclick="zkCalc()">Darstellen</button></div>
+  <div id="zkOut" class="out"></div>
+  <h3>Schriftliche Addition (wie AH 16)</h3>
+  <div class="calc-row"><label>x + y</label>
+    <input type="number" id="zkA" value="90" min="-128" max="127" style="width:90px"> +
+    <input type="number" id="zkB" value="-94" min="-128" max="127" style="width:90px">
+    <button onclick="zkAdd()">Addieren</button></div>
+  <div id="zkAddOut" class="out"></div>
+</section>
+
+<section id="ieee">
+  <h2>5 · IEEE-754-half-Trainer</h2>
+  <h3>Encoder: Dezimal → half (mit allen 6 Schritten)</h3>
+  <div class="calc-row"><label>Dezimalzahl</label><input type="text" id="hIn" value="-117.25" size="12">
+    <button onclick="hEnc()">Kodieren</button>
+    <button class="sec" onclick="hRandom()">🎲 Zufallsaufgabe</button></div>
+  <div id="hOut" class="out"></div>
+  <div id="hSteps" class="steps"></div>
+  <h3>Decoder: Hex → Dezimal (wie AH 18)</h3>
+  <div class="calc-row"><label>16-Bit-Hexzahl</label><input type="text" id="dIn" value="4B40" size="8" maxlength="4">
+    <button onclick="hDec()">Dekodieren</button></div>
+  <div id="dOut" class="out"></div>
+</section>
+
+<section id="klausur">
+  <h2>6 · Prof-Altklausur 2024, Aufgabe 2 (15 P) — komplett vorgerechnet</h2>
+  <p>Erst selbst rechnen (Trainer oben!), dann aufklappen.</p>
+
+  <details><summary>a) 117₁₀ als Binär- und Oktalzahl (3 P)</summary><div class="det-body">
+    <p class="mono">117 = 1·2⁶ + 53 → 53 = 1·2⁵ + 21 → 21 = 1·2⁴ + 5 → 5 = 0·2³ + 5 → 5 = 1·2² + 1 → 1 = 0·2¹ + 1 → 1 = 1·2⁰</p>
+    <p><b><span class="mono">117₁₀ = 1110101₂</span></b>. Oktal per 3er-Gruppen: <span class="mono">001|110|101 → <b>165₈</b></span>.</p>
+    <p class="mono">Probe: 1·64 + 6·8 + 5 = 64+48+5 = 117 ✓</p>
+  </div></details>
+
+  <details><summary>b) 0,625₁₀ als Binärzahl (3 P)</summary><div class="det-body">
+    <p class="mono">0.625 = 1·2⁻¹ + 0.125 → 0.125 = 0·2⁻² + 0.125 → 0.125 = 1·2⁻³</p>
+    <p><b><span class="mono">0.625₁₀ = 0.101₂</span></b> &nbsp;(Probe: 0.5 + 0.125 = 0.625 ✓)</p>
+  </div></details>
+
+  <details><summary>c) −117,25 im half-Format + Hex-Kodierung (7 P)</summary><div class="det-body">
+    <ol>
+      <li>Negativ → <span class="bv">v = 1</span>. Betrag: <span class="mono">117.25 = 1110101.01₂</span> (a + 0.25 = 0.01₂).</li>
+      <li>Normalisieren: <span class="mono">1110101.01 = 1.11010101 · 2⁶</span>.</li>
+      <li>Exponent: <span class="mono">e = 6 + 15 = 21 = <span class="be">10101₂</span></span>.</li>
+      <li>Mantisse: Nachkommastellen <span class="mono">11010101</span>, auf 10 Bits: <span class="mono"><span class="bm">1101010100</span></span>.</li>
+      <li>Zusammen: <span class="bits"><span class="bv">1</span> <span class="be">10101</span> <span class="bm">1101010100</span></span></li>
+      <li>4er-Gruppen: <span class="mono">1101|0111|0101|0100 → <b>D754₁₆</b></span></li>
+    </ol>
+    <div class="box ok mono">Probe: −(1 + 1/2 + 1/4 + 1/16 + 1/256) · 2⁶ = −(1.83203125)·64 = −117.25 ✓ (numpy float16 bestätigt D754)</div>
+  </div></details>
+
+  <details><summary>d) Kann −117,625 ohne Runden im half-Format dargestellt werden? (2 P)</summary><div class="det-body">
+    <p><b>Ja.</b> Begründung: <span class="mono">117.625 = 1110101.101₂</span> — normalisiert <span class="mono">1.110101101 · 2⁶</span>.
+    Die Mantisse braucht <b>9 Nachkommabits ≤ 10 verfügbare</b> → exakt darstellbar, kein Runden nötig.</p>
+    <div class="box note"><b>Argumentationsmuster für diesen Aufgabentyp:</b> Betrag binär schreiben, normalisieren,
+    Nachkommabits zählen. ≤ 10 → darstellbar. &gt; 10 → nur gerundet darstellbar (z.B. −117.6 hat eine
+    <em>unendliche</em> Binärdarstellung → nicht exakt darstellbar).</div>
+  </div></details>
+</section>
+
+<section id="drills">
+  <h2>7 · Arbeitsheft-Drills 13–20 (mit Musterlösungs-Ergebnissen)</h2>
+  <p>Reihenfolge = Lernblock-Programm. Selbst rechnen (Papier!), Trainer zur Kontrolle, dann aufklappen.</p>
+
+  <details><summary>AH 13 — z₁ = 29.875₁₀ und z₂ = 1A.1₁₆ in allen 4 Basen</summary><div class="det-body">
+    <p class="mono"><b>z₁:</b> 29.875₁₀ = 11101.111₂ = 35.7₈ = 1D.E₁₆</p>
+    <p class="mono"><b>z₂:</b> 1A.1₁₆ = 11010.0001₂ = 32.04₈ = 26.0625₁₀</p>
+    <p>Weg: Hex → 4er-Gruppen → Binär → 3er-Gruppen → Oktal; Dezimal über Stellenwerte (<span class="mono">16 + 10 + 1/16</span>).</p>
+  </div></details>
+
+  <details><summary>AH 14 — x₁ = 3A.4₁₆, x₂ = 213.21₈, x₃ = 217.4375₁₀</summary><div class="det-body">
+    <p class="mono">x₁ = 3A.4₁₆ = 111010.01₂ = 72.2₈ = 58.25₁₀</p>
+    <p class="mono">x₂ = 213.21₈ = 10001011.010001₂ = 8B.44₁₆ = 139.265625₁₀</p>
+    <p class="mono">x₃ = 217.4375₁₀ = 331.34₈ = 11011001.0111₂ = D9.7₁₆</p>
+    <p>Musterlösungs-Trick bei x₃: erst oktal über das Potenz-Schema (331.34₈), daraus Binär/Hex per Gruppen.</p>
+  </div></details>
+
+  <details><summary>AH 15 — z = −68₁₀ im 8-Bit-Zweierkomplement</summary><div class="det-body">
+    <p>Negativ → <span class="mono">256 − 68 = 188</span> binär: <span class="mono">188 = 10111100₂</span></p>
+    <p><b><span class="mono">z = 10111100₂ₖ</span></b> &nbsp;(Gegenprobe über Kippen: 68 = 01000100 → 10111011 + 1 = 10111100 ✓)</p>
+  </div></details>
+
+  <details><summary>AH 16 — x = 90, y = −94 im 8-Bit-ZK + schriftliche Addition</summary><div class="det-body">
+    <p class="mono">x = 90₁₀ = 01011010₂ₖ &nbsp;·&nbsp; y = −94₁₀: 256−94 = 162 = 10100010₂ₖ</p>
+    <pre class="mono" style="background:var(--note);padding:10px;border-radius:8px">  0 1 0 1 1 0 1 0   (x = +90)
++ 1 0 1 0 0 0 1 0   (y = −94)
+  ———————————————
+  1 1 1 1 1 1 0 0   (z)</pre>
+    <p>Führendes Bit 1 → negativ: <span class="mono">11111100₂ = 252; 252 − 256 = <b>−4</b></span> ✓ (90 − 94 = −4)</p>
+  </div></details>
+
+  <details><summary>AH 17 — −3.125 als half (16-Bit-Hex)</summary><div class="det-body">
+    <p class="mono">3.125 = 11.001₂ = 1.1001 · 2¹ → v=1, e = 1+15 = 16 = 10000₂, m = 1001000000</p>
+    <p class="bits"><span class="bv">1</span> <span class="be">10000</span> <span class="bm">1001000000</span> → <b>C240₁₆</b></p>
+  </div></details>
+
+  <details><summary>AH 18 — 4B40₁₆ (half) als Dezimalzahl</summary><div class="det-body">
+    <p class="mono">4B40 = 0100|1011|0100|0000 → v=0, e=10010₂=18 → k=3, m=1101000000</p>
+    <p class="mono">z = 1.1101₂ · 2³ = (1 + 1/2 + 1/4 + 1/16) · 8 = <b>14.5</b></p>
+  </div></details>
+
+  <details><summary>AH 19 — Produkt 5008₁₆ · 40C0₁₆ im half-Format <span class="badge">Vertiefung</span></summary><div class="det-body">
+    <p class="mono">5008 → 1.0000001₂·2⁵ (= 32.25) &nbsp;·&nbsp; 40C0 → 1.0011₂·2¹ (= 2.375)</p>
+    <p>Schriftliche Multiplikation: <span class="mono">100000.01 · 10.011 = 1001100.10011₂</span> (= 76.59375). Normalisiert
+    <span class="mono">1.00110010011 · 2⁶</span> → <b>11 Nachkommabits, 1 zu viel</b> → runden.</p>
+    <p><b>Round half to even:</b> Rest ist exakt ½ LSB → zur <em>geraden</em> Mantisse aufrunden → <span class="mono">1.0011001010 · 2⁶</span> (= 76.625).</p>
+    <p class="bits"><span class="bv">0</span> <span class="be">10101</span> <span class="bm">0011001010</span> → <b>54CA₁₆</b> &nbsp;<span style="color:#5a6675">(numpy float16 bestätigt)</span></p>
+  </div></details>
+
+  <details><summary>AH 20 — Differenz 5C21₁₆ − 4420₁₆ im half-Format <span class="badge">Vertiefung</span></summary><div class="det-body">
+    <p class="mono">5C21 → 1.0000100001₂·2⁸ (= 264.25) &nbsp;·&nbsp; 4420 → 1.0001₂·2² (= 4.125)</p>
+    <p>Auf gleichen Exponenten bringen, schriftlich subtrahieren: <span class="mono">100001000.01 − 100.001 = 100000100.001₂</span> (= 260.125).
+    Normalisiert <span class="mono">1.00000100001 · 2⁸</span> → 11 Nachkommabits → runden (half to even, Rest ½ → zur geraden = abrunden):
+    <span class="mono">1.0000010000 · 2⁸</span> (= 260).</p>
+    <p class="bits"><span class="bv">0</span> <span class="be">10111</span> <span class="bm">0000010000</span> → <b>5C10₁₆</b> &nbsp;<span style="color:#5a6675">(e = 8+15 = 23 = 10111₂; Musterlösung hat hier den Tippfehler „=13", das Bitmuster stimmt)</span></p>
+  </div></details>
+</section>
+
+<section id="quiz">
+  <h2>8 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>9 · Stolpersteine</h2>
+  <ol>
+    <li><b>Gruppen vom Komma aus</b> bilden (beide Richtungen), Ränder mit Nullen auffüllen — sonst verrutscht alles.</li>
+    <li><b>Bias 15 nicht vergessen:</b> gespeichert wird $e = k + 15$, nie $k$ direkt.</li>
+    <li><b>Führende 1 ist implizit</b> — sie gehört NICHT in die Mantissenbits.</li>
+    <li><b>Zweierkomplement ≠ Vorzeichenbit + Betrag.</b> Negative Zahl = $256 - |z|$ (bzw. kippen + 1).</li>
+    <li><b>Überlauf-Bit bei ZK-Addition fällt weg</b> (mod 256) — nicht als 9. Bit notieren.</li>
+    <li><b>Runden = zur geraden Mantisse</b> („half to even"), wenn der Rest exakt ½ LSB ist (AH 19/20).</li>
+    <li><b>Darstellbarkeits-Frage:</b> Nachkommabits der normalisierten Mantisse zählen — ≤ 10 → ja. Zahlen wie 0.1 oder 117.6 haben <em>unendliche</em> Binärdarstellung → nie exakt.</li>
+    <li><b>Notation der Musterlösung verwenden:</b> Suffix <span class="mono">₂ₖ</span> fürs Zweierkomplement, Potenz-Schema als Rechenweg zeigen (gibt Teilpunkte).</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Info Thema 1 · Session 1 des Master-Chats (2026-07-02) · Quellen: Prof-Altklausur 2024 A2,
+  Arbeitsheft Aufg. 13–20 + Musterlösungen (S. 141–144), Skript Kap. 2.1. Alle Zahlenwerte programmatisch
+  verifiziert (Python: int/format, numpy float16 für alle half-Kodierungen inkl. round-half-to-even).
+</footer>
+<script>
+/* ===== Helfer ===== */
+function el(id){return document.getElementById(id);}
+function show(id,html){var e=el(id);e.className=e.className.replace(' show','')+' show';e.innerHTML=html;}
+function grp(s,n,dir){ // Bitstring in n-er Gruppen; dir 'L' = vom Ende (Vorkomma), 'R' = vom Anfang (Nachkomma)
+  var out=[];
+  if(dir==='L'){ while(s.length%n)s='0'+s; for(var i=0;i<s.length;i+=n)out.push(s.substr(i,n)); }
+  else { while(s.length%n)s=s+'0'; for(var j=0;j<s.length;j+=n)out.push(s.substr(j,n)); }
+  return out;
+}
+function binToBase(intBits,fracBits,base){ // via Gruppen
+  var n = base===8?3:4;
+  var ig = intBits?grp(intBits,n,'L'):['0'], fg = fracBits?grp(fracBits,n,'R'):[];
+  var I = ig.map(function(g){return parseInt(g,2).toString(base).toUpperCase();}).join('').replace(/^0+(?=.)/,'');
+  var F = fg.map(function(g){return parseInt(g,2).toString(base).toUpperCase();}).join('');
+  return F?I+'.'+F:I;
+}
+
+/* ===== 3 · Umrechner ===== */
+function decToBin(x, maxFrac){
+  maxFrac = maxFrac||12;
+  var neg = x<0; x=Math.abs(x);
+  var ip = Math.floor(x), fp = x-ip;
+  var intSteps=[], intBits = ip.toString(2);
+  var rest=ip;
+  for(var k=intBits.length-1;k>=0;k--){
+    var p=Math.pow(2,k), c=Math.floor(rest/p);
+    intSteps.push(rest+' = '+c+'·2'+sup(k)+' + '+(rest-c*p)); rest-=c*p;
+  }
+  var fracBits='', fracSteps=[], f=fp, terminated=true;
+  for(var i=1;i<=maxFrac;i++){
+    if(f<1e-12){break;}
+    f*=2; var d=Math.floor(f+1e-12);
+    fracSteps.push('×2: '+(f).toFixed(6).replace(/0+$/,'').replace(/\.$/,'')+' → Bit '+d);
+    fracBits+=d; f-=d;
+    if(i===maxFrac && f>1e-12) terminated=false;
+  }
+  return {neg:neg, intBits:intBits, fracBits:fracBits, intSteps:intSteps, fracSteps:fracSteps, terminated:terminated};
+}
+function sup(k){var m={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};return String(k).split('').map(function(c){return m[c]||c;}).join('');}
+function convCalc(){
+  var x = parseFloat(el('convIn').value.replace(',','.'));
+  if(isNaN(x)){show('convOut','Bitte Zahl eingeben (Punkt als Dezimaltrenner).');el('convSteps').className='steps';return;}
+  var r = decToBin(x);
+  var bin = (r.neg?'−':'')+r.intBits+(r.fracBits?'.'+r.fracBits:'');
+  var okt = (r.neg?'−':'')+binToBase(r.intBits,r.fracBits,8);
+  var hex = (r.neg?'−':'')+binToBase(r.intBits,r.fracBits,16);
+  var warnTxt = r.terminated?'':'<div class="box warn" style="margin:8px 0 0">⚠️ Nachkommateil endet nicht nach 12 Bits — diese Zahl hat eine <b>unendliche</b> Binärdarstellung (Klausur-Hinweis: „nicht exakt darstellbar").</div>';
+  show('convOut','<b class="mono">'+el('convIn').value+'₁₀ = '+bin+'₂ = '+okt+'₈ = '+hex+'₁₆</b>'+warnTxt);
+  var s='<b>Vorkomma (Potenz-Schema):</b><br class="mono">'+r.intSteps.map(function(t){return '<span class="mono">'+t+'</span>';}).join('<br>')+
+        (r.fracSteps.length?'<br><b>Nachkomma (×2-Methode):</b><br>'+r.fracSteps.map(function(t){return '<span class="mono">'+t+'</span>';}).join('<br>'):'')+
+        '<br><b>Gruppen:</b> <span class="mono">3er → Oktal · 4er → Hex (vom Komma aus)</span>';
+  var e2=el('convSteps'); e2.className='steps show'; e2.innerHTML=s;
+}
+function convRandom(){
+  var ip = Math.floor(Math.random()*200)+20;
+  var fr = [0,0.25,0.375,0.5,0.625,0.75,0.875,0.0625,0.4375][Math.floor(Math.random()*9)];
+  el('convIn').value = (ip+fr);
+  el('convOut').className='out'; el('convSteps').className='steps';
+  show('convOut','Aufgabe: <b class="mono">'+(ip+fr)+'₁₀</b> in Binär, Oktal und Hex. Erst auf Papier, dann „Umrechnen" drücken.');
+}
+function backCalc(){
+  var s = el('backIn').value.trim().toUpperCase().replace(',','.');
+  var b = parseInt(el('backBase').value);
+  var parts = s.split('.'), ip=parts[0]||'0', fp=parts[1]||'';
+  var val = parseInt(ip,b); if(isNaN(val)){show('backOut','Ungültige Ziffern für Basis '+b+'.');return;}
+  var expl = [];
+  ip.split('').reverse().forEach(function(c,i){ if(parseInt(c,b)) expl.push(parseInt(c,b)+'·'+b+sup(i)); });
+  var fv=0;
+  fp.split('').forEach(function(c,i){ var d=parseInt(c,b); if(isNaN(d)){val=NaN;return;} fv+=d*Math.pow(b,-(i+1)); if(d)expl.push(d+'·'+b+sup(-(i+1))); });
+  if(isNaN(val)){show('backOut','Ungültige Ziffern für Basis '+b+'.');return;}
+  show('backOut','<span class="mono">'+s+'<sub>'+b+'</sub> = '+expl.reverse().join(' + ')+' = <b>'+(val+fv)+'₁₀</b></span>');
+}
+
+/* ===== 4 · Zweierkomplement ===== */
+function zkBits(z){ return ((z+256)%256).toString(2).padStart(8,'0'); }
+function zkCalc(){
+  var z = parseInt(el('zkIn').value);
+  if(isNaN(z)||z<-128||z>127){show('zkOut','Bereich: −128 … 127.');return;}
+  var bits = zkBits(z), html;
+  if(z>=0){ html='<span class="mono">'+z+' ≥ 0 → direkt binär: <b>'+bits+'₂ₖ</b></span> (führendes Bit 0 ✓)'; }
+  else { var m=256+z;
+    html='<span class="mono">'+z+' &lt; 0 → 256 − '+(-z)+' = '+m+' → binär: <b>'+bits+'₂ₖ</b></span>'+
+    '<br><span class="mono">Gegenprobe (kippen+1): '+(-z)+' = '+(-z).toString(2).padStart(8,'0')+' → '+((~(-z))&255).toString(2).padStart(8,'0')+' + 1 = '+bits+' ✓</span>'; }
+  show('zkOut',html);
+}
+function zkAdd(){
+  var a=parseInt(el('zkA').value), b=parseInt(el('zkB').value);
+  if(isNaN(a)||isNaN(b)||a<-128||a>127||b<-128||b>127){show('zkAddOut','Beide Zahlen im Bereich −128 … 127.');return;}
+  var ba=zkBits(a), bb=zkBits(b);
+  var sum=(parseInt(ba,2)+parseInt(bb,2)), overflow=sum>255, bs=(sum&255).toString(2).padStart(8,'0');
+  var res = parseInt(bs,2); if(bs[0]==='1') res-=256;
+  var mathOk = (a+b>=-128 && a+b<=127);
+  show('zkAddOut',
+    '<pre class="mono" style="margin:0">  '+ba.split('').join(' ')+'   ('+(a>=0?'+':'')+a+')\n+ '+bb.split('').join(' ')+'   ('+(b>=0?'+':'')+b+')\n  ———————————————\n  '+bs.split('').join(' ')+'   (Ergebnis)</pre>'+
+    (overflow?'<span class="mono">Übertrag aus Bit 8 fällt weg (mod 256).</span><br>':'')+
+    '<span class="mono">Führendes Bit '+bs[0]+' → '+(bs[0]==='1'?('negativ: '+parseInt(bs,2)+' − 256 = '):'positiv: ')+'<b>'+res+'</b></span>'+
+    (mathOk?' ✓':' — <b>⚠️ Überlauf!</b> '+(a+b)+' liegt außerhalb von −128…127, das 8-Bit-Ergebnis ist verfälscht.'));
+}
+
+/* ===== 5 · IEEE-754 half ===== */
+function halfEncode(x){
+  if(x===0) return {v:0,e:'00000',m:'0000000000',hex:'0000',k:null,note:'Null'};
+  var v = x<0?1:0, a = Math.abs(x);
+  var k = Math.floor(Math.log2(a));
+  if(a/Math.pow(2,k)>=2)k++; if(a/Math.pow(2,k)<1)k--;
+  var note='';
+  if(k+15>=31) return {v:v,e:'11111',m:'0000000000',hex:(v?'F':'7')+'C00',k:k,note:'Betrag > 65504 → ±∞ (Overflow)'};
+  if(k+15<=0){ note='⚠️ subnormal (e=00000, keine implizite 1) — über Klausurniveau'; k=-14;
+    var mS=Math.round(a/Math.pow(2,-14)*1024); var bitsS=mS.toString(2).padStart(10,'0');
+    return {v:v,e:'00000',m:bitsS,hex:hx(v,'00000',bitsS),k:k,note:note};
+  }
+  var mant = a/Math.pow(2,k)-1;
+  var m1024 = mant*1024, mBits=Math.floor(m1024), rest=m1024-mBits, rounded=false;
+  if(rest>0.5 || (rest===0.5 && (mBits%2)===1)){ mBits++; rounded=true; }
+  else if(rest>0){ rounded=true; }
+  if(mBits===1024){ mBits=0; k++; if(k+15>=31)return {v:v,e:'11111',m:'0000000000',hex:(v?'F':'7')+'C00',k:k,note:'Overflow durch Rundung → ±∞'}; }
+  var e=(k+15).toString(2).padStart(5,'0'), m=mBits.toString(2).padStart(10,'0');
+  if(rounded) note='gerundet (round half to even)';
+  return {v:v,e:e,m:m,hex:hx(v,e,m),k:k,note:note,exactMantBits: exactBits(mant)};
+}
+function exactBits(mant){ // Anzahl Nachkommabits der exakten Mantisse (bis 30)
+  var f=mant,n=0;
+  for(var i=0;i<30 && f>1e-14;i++){ f*=2; f-=Math.floor(f+1e-14); n++; }
+  return f<=1e-14?n:Infinity;
+}
+function hx(v,e,m){
+  var bits=''+v+e+m, h='';
+  for(var i=0;i<16;i+=4)h+=parseInt(bits.substr(i,4),2).toString(16).toUpperCase();
+  return h;
+}
+function hEnc(){
+  var x=parseFloat(el('hIn').value.replace(',','.'));
+  if(isNaN(x)){show('hOut','Bitte Dezimalzahl eingeben.');el('hSteps').className='steps';return;}
+  var r=halfEncode(x);
+  show('hOut','<span class="bits"><span class="bv">'+r.v+'</span> <span class="be">'+r.e+'</span> <span class="bm">'+r.m+'</span></span> → <b class="mono">'+r.hex+'₁₆</b>'+(r.note?'<br><span class="mono">'+r.note+'</span>':''));
+  if(r.k===null||r.e==='11111'||r.e==='00000'){el('hSteps').className='steps';return;}
+  var d=decToBin(Math.abs(x));
+  var binStr=d.intBits+(d.fracBits?'.'+d.fracBits:'');
+  var exact = r.exactMantBits<=10 ? 'exakt darstellbar ('+r.exactMantBits+' Nachkommabits ≤ 10)' : 'NICHT exakt → gerundet (braucht '+ (isFinite(r.exactMantBits)?r.exactMantBits:'∞') +' Bits)';
+  var s='<b>Die 6 Schritte:</b><br>'+
+    '<span class="mono">1. Vorzeichen: '+(x<0?'negativ → v=1':'positiv → v=0')+'</span><br>'+
+    '<span class="mono">2. Betrag binär: '+Math.abs(x)+' = '+binStr+'₂'+(d.terminated?'':' … (endet nicht)')+'</span><br>'+
+    '<span class="mono">3. Normalisieren: 1.… · 2'+sup(r.k)+'</span><br>'+
+    '<span class="mono">4. Exponent: e = '+r.k+' + 15 = '+(r.k+15)+' = '+r.e+'₂</span><br>'+
+    '<span class="mono">5. Mantisse (10 Bits): '+r.m+' — '+exact+'</span><br>'+
+    '<span class="mono">6. Hex: '+r.v+'|'+r.e+'|'+r.m+' → 4er-Gruppen → '+r.hex+'₁₆</span>';
+  var e2=el('hSteps');e2.className='steps show';e2.innerHTML=s;
+}
+function hRandom(){
+  var pool=[-3.125, 14.5, -117.25, 6.5, -0.375, 27.75, -44.0625, 1.5, -260, 76.625, 0.15625, -12.25];
+  var x=pool[Math.floor(Math.random()*pool.length)];
+  el('hIn').value=x; el('hOut').className='out'; el('hSteps').className='steps';
+  show('hOut','Aufgabe: <b class="mono">'+x+'₁₀</b> ins half-Format (Bits + Hex). Erst auf Papier!');
+}
+function hDec(){
+  var h=el('dIn').value.trim().toUpperCase();
+  if(!/^[0-9A-F]{4}$/.test(h)){show('dOut','Bitte genau 4 Hexziffern.');return;}
+  var bits=parseInt(h,16).toString(2).padStart(16,'0');
+  var v=bits[0]==='1'?-1:1, e=parseInt(bits.substr(1,5),2), m=parseInt(bits.substr(6,10),2);
+  var html='<span class="mono">'+h+' = </span><span class="bits"><span class="bv">'+bits[0]+'</span> <span class="be">'+bits.substr(1,5)+'</span> <span class="bm">'+bits.substr(6,10)+'</span></span><br>';
+  if(e===31){ show('dOut',html+'<span class="mono">e=11111 → '+(m? 'NaN':'±∞')+'</span>'); return; }
+  var val, expl;
+  if(e===0){ val=v*(m/1024)*Math.pow(2,-14); expl='subnormal: ±(m/1024)·2⁻¹⁴'; }
+  else { val=v*(1+m/1024)*Math.pow(2,e-15); expl='k = '+e+'−15 = '+(e-15)+' → ±1.m · 2'+sup(e-15); }
+  show('dOut',html+'<span class="mono">'+expl+' = <b>'+val+'₁₀</b></span>');
+}
+
+/* ===== 8 · Quiz ===== */
+var Q=[
+ {q:"Aufbau des IEEE-754-half-Formats?",
+  o:["1 Vorzeichen + 5 Exponent + 10 Mantisse","1 + 8 + 23","1 + 4 + 11","5 + 1 + 10"],c:0,
+  fb:"half = 16 Bit: v(1) | e(5, Bias 15) | m(10)."},
+ {q:"Der Exponent k = 6 wird im half-Format gespeichert als …",
+  o:["00110 (6)","10101 (21)","10110 (22)","01111 (15)"],c:1,
+  fb:"e = k + Bias = 6 + 15 = 21 = 10101₂."},
+ {q:"−68 im 8-Bit-Zweierkomplement?",
+  o:["11000100","10111100","01000100","10111011"],c:1,
+  fb:"256 − 68 = 188 = 10111100₂ₖ. 11000100 wäre der Fehler ‚Vorzeichenbit + Betrag'."},
+ {q:"Zahlenbereich des 8-Bit-Zweierkomplements?",
+  o:["−127 … 127","−128 … 127","−128 … 128","0 … 255"],c:1,
+  fb:"−128 … +127 (die Null ist eindeutig, deshalb asymmetrisch)."},
+ {q:"1 Oktalziffer bzw. 1 Hexziffer entspricht wie vielen Bits?",
+  o:["3 bzw. 4","4 bzw. 3","2 bzw. 4","3 bzw. 6"],c:0,
+  fb:"8 = 2³ → 3 Bits; 16 = 2⁴ → 4 Bits. Gruppen immer vom Komma aus."},
+ {q:"Die Mantisse braucht 11 Nachkommabits, der Rest ist exakt ½ LSB. Wie wird gerundet?",
+  o:["immer auf","immer ab","zur nächsten geraden Mantisse","gar nicht"],c:2,
+  fb:"Round half to even — so auch die Musterlösung (AH 19/20)."},
+ {q:"Kann 0.1₁₀ exakt im half-Format dargestellt werden?",
+  o:["Ja, mit 4 Bits","Ja, mit 10 Bits","Nein — unendliche Binärdarstellung","Nein — zu klein"],c:2,
+  fb:"0.1 = 0.000110011…₂ (periodisch) → jede endliche Mantisse rundet."},
+ {q:"4B40₁₆ als half dekodiert ergibt …",
+  o:["11.5","14.5","29","7.25"],c:1,
+  fb:"e=18 → k=3; 1.1101₂·2³ = 14.5 (AH 18)."}
+];
+(function(){
+  var c=el('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div');
+    var p=document.createElement('p'); p.innerHTML='<b>'+(qi+1)+'.</b> '+item.q; w.appendChild(p);
+    item.o.forEach(function(opt,oi){
+      var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){
+        var fb=w.querySelector('.qfb');
+        Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(x){x.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}
+        else{b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+      };
+      w.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='qfb'; w.appendChild(fb);
+    c.appendChild(w);
+  });
+})();
+
+/* Startzustand */
+convCalc(); zkCalc(); zkAdd(); hEnc(); hDec();
+</script>
+</body>
+</html>

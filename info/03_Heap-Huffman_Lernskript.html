@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info Thema 3 – Heap, Heap-Sort &amp; Huffman</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.4rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}
+  nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:9px 13px;font-size:.9rem;cursor:pointer;margin:3px}
+  button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  input[type=text]{padding:8px 10px;border:1px solid var(--bd);border-radius:7px;font-size:.95rem;font-family:"JetBrains Mono",Consolas,monospace}
+  .calc-row{display:flex;gap:8px;margin:6px 0;align-items:center;flex-wrap:wrap}
+  .calc-row label{font-size:.85rem;color:#5a6675;min-width:150px}
+  mono,.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em;font-family:"JetBrains Mono",Consolas,monospace}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;margin:8px 0}
+  th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)}
+  td.mono,th.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  .badge{display:inline-block;background:#28508c;color:#fff;border-radius:6px;padding:2px 8px;font-size:.78rem;font-weight:700;margin-right:6px}
+  .badge.top{background:#b3261e}
+  .arr{display:inline-flex;margin:4px 0}
+  .cell{min-width:30px;height:30px;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;
+        font-family:"JetBrains Mono",Consolas,monospace;font-size:.95rem;background:#fff}
+  .cell.fix{background:#eef7ef;color:#3aa765;font-weight:700}
+  .cell.act{background:#fff6e6;border-color:#e0a640}
+  .snaprow{display:flex;align-items:center;gap:10px;margin:5px 0;flex-wrap:wrap}
+  .snaprow .tag{font-size:.82rem;color:#5a6675;min-width:230px}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  svg text{font-family:"JetBrains Mono",Consolas,monospace}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 3 — Heap, Heap-Sort &amp; Huffman</h1>
+  <p>Theoretische Informatik II · Prof. Ritterbusch · Klausur 31.07.2026, 09:00 · <b>Lernblock So 26.07</b></p>
+  <p><span class="badge top">TOP-Prio</span> 12 P (A3 Heap) + 10 P (A8 Huffman) in Prof-Altklausur 2024 · Arbeitsheft 65–66 &amp; 81–86 · Skript Kap. 2.4 / 3.2 / 5.2</p>
+</header>
+<nav>
+  <a href="#konzept">Heap-Konzept</a><a href="#heaprez">Heap-Rezepte</a><a href="#heaptrainer">Heap-Trainer</a>
+  <a href="#heapklausur">Klausur A3</a><a href="#huffkonzept">Huffman</a><a href="#hufftrainer">Huffman-Trainer</a>
+  <a href="#huffklausur">Klausur A8</a><a href="#anim">Animationen</a><a href="#drills">AH-Drills</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Max-Heap — Konzept</h2>
+  <p>Ein <b>Max-Heap</b> ist ein <b>vollständiger</b> Binärbaum (von links aufgefüllt), in dem jeder Knoten
+  <b>≥</b> seine Kinder ist → die Wurzel ist das Maximum. Gespeichert wird er als <b>Array</b> (0-basiert):</p>
+  <div class="box note mono">Kind links von i = 2i+1 · Kind rechts von i = 2i+2 · Elter von i = ⌊(i−1)/2⌋</div>
+  <p>Die <b>Breitensuche/Level-Order</b> eines Baums ist genau diese Array-Darstellung: Ebene für Ebene, links nach rechts.</p>
+</section>
+
+<section id="heaprez">
+  <h2>2 · Heap-Rezepte</h2>
+  <h3>R1 — siftDown (versickern)</h3>
+  <p>Element an Position $i$ mit dem <b>größeren</b> seiner Kinder tauschen, solange ein Kind größer ist. Wandert nach unten.</p>
+  <h3>R2 — Build-Max-Heap (Array → Heap)</h3>
+  <p>siftDown auf <b>alle inneren Knoten</b>, von <b>hinten</b> nach vorne: $i = \lfloor n/2\rfloor - 1$ herunter bis $0$.
+  Nach jedem inneren Knoten Zwischenzustand angeben (Array + Baum).</p>
+  <h3>R3 — Heap-Sort</h3>
+  <ol>
+    <li>Erst Build-Max-Heap.</li>
+    <li>Wurzel (Maximum) mit <b>letztem</b> Heap-Element tauschen → größtes steht hinten <b>fest</b>.</li>
+    <li>Heap-Größe um 1 verkleinern, siftDown auf die (neue) Wurzel.</li>
+    <li>Schritte 2–3 wiederholen, bis Heap-Größe 1. Ergebnis: aufsteigend sortiert, <b>in-place</b>.</li>
+  </ol>
+  <div class="box note"><b>Warum aufsteigend?</b> Der Max-Heap liefert immer das aktuelle Maximum, das ans Ende
+  wandert — so füllt sich das Array von hinten mit den größten Werten.</div>
+</section>
+
+<section id="heaptrainer">
+  <h2>3 · Heap-Trainer (Build &amp; Heap-Sort mit Zwischenzuständen)</h2>
+  <div class="calc-row"><label>Array (Komma-getrennt)</label>
+    <input type="text" id="hArr" value="1,4,3,5,9,8" size="24">
+    <button onclick="doBuild()">Build-Max-Heap</button>
+    <button onclick="doSort()">Heap-Sort</button></div>
+  <div class="calc-row">
+    <button class="sec" onclick="pset('1,4,3,5,9,8','build')">Klausur A3c (Build [1,4,3,5,9,8])</button>
+    <button class="sec" onclick="pset('9,5,8,1,4,3','sort')">Klausur A3d (Sort [9,5,8,1,4,3])</button>
+    <button class="sec" onclick="pset('2,1,4,6,5,3,7','build')">AH 65</button>
+    <button class="sec" onclick="pset('1,5,3,4,6,2,7','build')">AH 66</button>
+  </div>
+  <div id="hOut" style="margin-top:10px"></div>
+  <div id="hTree" style="margin-top:8px"></div>
+</section>
+
+<section id="heapklausur">
+  <h2>4 · Prof-Altklausur 2024, Aufgabe 3 (12 P) — komplett vorgerechnet</h2>
+  <p>Baum: Wurzel 1, Kinder 4 &amp; 3, darunter 5, 9 (unter 4) und 8 (unter 3).</p>
+
+  <details><summary>a) Max-Heap beschreiben (1 P)</summary><div class="det-body">
+    Vollständiger Binärbaum, in dem jeder Knoten ≥ seine Kinder ist (Wurzel = Maximum), als Array gespeichert
+    (Kinder von $i$: $2i{+}1$, $2i{+}2$).</div></details>
+
+  <details><summary>b) Breitensuche als Array (2 P)</summary><div class="det-body">
+    <div class="arr"><span class="cell">1</span><span class="cell">4</span><span class="cell">3</span><span class="cell">5</span><span class="cell">9</span><span class="cell">8</span></div>
+    <p class="mono">Level-Order: 1 | 4 3 | 5 9 8</p>
+  </div></details>
+
+  <details><summary>c) Max-Heap erzeugen — alle Zwischenzustände (4 P)</summary><div class="det-body">
+    <p>Build-Max-Heap auf <span class="mono">[1,4,3,5,9,8]</span>, siftDown von Index 2 → 1 → 0:</p>
+    <p class="mono">Index 2 (3): Kind 8 &gt; 3 → tausch → [1,4,<b>8</b>,5,9,<b>3</b>]</p>
+    <p class="mono">Index 1 (4): Kinder 5,9 → 9 &gt; 4 → tausch → [1,<b>9</b>,8,5,<b>4</b>,3]</p>
+    <p class="mono">Index 0 (1): Kinder 9,8 → 9 → tausch → [9,1,8,5,4,3]; weiter bei Index 1: Kinder 5,4 → 5 → tausch → [9,<b>5</b>,8,<b>1</b>,4,3]</p>
+    <div class="box ok mono">Max-Heap: [9,5,8,1,4,3] — programmatisch verifiziert. (Zufällig genau das Start-Array von d.)</div>
+  </div></details>
+
+  <details><summary>d) Heap-Sort von A = [9,5,8,1,4,3] — alle Zwischenzustände (5 P)</summary><div class="det-body">
+    <p><span class="mono">[9,5,8,1,4,3]</span> ist bereits Max-Heap. Wiederholt: Wurzel ↔ letztes Element, dann siftDown.</p>
+    <table><tr><th>Aktion</th><th class="mono">Array</th></tr>
+      <tr><td>Start-Heap</td><td class="mono">9 5 8 1 4 3</td></tr>
+      <tr><td>tausche 9↔3 (9 fix)</td><td class="mono">3 5 8 1 4 <b>9</b></td></tr>
+      <tr><td>siftDown [0..4]</td><td class="mono">8 5 3 1 4 <b>9</b></td></tr>
+      <tr><td>tausche 8↔4 (8 fix)</td><td class="mono">4 5 3 1 <b>8 9</b></td></tr>
+      <tr><td>siftDown [0..3]</td><td class="mono">5 4 3 1 <b>8 9</b></td></tr>
+      <tr><td>tausche 5↔1 (5 fix)</td><td class="mono">1 4 3 <b>5 8 9</b></td></tr>
+      <tr><td>siftDown [0..2]</td><td class="mono">4 1 3 <b>5 8 9</b></td></tr>
+      <tr><td>tausche 4↔3 (4 fix)</td><td class="mono">3 1 <b>4 5 8 9</b></td></tr>
+      <tr><td>tausche 3↔1 (3 fix)</td><td class="mono">1 <b>3 4 5 8 9</b></td></tr>
+    </table>
+    <div class="box ok mono">Sortiert: [1,3,4,5,8,9] — programmatisch verifiziert.</div>
+  </div></details>
+</section>
+
+<section id="huffkonzept">
+  <h2>5 · Huffman &amp; Kompression — Konzept</h2>
+  <p><b>Huffman</b> erzeugt einen <b>präfixfreien</b> Code minimaler mittlerer Länge: häufige Zeichen → kurze Codes.</p>
+  <ol>
+    <li>Alle Zeichen als Blätter mit ihrer Häufigkeit.</li>
+    <li>Wiederholt die <b>zwei kleinsten</b> Häufigkeiten zu einem neuen Knoten (Summe) verschmelzen.</li>
+    <li>Bis ein Wurzelknoten bleibt. Kanten mit <b>0</b> (links) / <b>1</b> (rechts) beschriften → Code = Pfad Wurzel→Blatt.</li>
+  </ol>
+  <div class="box note"><b>Kenngrößen.</b> Entropie $H(Q) = -\sum p_i \log_2 p_i$ (untere Schranke, Bit/Zeichen).
+  Mittlere Codelänge $L = \sum p_i \ell_i$. <b>Redundanz</b> $= L - H$. Bei Speicherung in festen 8 Bit:
+  Redundanz $= 8 - H$ pro Zeichen.</div>
+  <div class="box warn"><b>Codes sind nicht eindeutig</b> (0/1-Vertauschung, Gleichstände) — aber die <b>Codelängen</b>
+  je Zeichen und damit die Gesamtlänge sind eindeutig. In der Klausur einen konsistenten Baum zeichnen und die Codetabelle dazu.</div>
+</section>
+
+<section id="hufftrainer">
+  <h2>6 · Huffman-Trainer</h2>
+  <div class="calc-row"><label>Zeichen:Häufigkeit</label>
+    <input type="text" id="hf" value="A:9,B:16,E:39,G:4,L:28,R:12" size="34"></div>
+  <div class="calc-row"><label>Wort kodieren</label>
+    <input type="text" id="hw" value="ALGEBRA" size="16">
+    <button onclick="doHuff()">Huffman bauen</button>
+    <button class="sec" onclick="document.getElementById('hf').value='A:9,B:16,E:39,G:4,L:28,R:12';document.getElementById('hw').value='ALGEBRA';doHuff()">Klausur A8</button></div>
+  <div id="huffOut" style="margin-top:10px"></div>
+</section>
+
+<section id="huffklausur">
+  <h2>7 · Prof-Altklausur 2024, Aufgabe 8 (10 P) — komplett vorgerechnet</h2>
+  <p>Quelle: <span class="mono">A:9, B:16, E:39, G:4, L:28, R:12</span> (Summe 108).</p>
+
+  <details><summary>a) Huffman-Codebaum (7 P)</summary><div class="det-body">
+    <p>Verschmelzungen (jeweils zwei kleinste):</p>
+    <ol class="mono">
+      <li>G(4)+A(9) = 13</li>
+      <li>13+R(12) = 25</li>
+      <li>25+B(16) = 41</li>
+      <li>L(28)+E(39) = 67</li>
+      <li>41+67 = 108 (Wurzel)</li>
+    </ol>
+    <p>Eine gültige Codetabelle (links=0, rechts=1):</p>
+    <table><tr><th>Zeichen</th><th class="mono">Häuf.</th><th class="mono">Code</th><th class="mono">Länge</th></tr>
+      <tr><td>E</td><td class="mono">39</td><td class="mono">11</td><td class="mono">2</td></tr>
+      <tr><td>L</td><td class="mono">28</td><td class="mono">10</td><td class="mono">2</td></tr>
+      <tr><td>B</td><td class="mono">16</td><td class="mono">00</td><td class="mono">2</td></tr>
+      <tr><td>R</td><td class="mono">12</td><td class="mono">010</td><td class="mono">3</td></tr>
+      <tr><td>A</td><td class="mono">9</td><td class="mono">0111</td><td class="mono">4</td></tr>
+      <tr><td>G</td><td class="mono">4</td><td class="mono">0110</td><td class="mono">4</td></tr>
+    </table>
+    <div class="box ok mono">Gewichtete Gesamtlänge = 39·2+28·2+16·2+12·3+9·4+4·4 = 254 Bit (optimal, verifiziert).
+    Codelängen eindeutig; konkrete 0/1-Codes je nach Zeichnung.</div>
+  </div></details>
+
+  <details><summary>b) ALGEBRA kodieren + Länge (3 P)</summary><div class="det-body">
+    <p class="mono">A·L·G·E·B·R·A → 0111 · 10 · 0110 · 11 · 00 · 010 · 0111</p>
+    <p>Längen: 4+2+4+2+2+3+4 = <b>21 Bit</b>.</p>
+    <div class="box ok mono">21 Bit — verifiziert (Codelängen sind baum-unabhängig eindeutig).</div>
+    <p class="mono" style="color:#5a6675">Zum Vergleich: 7 Zeichen · 8 Bit (ASCII) = 56 Bit; Entropie der Quelle H ≈ 2,27 Bit/Zeichen.</p>
+  </div></details>
+</section>
+
+<section id="anim">
+  <h2>8 · Animationen zum Thema</h2>
+  <p>Interaktive Anschauung (eigene Single-File-HTMLs im Ordner <span class="mono">Info/Animations/</span>). Öffnen im Browser.</p>
+  <ul>
+    <li><a href="../../Animations/Huffman-Animation.html"><b>Huffman-Animation</b></a> — Codebaum-Aufbau Schritt für Schritt (Kernthema A8).</li>
+    <li><a href="../../Animations/LZW-Animation%20(standalone).html">LZW-Animation</a> <span class="badge">Restrisiko-Pool</span> — Wörterbuch-Kompression (Kap. 5, AH 87–88).</li>
+    <li><a href="../../Animations/BWT%20Animation%20standalone.html">BWT-Animation</a> <span class="badge">Restrisiko-Pool</span> — Burrows-Wheeler-Transformation (Kap. 5, AH 89).</li>
+  </ul>
+  <div class="box note">Huffman = prüfungsrelevant (10 P in A8). LZW/BWT kamen 2024 nicht dran → nur am Mock-Tag 30.07 überfliegen.</div>
+</section>
+
+<section id="drills">
+  <h2>9 · Arbeitsheft-Drills (verifiziert)</h2>
+  <details><summary>AH 65 — [2,1,4,6,5,3,7] als Binärbaum + Max-Heap</summary><div class="det-body">
+    <p class="mono">Max-Heap-Array: [7,6,4,1,5,3,2]</p>
+    <p>Weg: Build-Max-Heap (siftDown ab Index 2). Im Trainer „AH 65" nachstellen.</p>
+  </div></details>
+  <details><summary>AH 66 — [1,5,3,4,6,2,7] als Binärbaum + Max-Heap</summary><div class="det-body">
+    <p class="mono">Max-Heap-Array: [7,6,3,4,5,2,1]</p>
+  </div></details>
+  <details><summary>AH 81–86 — Huffman/Entropie/Redundanz <span class="badge">⚠️ ohne Musterlösung</span></summary><div class="det-body">
+    <p>Alphabet $(a,b,k,l,m)$ mit gegebenen Häufigkeiten: Huffman-Codebaum, Entropie $H$, Redundanz bestimmen.
+    <b>Für Kap. 5 fehlen die Arbeitsheft-Lösungen</b> → im Huffman-Trainer selbst rechnen; Codelänge/Entropie werden dort ausgegeben und sind so kontrollierbar.</p>
+  </div></details>
+</section>
+
+<section id="quiz">
+  <h2>10 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>11 · Stolpersteine</h2>
+  <ol>
+    <li><b>Build-Max-Heap von hinten</b> (Index $\lfloor n/2\rfloor{-}1$ herunter bis 0), nicht von vorne.</li>
+    <li><b>siftDown tauscht mit dem GRÖSSEREN Kind</b> — sonst bricht die Heap-Eigenschaft.</li>
+    <li><b>Heap-Sort:</b> nach jedem Tausch Heap-Größe verkleinern; das fixierte Ende gehört nicht mehr zum Heap.</li>
+    <li><b>Array-Indizes 0-basiert</b> ($2i{+}1$, $2i{+}2$) — Prof nutzt 0-Basis. Konsistent bleiben.</li>
+    <li><b>Huffman: immer die zwei kleinsten</b> verschmelzen (auch die neuen Summenknoten mitzählen).</li>
+    <li><b>Präfixfrei:</b> kein Code ist Anfang eines anderen — automatisch, weil Zeichen nur an Blättern sitzen.</li>
+    <li><b>Alle Zwischenzustände angeben</b> (Heap-Aufbau + jeder Heap-Sort-Schritt) — dafür gibt es die Punkte.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Info Thema 3 · Session 3 des Master-Chats (2026-07-07) · Quellen: Prof-Altklausur 2024 A3 + A8
+  (Figuren aus PDF), Arbeitsheft 65–66 (+ Lösungen 61–70) &amp; 81–86 (Kap. 5, ohne Lösung), Skript Kap. 2.4/3.2/5.2.
+  Heap-Build, Heap-Sort-Zwischenzustände, Huffman-Codelängen &amp; ALGEBRA (21 Bit) programmatisch verifiziert (Python).
+</footer>
+<script>
+function el(id){return document.getElementById(id);}
+/* ===== Heap ===== */
+function siftDown(a,i,n){ for(;;){var l=2*i+1,r=2*i+2,big=i;
+  if(l<n&&a[l]>a[big])big=l; if(r<n&&a[r]>a[big])big=r; if(big===i)break;
+  var t=a[i];a[i]=a[big];a[big]=t; i=big; } }
+function parseArr(s){return s.split(/[ ,]+/).filter(function(x){return x!=='';}).map(Number);}
+function arrHtml(a,fixFrom,active){ var s='<div class="arr">';
+  for(var i=0;i<a.length;i++){ var c='cell'; if(fixFrom!=null&&i>=fixFrom)c+=' fix'; s+='<span class="'+c+'">'+a[i]+'</span>'; }
+  return s+'</div>'; }
+function doBuild(){
+  var a=parseArr(el('hArr').value), n=a.length;
+  var out='<h3>Build-Max-Heap</h3><div class="snaprow"><span class="tag">Start</span>'+arrHtml(a)+'</div>';
+  for(var i=(n>>1)-1;i>=0;i--){ siftDown(a,i,n); out+='<div class="snaprow"><span class="tag">siftDown Index '+i+'</span>'+arrHtml(a)+'</div>'; }
+  out+='<div class="box ok mono">Max-Heap: ['+a.join(',')+']</div>';
+  el('hOut').innerHTML=out; el('hTree').innerHTML='<h3>Heap als Baum</h3>'+svgHeap(a,a.length);
+}
+function doSort(){
+  var a=parseArr(el('hArr').value), n=a.length;
+  for(var i=(n>>1)-1;i>=0;i--)siftDown(a,i,n); // sicherstellen: Heap
+  var out='<h3>Heap-Sort</h3><div class="snaprow"><span class="tag">Start-Heap</span>'+arrHtml(a,n)+'</div>';
+  for(var end=n-1;end>0;end--){
+    var t=a[0];a[0]=a[end];a[end]=t;
+    out+='<div class="snaprow"><span class="tag">tausche Wurzel↔Index'+end+' ('+a[end]+' fix)</span>'+arrHtml(a,end)+'</div>';
+    siftDown(a,0,end);
+    out+='<div class="snaprow"><span class="tag">siftDown [0..'+(end-1)+']</span>'+arrHtml(a,end)+'</div>';
+  }
+  out+='<div class="box ok mono">Sortiert: ['+a.join(',')+']</div>';
+  el('hOut').innerHTML=out; el('hTree').innerHTML='';
+}
+function svgHeap(a,n){
+  if(!a.length)return '';
+  var levels=Math.floor(Math.log2(n))+1, dy=54, pad=18, W=Math.max(320,Math.pow(2,levels-1)*54), H=levels*dy+pad*2;
+  function pos(i){var lv=Math.floor(Math.log2(i+1)),first=Math.pow(2,lv)-1,cnt=Math.pow(2,lv),p=i-first;
+    return {x:pad+ (p+0.5)/cnt*(W-2*pad), y:pad+lv*dy+dy/2};}
+  var s='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">';
+  for(var i=0;i<n;i++){ var l=2*i+1,r=2*i+2,P=pos(i);
+    if(l<n){var Q=pos(l);s+='<line x1="'+P.x+'" y1="'+P.y+'" x2="'+Q.x+'" y2="'+Q.y+'" stroke="#9fb0c6" stroke-width="1.5"/>';}
+    if(r<n){var R=pos(r);s+='<line x1="'+P.x+'" y1="'+P.y+'" x2="'+R.x+'" y2="'+R.y+'" stroke="#9fb0c6" stroke-width="1.5"/>';}
+  }
+  for(var j=0;j<n;j++){ var p=pos(j);
+    s+='<circle cx="'+p.x+'" cy="'+p.y+'" r="15" fill="#eef3fb" stroke="#28508c" stroke-width="2"/>';
+    s+='<text x="'+p.x+'" y="'+(p.y+4)+'" text-anchor="middle" font-size="13">'+a[j]+'</text>';
+  }
+  return s+'</svg>';
+}
+function pset(v,mode){ el('hArr').value=v; if(mode==='sort')doSort(); else doBuild(); }
+
+/* ===== Huffman ===== */
+function doHuff(){
+  var pairs=el('hf').value.split(/[ ,]+/).filter(function(x){return x!=='';}).map(function(p){var kv=p.split(':');return {s:kv[0],f:parseInt(kv[1],10)};});
+  if(pairs.some(function(p){return isNaN(p.f);})){el('huffOut').innerHTML='<div class="box warn">Format: A:9,B:16,…</div>';return;}
+  var nodes=pairs.map(function(p){return {s:p.s,f:p.f,l:null,r:null};}), steps=[];
+  var arr=nodes.slice();
+  while(arr.length>1){
+    arr.sort(function(a,b){return a.f-b.f || (a.s||'~').localeCompare(b.s||'~');});
+    var x=arr.shift(),y=arr.shift(), p={s:null,f:x.f+y.f,l:x,r:y};
+    steps.push(x.f+'+'+y.f+' = '+p.f); arr.push(p);
+  }
+  var root=arr[0],codes={};
+  (function walk(n,pre){ if(n.s!==null){codes[n.s]=pre||'0';return;} walk(n.l,pre+'0'); walk(n.r,pre+'1'); })(root,'');
+  var tot=pairs.reduce(function(a,p){return a+p.f*codes[p.s].length;},0);
+  var N=pairs.reduce(function(a,p){return a+p.f;},0);
+  var H=-pairs.reduce(function(a,p){var pr=p.f/N;return a+pr*Math.log2(pr);},0);
+  var rows=pairs.slice().sort(function(a,b){return b.f-a.f;}).map(function(p){return '<tr><td>'+p.s+'</td><td class="mono">'+p.f+'</td><td class="mono">'+codes[p.s]+'</td><td class="mono">'+codes[p.s].length+'</td></tr>';}).join('');
+  var w=el('hw').value.toUpperCase().replace(/[^A-Z]/g,''), bits='', len=0, ok=true;
+  for(var i=0;i<w.length;i++){ if(codes[w[i]]==null){ok=false;break;} bits+=codes[w[i]]+' '; len+=codes[w[i]].length; }
+  var out='<div class="box note mono">Verschmelzungen: '+steps.join(' · ')+'</div>'+
+    '<table><tr><th>Zeichen</th><th>Häuf.</th><th>Code</th><th>Länge</th></tr>'+rows+'</table>'+
+    '<div class="mono">Gewichtete Gesamtlänge L·N = '+tot+' Bit · Entropie H = '+H.toFixed(4)+' Bit/Zeichen · mittlere Länge L = '+(tot/N).toFixed(4)+'</div>';
+  if(w){ out+= ok ? '<div class="box ok mono">'+w+' → '+bits+' = <b>'+len+' Bit</b></div>'
+                  : '<div class="box warn mono">Wort enthält Zeichen ohne Code.</div>'; }
+  el('huffOut').innerHTML=out;
+}
+
+/* ===== Quiz ===== */
+var Q=[
+ {q:"Kinder von Index i im 0-basierten Heap-Array?",o:["2i, 2i+1","2i+1, 2i+2","i/2","2i−1, 2i"],c:1,fb:"links 2i+1, rechts 2i+2; Elter ⌊(i−1)/2⌋."},
+ {q:"Build-Max-Heap: in welcher Reihenfolge siftDown?",o:["Index 0 aufwärts","von ⌊n/2⌋−1 rückwärts bis 0","alle Blätter zuerst","zufällig"],c:1,fb:"Von hinten (letzter innerer Knoten) nach vorne."},
+ {q:"Heap-Sort auf [9,5,8,1,4,3]: erster Schritt?",o:["9 mit 3 tauschen, 9 fixieren","3 nach vorne","Array umdrehen","5 hochziehen"],c:0,fb:"Wurzel (Max 9) ↔ letztes Element (3); 9 steht fest, dann siftDown."},
+ {q:"Warum ist Huffman präfixfrei?",o:["Zufall","Zeichen sitzen nur an Blättern","alle Codes gleich lang","durch Sortieren"],c:1,fb:"Blätter → kein Code ist Präfix eines anderen."},
+ {q:"ALGEBRA mit dem Klausur-Code (A:9…) ist wie lang?",o:["18 Bit","21 Bit","24 Bit","56 Bit"],c:1,fb:"4+2+4+2+2+3+4 = 21 Bit."},
+ {q:"Was ist die Redundanz bei Speicherung in 8 Bit?",o:["8 − H","H − L","L","8 · H"],c:0,fb:"Redundanz pro Zeichen = feste Länge (8) − Entropie H."},
+ {q:"Der Max-Heap von [1,4,3,5,9,8] lautet …",o:["[9,5,8,1,4,3]","[9,8,5,4,3,1]","[1,3,4,5,8,9]","[9,4,8,5,1,3]"],c:0,fb:"Build-Max-Heap ergibt [9,5,8,1,4,3] (verifiziert)."}
+];
+(function(){
+  var c=el('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div');
+    var p=document.createElement('p');p.innerHTML='<b>'+(qi+1)+'.</b> '+item.q;w.appendChild(p);
+    item.o.forEach(function(opt,oi){
+      var b=document.createElement('button');b.className='qa';b.innerHTML=opt;
+      b.onclick=function(){
+        var fb=w.querySelector('.qfb');
+        Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(x){x.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}
+        else{b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+      };
+      w.appendChild(b);
+    });
+    var fb=document.createElement('div');fb.className='qfb';w.appendChild(fb);
+    c.appendChild(w);
+  });
+})();
+
+/* Startzustand */
+doBuild(); doHuff();
+</script>
+</body>
+</html>

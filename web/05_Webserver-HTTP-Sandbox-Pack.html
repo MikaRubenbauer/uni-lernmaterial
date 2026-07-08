@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webserver · HTTP · Sandbox — WE-Klausur Gen A (Aufgabe 4 + 3a)</title>
+<style>
+  :root{--bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;--acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1050px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}h2{font-size:19px;margin:34px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:15px;margin:16px 0 6px;color:var(--acc)}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--warn);margin-right:6px}
+  .tag.prod{color:var(--ok)}.tag.mc{color:var(--acc)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  .qa{margin:10px 0}.qa .q{font-weight:700;color:var(--ink)}.qa .a{color:var(--muted);margin-top:3px}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .codebox{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px;overflow:auto;font-size:13px;line-height:1.7}
+  .kw{color:#ff7b72}.fn{color:#d2a8ff}.st{color:#a5d6ff}.num{color:#79c0ff}.com{color:#8b949e}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted)}table.t td:first-child{font-family:monospace;white-space:nowrap}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:780px){.two{grid-template-columns:1fr}}
+  .sc{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+  .sc button{border:0;border-radius:7px;padding:8px 13px;font-weight:700;cursor:pointer;color:#06121f}
+  .sc .b1{background:#8b949e}.sc .b2{background:#3fb950}.sc .b3{background:#4ea1ff}.sc .b4{background:#d29922}.sc .b5{background:#f85149}
+  .scout{background:var(--panel2);border-radius:8px;padding:12px;min-height:60px;font-size:14px}
+  .proc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+  .proc .box{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:13px}
+  .proc .box h4{margin:0 0 6px;color:var(--acc);font-size:14px}
+  .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;font-weight:700;background:#1f6feb33;color:#79c0ff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Webserver · HTTP · Sandbox</h1>
+  <p class="sub">WE-Klausur Generation A · <b>Aufgabe 4</b> (Webserver) + <b>Aufgabe 3a</b> (Sandbox) + http/npm-Grundlagen. Webserver-Fragen kommen jedes Jahr fast wörtlich.</p>
+
+  <!-- S1 webserver tasks -->
+  <h2><span class="tag">Nennen</span> 4a — Zwei Aufgaben eines Webservers</h2>
+  <div class="panel">
+    <div class="qa"><div class="q">1. HTTP-Requests entgegennehmen und beantworten</div><div class="a">Auf TCP-Verbindung lauschen, HTTP-Anfragen parsen, passende HTTP-Response zurücksenden.</div></div>
+    <div class="qa"><div class="q">2. Ressourcen ausliefern</div><div class="a">Statische Dateien (HTML, Bilder, CSS) direkt liefern ODER an Programmcode delegieren (dynamische Generierung).</div></div>
+    <p class="sub">Weitere mögliche Antworten: Zugriffe protokollieren (Logfiles), Authentifizierung/Zugriffsschutz, Virtuelle Hosts verwalten.</p>
+  </div>
+
+  <!-- process models -->
+  <h2><span class="tag def">Nennen + Beschreiben</span> 4b — Prozessmodelle</h2>
+  <p class="sub">Frage variiert: „im selben Prozess" vs. „getrennte Prozesse" vs. „in welchem Modell wird CGI verwendet".</p>
+  <div class="proc">
+    <div class="box">
+      <h4>Selber Prozess (In-Process / Modul)</h4>
+      Webserver-Aufgabe und Programmcode laufen im <b>gleichen Prozess</b> (z.B. Server-Modul, eingebetteter Interpreter, oder NodeJS selbst).<br><br>
+      <span class="pill">+ schnell</span> kein Prozess-Start pro Request.<br>
+      <span class="pill" style="background:#f8514933;color:#f85149">– Risiko</span> Crash im Code kann den Server mitreißen; weniger Isolation.
+    </div>
+    <div class="box">
+      <h4>Getrennte Prozesse (CGI)</h4>
+      Pro Request startet der Server einen <b>eigenen, neuen Prozess</b> (Common Gateway Interface), der HTML erzeugt und zurückgibt.<br><br>
+      <span class="pill">+ Isolation</span> Crash betrifft nur den einen Prozess; jede Sprache nutzbar.<br>
+      <span class="pill" style="background:#f8514933;color:#f85149">– langsam</span> Prozesserzeugung pro Anfrage kostet Performance.
+    </div>
+  </div>
+  <div class="falle"><b>Direkt-Antworten:</b> „getrennte Prozesse" → <b>CGI</b> (neuer Prozess pro Request). „selber Prozess" → <b>Modul/In-Process</b> (z.B. Server-Modul, NodeJS-Eventloop).</div>
+
+  <!-- HTTP status codes -->
+  <h2><span class="tag mc">Benennen</span> 4 (2024/Probe) — HTTP-Status-Nummernkreise</h2>
+  <p class="sub">Klick einen Nummernkreis:</p>
+  <div class="sc">
+    <button class="b1" data-k="1">1xx</button>
+    <button class="b2" data-k="2">2xx</button>
+    <button class="b3" data-k="3">3xx</button>
+    <button class="b4" data-k="4">4xx</button>
+    <button class="b5" data-k="5">5xx</button>
+  </div>
+  <div class="scout" id="scout">Wähle einen Nummernkreis für Einsatzzweck + Beispiele.</div>
+  <details>
+    <summary>✅ Tabelle aller Nummernkreise</summary>
+    <table class="t">
+      <tr><th>Kreis</th><th>Bedeutung</th><th>Beispiele</th></tr>
+      <tr><td>1xx</td><td>Informativ (Zwischenstatus)</td><td>100 Continue</td></tr>
+      <tr><td>2xx</td><td>Erfolg</td><td>200 OK, 201 Created, 204 No Content</td></tr>
+      <tr><td>3xx</td><td>Umleitung</td><td>301 Moved Permanently, 302 Found, 304 Not Modified</td></tr>
+      <tr><td>4xx</td><td>Client-Fehler</td><td>400 Bad Request, 403 Forbidden, 404 Not Found</td></tr>
+      <tr><td>5xx</td><td>Server-Fehler</td><td>500 Internal Server Error, 503 Service Unavailable</td></tr>
+    </table>
+  </details>
+  <div class="falle"><b>Klausur „zwei Nummernkreise beschreiben":</b> sichere Wahl 2xx (Erfolg) + 4xx (Client-Fehler), je 1 Beispiel.</div>
+
+  <h3>HTTP-Methoden (Kurzreferenz)</h3>
+  <table class="t">
+    <tr><td>GET</td><td>Ressource anfordern (Parameter in URL)</td></tr>
+    <tr><td>POST</td><td>Daten an Server senden (im Body), z.B. Formular</td></tr>
+    <tr><td>PUT / DELETE</td><td>Ressource anlegen-ersetzen / löschen</td></tr>
+    <tr><td>HEAD</td><td>wie GET, aber nur Header (kein Body)</td></tr>
+  </table>
+
+  <!-- N1 http server -->
+  <h2><span class="tag prod">Erstellen</span> N1 — Minimaler NodeJS-Server (http-Modul) + npm</h2>
+  <div class="codebox"><pre><span class="kw">const</span> http = <span class="fn">require</span>(<span class="st">"http"</span>);                  <span class="com">// eingebautes Modul</span>
+<span class="kw">const</span> server = http.<span class="fn">createServer</span>((req, res) <span class="kw">=&gt;</span> {
+  res.<span class="fn">writeHead</span>(<span class="num">200</span>, {<span class="st">"Content-Type"</span>: <span class="st">"text/html"</span>});
+  res.<span class="fn">end</span>(<span class="st">"Hello World"</span>);
+});
+server.<span class="fn">listen</span>(<span class="num">3000</span>);                          <span class="com">// lauscht auf Port 3000</span></pre></div>
+  <p class="sub">Verifiziert: liefert <code>200 | Hello World</code>. <b>npm</b> = Node Package Manager: <code>npm init</code> (package.json), <code>npm install express</code> (Abhängigkeit installieren), Skripte via <code>npm run</code>.</p>
+  <details><summary>Dasselbe mit Express (kürzer)</summary>
+    <div class="codebox"><pre><span class="kw">const</span> express = <span class="fn">require</span>(<span class="st">"express"</span>);
+<span class="kw">const</span> app = <span class="fn">express</span>();
+app.<span class="fn">get</span>(<span class="st">"/"</span>, (req, res) <span class="kw">=&gt;</span> res.<span class="fn">send</span>(<span class="st">"Hello World"</span>));
+app.<span class="fn">listen</span>(<span class="num">3000</span>);</pre></div>
+  </details>
+
+  <!-- SANDBOX -->
+  <h2><span class="tag def">Nennen / Beschreiben</span> 3a — JavaScript-Sandbox</h2>
+  <div class="two">
+    <div class="panel">
+      <h3>Was die Sandbox verhindert (Beispiele)</h3>
+      <ul>
+        <li>Kein direkter <b>Dateisystem-Zugriff</b> (lokale Dateien lesen/schreiben).</li>
+        <li>Kein Zugriff auf <b>andere Origins</b> (Same-Origin-Policy) — fremde Domains/Tabs.</li>
+        <li>Keine <b>Betriebssystem-/Hardware</b>-Befehle.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Schutzfunktion (Beschreibung)</h3>
+      <p>JavaScript läuft isoliert im Browser-Kontext einer Seite. Es darf nur mit dem DOM dieser Seite und erlaubten Web-APIs interagieren, aber nicht auf das System des Nutzers oder Daten anderer Websites zugreifen → schützt vor schädlichem Code.</p>
+    </div>
+  </div>
+  <div class="falle"><b>Konkretes Beispiel für die Klausur:</b> „Eine Webseite kann per JS NICHT die Datei <code>C:\\passwoerter.txt</code> vom Rechner lesen" oder „kann nicht die Cookies/Daten einer fremden Domain auslesen (Same-Origin-Policy)".</div>
+
+  <!-- DRILL -->
+  <h2>Drill</h2>
+  <details><summary>[Nennen] Zwei Aufgaben eines Webservers?</summary><p>1) HTTP-Requests entgegennehmen/beantworten. 2) Ressourcen ausliefern (statisch direkt / dynamisch an Code delegieren).</p></details>
+  <details><summary>[MC] In welchem Prozessmodell wird CGI verwendet?</summary><p>Getrennte Prozesse — pro Request ein neuer Prozess.</p></details>
+  <details><summary>[Benennen] Nummernkreis für „Seite nicht gefunden"?</summary><p>4xx (Client-Fehler), konkret 404 Not Found.</p></details>
+  <details><summary>[Nennen] Ein Zugriff, den die Sandbox verhindert?</summary><p>z.B. lokale Datei vom Dateisystem lesen, oder Daten einer fremden Domain (Same-Origin-Policy).</p></details>
+
+  <p class="sub" style="margin-top:30px">Server-Code gegen Node verifiziert. WE-Klausur-Lernpaket · Säule 4 (Webserver/HTTP) + Säule 6 (Sandbox) · <code>Materialien/Webserver/</code></p>
+</div>
+<script>
+const codes={
+  '1':{t:'1xx — Informativ',d:'Zwischenstatus, der Request läuft weiter.',e:'100 Continue'},
+  '2':{t:'2xx — Erfolg',d:'Anfrage erfolgreich verarbeitet.',e:'200 OK · 201 Created · 204 No Content'},
+  '3':{t:'3xx — Umleitung',d:'Weitere Aktion nötig (Redirect / Cache).',e:'301 Moved Permanently · 302 Found · 304 Not Modified'},
+  '4':{t:'4xx — Client-Fehler',d:'Fehler liegt beim Client (falsche Anfrage).',e:'400 Bad Request · 403 Forbidden · 404 Not Found'},
+  '5':{t:'5xx — Server-Fehler',d:'Server kann gültige Anfrage nicht bearbeiten.',e:'500 Internal Server Error · 503 Service Unavailable'}
+};
+document.querySelectorAll('.sc button').forEach(b=>b.onclick=()=>{
+  const c=codes[b.dataset.k];
+  document.getElementById('scout').innerHTML='<b>'+c.t+'</b><br>'+c.d+'<br><span style="color:var(--ok);font-family:monospace">'+c.e+'</span>';
+});
+</script>
+</body>
+</html>

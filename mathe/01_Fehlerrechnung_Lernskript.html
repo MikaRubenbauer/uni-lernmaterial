@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thema 1 – Mehrdim. Ableitungen &amp; Fehlerrechnung</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:26px 20px;}
+  header h1{margin:0 0 4px;font-size:1.5rem}
+  header p{margin:2px 0;opacity:.92;font-size:.92rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}
+  nav a:hover{background:var(--note)}
+  main{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;
+          box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.22rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em}
+  li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  details>summary:hover{background:#e7edf6}
+  .det-body{padding:6px 16px 14px}
+  .aufg{font-weight:600;color:#2a3645}
+  .calc-row{display:flex;gap:8px;margin:6px 0;align-items:center;flex-wrap:wrap}
+  .calc-row input{width:120px;padding:7px 9px;border:1px solid var(--bd);border-radius:7px;font-size:.95rem}
+  .calc-row label{font-size:.8rem;color:#5a6675;min-width:88px}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:9px 14px;font-size:.92rem;cursor:pointer}
+  button:hover{background:var(--akz2)}
+  button.sec{background:#eef1f6;color:var(--akz2)}
+  .out{margin-top:12px;padding:12px 14px;background:var(--ok);border-radius:9px;font-size:1rem;display:none}
+  .out.show{display:block}
+  .out b{color:var(--akz2)}
+  .quiz q{display:block}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);
+      border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)}
+  .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600}
+  .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;margin:8px 0}
+  th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left}
+  th{background:var(--note)}
+  footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 1 — Mehrdimensionale Ableitungen &amp; Fehlerrechnung</h1>
+  <p>Analysis · Prof. Reischl · Klausur 23.07.2026 · deckt Blatt 4 + 6</p>
+  <p>Interaktives Lernskript — Lösungen aufklappen, Rechner nutzen, Quiz am Ende.</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a>
+  <a href="#rezept">Rezept</a>
+  <a href="#rechner">Fehler-Rechner</a>
+  <a href="#beispiele">Beispiele</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <p>Bei einer Variablen sagt $f'(x)$: <em>wie stark ändert sich $f$, wenn ich $x$ wackle?</em>
+  Bei mehreren Variablen fragst du das <b>pro Variable</b>: die <b>partielle Ableitung</b>
+  $\frac{\partial f}{\partial x_i}$ entsteht, indem du nach $x_i$ ableitest und
+  <b>alle anderen Variablen wie Konstanten</b> behandelst.</p>
+  <p>Der <b>Gradient</b> $\nabla f=\left(\frac{\partial f}{\partial x_1},\dots,\frac{\partial f}{\partial x_n}\right)^T$
+  sammelt alle ersten partiellen Ableitungen. In der <b>Fehlerrechnung</b> sind sie die „Hebel":
+  eine ungenau gemessene Größe schlägt umso stärker durch, je größer ihre partielle Ableitung ist.</p>
+  <div class="box note"><b>Merke.</b> Partielle Ableitung = nach einer Variablen ableiten, Rest = Konstante.
+  Gradient = alle davon. Fehler = Hebel ($\partial f/\partial x_i$) mal Wackeln ($\Delta x_i$), als Beträge summiert.</div>
+</section>
+
+<section id="rezept">
+  <h2>2 · Das Rezept (6 Schritte)</h2>
+  <ol>
+    <li><b>Funktionswert</b> $f$ am Messpunkt berechnen (für den relativen Fehler).</li>
+    <li><b>Alle</b> partiellen Ableitungen $\frac{\partial f}{\partial x_i}$ bilden.</li>
+    <li>Messpunkt <b>einsetzen</b> → Zahlen $\frac{\partial f}{\partial x_i}\big|_0$.</li>
+    <li>Messfehler: bei „$p\,\%$" gilt $\Delta x_i=\frac{p}{100}\,|x_i^0|$.</li>
+    <li><b>Max. absoluter Fehler</b> (Beträge!): $\displaystyle \Delta f_{\max}=\sum_i\left|\frac{\partial f}{\partial x_i}\Big|_0\right|\Delta x_i$.</li>
+    <li><b>Max. relativer Fehler:</b> $\dfrac{\Delta f_{\max}}{|f|}\;(\cdot100\,\%)$.</li>
+  </ol>
+  <div class="box warn"><b>Stolperstein.</b> Jeder Summand in Schritt 5 wird <em>positiv</em> addiert —
+  Vorzeichen verschwindet im Betrag, nicht wegkürzen.</div>
+</section>
+
+<section id="rechner">
+  <h2>3 · Interaktiver Fehler-Rechner</h2>
+  <p>Trag pro Variable den <b>eingesetzten Ableitungswert</b> $\frac{\partial f}{\partial x_i}\big|_0$ und den
+  <b>Messfehler</b> $\Delta x_i$ ein (Vorzeichen egal, es wird der Betrag genommen). Optional den
+  Funktionswert $f$ für den relativen Fehler.</p>
+  <div id="rows"></div>
+  <div style="margin:10px 0;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="sec" onclick="addRow()">+ Variable</button>
+    <button class="sec" onclick="delRow()">– Variable</button>
+  </div>
+  <div class="calc-row"><label>Funktionswert $f$</label><input id="fval" type="number" step="any" placeholder="z.B. 2"></div>
+  <button onclick="calc()">Berechnen</button>
+  <div id="out" class="out"></div>
+  <div class="box note" style="margin-top:14px"><b>Gegenprobe Ellipse:</b> Ableitungen $\tfrac53$ und $-\tfrac43$,
+  Fehler $1$ und $2$, $f=6$ → muss $\Delta f_{\max}=\tfrac{13}{3}\approx4{,}33$ und $\approx72\,\%$ ergeben.</div>
+</section>
+
+<section id="beispiele">
+  <h2>4 · Vorgerechnete Beispiele</h2>
+  <p>Erst selbst versuchen, dann „Lösung zeigen" aufklappen.</p>
+
+  <details><summary>Ellipse — Exzentrizität (Übung 6.2)</summary>
+  <div class="det-body">
+    <p class="aufg">$e=\sqrt{a^2-b^2}$, $a=10$ ($\pm10\,\%$), $b=8$ ($\pm25\,\%$). Gesucht: $e$, Ableitungen, abs. + rel. Fehler.</p>
+    <p>1) $e=\sqrt{100-64}=6$.</p>
+    <p>2) $\frac{\partial e}{\partial a}=\frac{a}{\sqrt{a^2-b^2}}$, $\frac{\partial e}{\partial b}=\frac{-b}{\sqrt{a^2-b^2}}$.</p>
+    <p>3) Nenner $=6$: $\frac{\partial e}{\partial a}|_0=\frac53$, $\frac{\partial e}{\partial b}|_0=-\frac43$.</p>
+    <p>4) $\Delta a=1$, $\Delta b=2$.</p>
+    <p>5) $\Delta e_{\max}=\frac53\cdot1+\frac43\cdot2=\frac{13}{3}\approx4{,}33$.</p>
+    <p>6) $\frac{13/3}{6}=\frac{13}{18}\approx72\,\%$.</p>
+    <div class="box ok"><b>Probe.</b> $b$ liefert $\frac83$, $a$ nur $\frac53$ → <b>$b$ genauer messen</b>, obwohl $a$ die größere Ableitung hat.</div>
+  </div></details>
+
+  <details><summary>Wahrscheinlichkeitsdichte (Übung 6.3)</summary>
+  <div class="det-body">
+    <p class="aufg">$f(x,y)=e^{-(x^2+y^2)}$, $(x_0,y_0)=(1,2)$, $10\,\%$ in $x$, $20\,\%$ in $y$. Gesucht: rel. Fehler.</p>
+    <p>1) $f=e^{-(1+4)}=e^{-5}$.</p>
+    <p>2) $\frac{\partial f}{\partial x}=-2x\,e^{-(x^2+y^2)}$, $\frac{\partial f}{\partial y}=-2y\,e^{-(x^2+y^2)}$.</p>
+    <p>3) $\frac{\partial f}{\partial x}|_0=-2e^{-5}$, $\frac{\partial f}{\partial y}|_0=-4e^{-5}$.</p>
+    <p>4) $\Delta x=0{,}1$, $\Delta y=0{,}4$.</p>
+    <p>5) $\Delta f_{\max}=2e^{-5}\cdot0{,}1+4e^{-5}\cdot0{,}4=1{,}8\,e^{-5}$.</p>
+    <p>6) $\frac{1{,}8e^{-5}}{e^{-5}}=1{,}8=\mathbf{180\,\%}$.</p>
+    <div class="box warn"><b>Stolperstein.</b> $\Delta y=0{,}4$ (nicht $0{,}2$): die $20\,\%$ beziehen sich auf $y_0=2$.</div>
+    <div class="box ok"><b>Probe.</b> $e^{-5}$ kürzt sich beim relativen Fehler weg. $y$-Term dominiert → $y$ genau messen.</div>
+  </div></details>
+
+  <details><summary>Klausuraufgabe 2024 / 2</summary>
+  <div class="det-body">
+    <p class="aufg">$s=x_1\,e^{x_2+x_3^2}$, $(2,-1,1)$, je $10\,\%$.</p>
+    <p>Exponent $-1+1=0\Rightarrow e^0=1$, $s=2$.</p>
+    <p>$\frac{\partial s}{\partial x_1}=1$, $\frac{\partial s}{\partial x_2}=2$, $\frac{\partial s}{\partial x_3}=x_1e^{\dots}2x_3=4$.</p>
+    <p>$\Delta x_1=0{,}2$, $\Delta x_2=0{,}1$, $\Delta x_3=0{,}1$.</p>
+    <p>$\Delta s_{\max}=1\cdot0{,}2+2\cdot0{,}1+4\cdot0{,}1=0{,}8$; relativ $\frac{0{,}8}{2}=40\,\%$. Größter Beitrag $x_3$.</p>
+  </div></details>
+
+  <details><summary>Gradient &amp; Hesse-Matrix (Übung 4.1)</summary>
+  <div class="det-body">
+    <p class="aufg">(1) $f=e^{-(x_1^2+2x_2^2)}$ &nbsp;&nbsp; (2) $f=4x_1^3x_2^2$.</p>
+    <p>(1) mit $E=e^{-(x_1^2+2x_2^2)}$:
+    $\nabla f=\begin{pmatrix}-2x_1E\\-4x_2E\end{pmatrix}$,
+    $H=\begin{pmatrix}-2E(1-2x_1^2)&8x_1x_2E\\8x_1x_2E&-4E(1-4x_2^2)\end{pmatrix}$.</p>
+    <p>(2) $\nabla f=\begin{pmatrix}12x_1^2x_2^2\\8x_1^3x_2\end{pmatrix}$,
+    $H=\begin{pmatrix}24x_1x_2^2&24x_1^2x_2\\24x_1^2x_2&8x_1^3\end{pmatrix}$.</p>
+    <div class="box ok"><b>Probe.</b> Beide Hesse-Matrizen symmetrisch (Satz von Schwarz) — kostenlose Kontrolle.</div>
+  </div></details>
+
+  <details><summary>Jacobi &amp; Funktionaldeterminante (Übung 4.2)</summary>
+  <div class="det-body">
+    <p class="aufg">$f=\begin{pmatrix}x_1e^{x_1x_2}\\ x_1/\ln x_2\end{pmatrix}$.</p>
+    <p>$\frac{\partial f}{\partial x^T}=\begin{pmatrix}e^{x_1x_2}(1+x_1x_2)&x_1^2e^{x_1x_2}\\ \frac{1}{\ln x_2}&-\frac{x_1}{x_2(\ln x_2)^2}\end{pmatrix}$.</p>
+    <p>Funktionaldeterminante $=-\frac{x_1e^{x_1x_2}(1+x_1x_2)}{x_2(\ln x_2)^2}-\frac{x_1^2e^{x_1x_2}}{\ln x_2}$.</p>
+  </div></details>
+
+  <details><summary>Divergenz &amp; Gradient (Übung 4.3)</summary>
+  <div class="det-body">
+    <p>(1) $F=xyz$: $\nabla F=(yz,xz,xy)^T$, $\operatorname{div}(\nabla F)=0$.</p>
+    <p>(2) $F=(x,y^2,z^3)^T$: $\operatorname{div}F=1+2y+3z^2$, $\nabla(\operatorname{div}F)=(0,2,6z)^T$.</p>
+    <div class="box warn"><b>Stolperstein.</b> $\operatorname{div}(\nabla F)$ braucht ein Skalarfeld → Ergebnis Skalar;
+    $\nabla(\operatorname{div}F)$ braucht ein Vektorfeld → Ergebnis Vektor.</div>
+  </div></details>
+
+  <details><summary>Implizite Ableitung (Übung 6.1)</summary>
+  <div class="det-body">
+    <p><b>Rezept:</b> $F(x,y)=0\Rightarrow \frac{dy}{dx}=-\frac{F_x}{F_y}$.</p>
+    <p>(1) $F=y\ln x-2x\ln y$: $\frac{dy}{dx}|_{(1,1)}=-\frac{1-0}{0-2}=\frac12$.</p>
+    <p>(2) $F=xy^2+x^2y-16$: $\frac{dy}{dx}|_{(2,2)}=-\frac{4+8}{8+4}=-1$.</p>
+    <p>(3) $F=ye^x-xe^y$: $\frac{dy}{dx}|_{(0,0)}=-\frac{-1}{1}=1$.</p>
+    <div class="box warn"><b>Achtung.</b> An $(1,1)$ ergibt (3) $\frac00$ (singulärer Punkt) — Formel greift dort nicht.</div>
+  </div></details>
+</section>
+
+<section id="quiz">
+  <h2>5 · Selbsttest</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>6 · Stolpersteine</h2>
+  <ol>
+    <li>Prozent-Fehler immer auf den <em>Messwert</em>: $\Delta x_i=\frac{p}{100}|x_i^0|$.</li>
+    <li>Worst Case: alle Summanden positiv (Beträge), nichts wegkürzen.</li>
+    <li>Relativer Fehler kürzt konstante Faktoren (z.B. $e^{-5}$) komplett weg.</li>
+    <li>Hesse ist symmetrisch — gemischte Ableitung als Probe.</li>
+    <li>Innere Ableitung bei $e^{-(\dots)}$ nicht vergessen.</li>
+    <li>Größter Beitrag = Ableitung <em>mal</em> Fehler, nicht nur größte Ableitung.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Thema 1 · interaktive Fassung · Quellen: Blatt 4 &amp; 6, Spickzettel
+  <code>01_Fehlerrechnung_Rezept.md</code> / <code>01_Fehlerrechnung_Uebungen.md</code>.
+  Ergebnisse gegen die Musterlösungen geprüft. (MathJax lädt über CDN — fürs Rendern Internet nötig.)
+</footer>
+
+<script>
+/* ---- Fehler-Rechner ---- */
+var rowCount=0;
+function addRow(a,d){
+  rowCount++;
+  var div=document.createElement('div');
+  div.className='calc-row';
+  div.innerHTML='<label>x'+rowCount+': &part;f/&part;x</label>'+
+    '<input type="number" step="any" class="deriv" placeholder="Ableitung" value="'+(a!==undefined?a:'')+'">'+
+    '<label style="min-width:60px">&Delta;x</label>'+
+    '<input type="number" step="any" class="delta" placeholder="Fehler" value="'+(d!==undefined?d:'')+'">';
+  document.getElementById('rows').appendChild(div);
+}
+function delRow(){
+  var r=document.getElementById('rows');
+  if(r.children.length>1){r.removeChild(r.lastChild);rowCount--;}
+}
+function calc(){
+  var ds=document.querySelectorAll('.deriv'), de=document.querySelectorAll('.delta');
+  var sum=0, terms=[], maxv=-1, maxi=-1;
+  for(var i=0;i<ds.length;i++){
+    var a=parseFloat(ds[i].value), d=parseFloat(de[i].value);
+    if(isNaN(a)||isNaN(d))continue;
+    var t=Math.abs(a)*Math.abs(d); terms.push(t); sum+=t;
+    if(t>maxv){maxv=t;maxi=i+1;}
+  }
+  var f=parseFloat(document.getElementById('fval').value);
+  var out=document.getElementById('out'); out.className='out show';
+  var html='<b>&Delta;f<sub>max</sub> = '+round(sum)+'</b>';
+  if(!isNaN(f)&&f!==0){ html+='<br><b>relativer Fehler = '+round(sum/Math.abs(f)*100)+' %</b>'; }
+  if(maxi>0){ html+='<br>Größter Beitrag: <b>x'+maxi+'</b> ('+round(maxv)+') → diese Größe am genauesten messen.'; }
+  out.innerHTML=html;
+}
+function round(x){ return Math.round(x*10000)/10000; }
+addRow(); addRow();
+
+/* ---- Quiz ---- */
+var Q=[
+ {q:"$f=e^{-(x^2+y^2)}$ mit $20\\,\\%$ Ungenauigkeit in $y$ bei $y_0=2$. Wie groß ist $\\Delta y$?",
+  o:["0,2","0,4","2","0,1"],c:1,fb:"$\\Delta y=\\frac{20}{100}\\cdot 2 = 0{,}4$ — der Prozentwert bezieht sich auf den Messwert."},
+ {q:"Beim maximalen absoluten Fehler werden die Summanden …",
+  o:["mit Vorzeichen addiert","als Beträge addiert (Worst Case)","quadriert addiert","gemittelt"],c:1,
+  fb:"Worst Case: $\\Delta f_{\\max}=\\sum|\\partial f/\\partial x_i|\\,\\Delta x_i$ — alles positiv."},
+ {q:"Welche Größe sollte man am genauesten messen?",
+  o:["die mit der größten Ableitung","die mit dem größten Produkt Ableitung·Fehler","die mit dem kleinsten Fehler","die erste Variable"],c:1,
+  fb:"Entscheidend ist der Beitrag $|\\partial f/\\partial x_i|\\cdot\\Delta x_i$, nicht die Ableitung allein."},
+ {q:"$\\nabla(\\operatorname{div}F)$ liefert …",
+  o:["einen Skalar","einen Vektor","eine Matrix","immer 0"],c:1,
+  fb:"$\\operatorname{div}F$ ist ein Skalar, der Gradient davon ist ein Vektor."},
+ {q:"Warum ist die Hesse-Matrix symmetrisch?",
+  o:["Zufall","Satz von Schwarz (gemischte Ableitungen gleich)","weil sie quadratisch ist","ist sie nicht"],c:1,
+  fb:"Satz von Schwarz: $\\partial^2 f/\\partial x_i\\partial x_j=\\partial^2 f/\\partial x_j\\partial x_i$."}
+];
+function buildQuiz(){
+  var c=document.getElementById('quiz');
+  Q.forEach(function(item,qi){
+    var wrap=document.createElement('div');
+    var q=document.createElement('q'); q.innerHTML='<b>'+(qi+1)+'.</b> '+item.q; wrap.appendChild(q);
+    item.o.forEach(function(opt,oi){
+      var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){
+        var fb=wrap.querySelector('.qfb');
+        Array.prototype.forEach.call(wrap.querySelectorAll('.qa'),function(x){x.classList.remove('correct','wrong');});
+        if(oi===item.c){ b.classList.add('correct'); fb.innerHTML='✓ Richtig. '+item.fb; }
+        else { b.classList.add('wrong'); wrap.querySelectorAll('.qa')[item.c].classList.add('correct'); fb.innerHTML='✗ Nicht ganz. '+item.fb; }
+        if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([fb]);}
+      };
+      wrap.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='qfb'; wrap.appendChild(fb);
+    c.appendChild(wrap);
+  });
+}
+buildQuiz();
+</script>
+</body>
+</html>

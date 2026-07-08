@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS-Kaskade & Spezifität (C2) — WE-Klausur Restthemen</title>
+<style>
+  :root{--bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;--acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}h2{font-size:19px;margin:32px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:15px;margin:16px 0 6px;color:var(--acc)}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--warn);margin-right:6px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .codebox{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px;overflow:auto;font-size:13px;line-height:1.7}
+  .kw{color:#ff7b72}.st{color:#a5d6ff}.num{color:#79c0ff}.com{color:#8b949e}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted)}table.t td:first-child{font-family:monospace}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  .sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;border:1px solid #0006;margin-right:5px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:780px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CSS-Kaskade & Spezifität (C2)</h1>
+  <p class="sub">Restthema — kam in Generation B (Röthig 2016, „Unbekannt II"). Frage: „In welcher Farbe wird der Text angezeigt?"</p>
+
+  <h2><span class="tag">Regel</span> Reihenfolge der Kaskade</h2>
+  <div class="panel">
+    <p>Bei Konflikt entscheidet die Kaskade in dieser Reihenfolge (oben = gewinnt):</p>
+    <table class="t">
+      <tr><th>Rang</th><th>Quelle</th></tr>
+      <tr><td>1 (stärkste)</td><td><b>User-Stylesheet mit <code>!important</code></b></td></tr>
+      <tr><td>2</td><td>Author-Stylesheet mit <code>!important</code></td></tr>
+      <tr><td>3</td><td>Author-Stylesheet (normal)</td></tr>
+      <tr><td>4</td><td>User-Stylesheet (normal)</td></tr>
+      <tr><td>5 (schwächste)</td><td>User-Agent / Browser-Default</td></tr>
+    </table>
+    <p class="sub">Merke: <code>!important</code> dreht User &harr; Author um. Ohne <code>!important</code> gewinnt der Author über den User; MIT <code>!important</code> gewinnt der User über den Author.</p>
+  </div>
+
+  <h2><span class="tag">Regel</span> Spezifität (innerhalb gleicher Quelle/Wichtigkeit)</h2>
+  <div class="panel">
+    <table class="t">
+      <tr><th>Selektor-Teil</th><th>Gewicht</th></tr>
+      <tr><td>Inline-Style <code>style="…"</code></td><td>1 0 0 0</td></tr>
+      <tr><td>ID <code>#id</code></td><td>0 1 0 0</td></tr>
+      <tr><td>Klasse / Attribut / Pseudo-Klasse <code>.c [a] :hover</code></td><td>0 0 1 0</td></tr>
+      <tr><td>Element / Pseudo-Element <code>div ::before</code></td><td>0 0 0 1</td></tr>
+    </table>
+    <p class="sub">Höhere Spezifität gewinnt. Bei Gleichstand: die <b>zuletzt</b> notierte Regel gewinnt (Quellreihenfolge).</p>
+    <div class="falle"><b>Falle:</b> <code>!important</code> schlägt jede Spezifität. Inline-Style schlägt jede normale Regel, aber nicht <code>!important</code>.</div>
+  </div>
+
+  <h2><span class="tag">Tracen</span> Durchgerechnetes Beispiel (Unbekannt II)</h2>
+  <div class="two">
+    <div class="panel">
+      <h3>Author (mystyle.css)</h3>
+      <div class="codebox"><pre>body { color:<span class="st">#ffffff</span>; background-color:<span class="st">#000000</span>; }
+h1 &nbsp; { color:<span class="st">#0000FF</span> <span class="kw">!important</span>; font-size:40px; }
+table { color:<span class="st">orange</span>; }</pre></div>
+      <h3>User-Stylesheet</h3>
+      <div class="codebox"><pre>body { color:<span class="st">#FF0000</span> <span class="kw">!important</span>; }
+h1 &nbsp; { color:<span class="st">#00FF00</span>; }</pre></div>
+    </div>
+    <div class="panel">
+      <h3>Ergebnis</h3>
+      <table class="t">
+        <tr><th>Element</th><th>Ergebnis</th><th>warum</th></tr>
+        <tr><td>body Text</td><td><span class="sw" style="background:#FF0000"></span>rot</td><td>User <code>!important</code> schlägt Author-normal</td></tr>
+        <tr><td>body BG</td><td><span class="sw" style="background:#000"></span>schwarz</td><td>nur Author setzt es</td></tr>
+        <tr><td>h1 Text</td><td><span class="sw" style="background:#0000FF"></span>blau</td><td>Author <code>!important</code> schlägt User-normal</td></tr>
+        <tr><td>h1 Größe</td><td>40px</td><td>nur Author</td></tr>
+        <tr><td>table</td><td><span class="sw" style="background:orange"></span>orange</td><td>nur Author</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="falle"><b>Kernlogik:</b> Beide <code>!important</code> kollidieren nur beim body-Text → dort gewinnt der <b>User</b> (Rang 1). Beim h1 hat nur der Author <code>!important</code> → Author gewinnt.</div>
+
+  <h2>Drill</h2>
+  <details><summary>[Tracen] Author <code>p {color:blue}</code>, User <code>p {color:green !important}</code> — Farbe?</summary><p>Grün — User-!important (Rang 1) schlägt Author-normal (Rang 3).</p></details>
+  <details><summary>[Tracen] <code>#x {color:red}</code> vs <code>.x {color:blue}</code> am selben Element — Farbe?</summary><p>Rot — ID (0 1 0 0) hat höhere Spezifität als Klasse (0 0 1 0).</p></details>
+  <details><summary>[MC] Was schlägt einen Inline-Style <code>style="color:red"</code>?</summary><p>Nur eine Regel mit <code>!important</code>. Normale ID/Klasse/Element-Regeln nicht.</p></details>
+
+  <p class="sub" style="margin-top:30px">WE-Klausur-Lernpaket · Restthemen · Säule 2 (CSS) · <code>Materialien/Restthemen/</code></p>
+</div>
+</body>
+</html>

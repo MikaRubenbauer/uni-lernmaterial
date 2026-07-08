@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thema 4 – Lagrange-Optimierung &amp; Höhenlinien</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.4rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}
+  nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  .aufg{font-weight:600;color:#2a3645}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:8px 13px;font-size:.9rem;cursor:pointer;margin:3px}
+  button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  canvas{background:#fff;border:1px solid var(--bd);border-radius:9px;max-width:100%}
+  input[type=range]{width:220px;vertical-align:middle}
+  .readout{margin-top:8px;padding:10px 14px;background:var(--ok);border-radius:9px;font-size:.95rem}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;margin:8px 0}
+  th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 4 — Lagrange-Optimierung &amp; Höhenlinien</h1>
+  <p>Analysis · Prof. Reischl · Klausur 23.07.2026 · <b>Lernblock Sa 04.07</b> · Blatt 7 (Übung 7.1)</p>
+  <p>Klausur-Anker: 2024 Aufgabe 3 (9 P) · 2023 Aufgabe 5 (8 P) — das Frageschema ist jedes Jahr fast identisch.</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a><a href="#durchlauf">Komplett-Beispiel</a><a href="#rezept">Rezepte</a><a href="#plot">Höhenlinien-Labor</a>
+  <a href="#k2024">Klausur 2024</a><a href="#blatt">Blatt 7.1</a><a href="#k2023">Klausur 2023</a>
+  <a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <p>Gesucht ist das Optimum einer <b>Zielfunktion</b> $Q(x,y)$, wobei $(x,y)$ nicht frei sind, sondern auf einer
+  <b>Restriktion</b> (Kurve/Gerade) liegen müssen. Eine <b>Höhenlinie</b> ist die Menge aller Punkte mit $Q(x,y)=c$.</p>
+  <div class="box note"><b>Das grafische Bild (gibt in der Klausur die ersten Punkte):</b> Man wandert entlang der
+  Restriktion und schaut, welche Höhenlinien man kreuzt. Im Optimum <b>berührt</b> die Restriktion eine Höhenlinie
+  nur noch (Tangente) — dort sind $\nabla Q$ und der Gradient der Restriktion <b>parallel</b>. Genau das erzwingt
+  der Lagrange-Ansatz.</div>
+  <p>Der Gradient $\nabla Q = \left(\frac{\partial Q}{\partial x}, \frac{\partial Q}{\partial y}\right)^T$ steht
+  <b>senkrecht auf den Höhenlinien</b> und zeigt in Richtung des stärksten Anstiegs. „$\nabla Q$ in P einzeichnen"
+  (Standard-Teilaufgabe): Vektor am Punkt ansetzen, senkrecht zur dortigen Höhenlinie.</p>
+</section>
+
+<section id="durchlauf">
+  <style>#durchlauf .src{color:#2a9d5c;font-size:.86em}#durchlauf h3{margin-top:16px}#durchlauf .st{background:var(--note);border-radius:8px;padding:4px 9px;font-size:.82rem;font-weight:700;color:var(--akz2)}</style>
+  <h2>1b · Ein komplettes Beispiel — jede Zahl erklärt</h2>
+  <div class="box note">Bevor die Rezepte kommen: einmal alles an einem Fall durchziehen, damit später keine Zahl „aus dem Nichts" kommt.
+  <b>Beispiel Klausur 2024:</b> Zielfunktion $Q(x,y)=y+\cosh x$, Restriktion $y=ax$ mit $a=1$ (also $y=x$).</div>
+
+  <h3><span class="st">Schritt 1</span> &nbsp;Ableitungen von $Q$ — woher die Terme kommen</h3>
+  <p>$\dfrac{\partial Q}{\partial x}=\sinh x$ &nbsp;<span class="src">← Ableitung von $\cosh x$; $y$ zählt als Konstante</span><br>
+  $\dfrac{\partial Q}{\partial y}=1$ &nbsp;<span class="src">← Ableitung von $y$; $\cosh x$ zählt als Konstante</span></p>
+
+  <h3><span class="st">Schritt 2</span> &nbsp;Restriktion auf Nullform + Lagrange-Funktion</h3>
+  <p>$y=x \;\Rightarrow\; g(x,y)=y-x=0$. &nbsp;Dann $L = \underbrace{y+\cosh x}_{Q} + \lambda\,\underbrace{(y-x)}_{g}$.</p>
+
+  <h3><span class="st">Schritt 3</span> &nbsp;Die drei Gleichungen — jeder Term nachvollzogen</h3>
+  <p>$\dfrac{\partial L}{\partial x}=\underbrace{\sinh x}_{\text{aus }Q}\;\underbrace{-\,\lambda}_{\text{aus }\lambda(y-x)}=0$<br>
+  $\dfrac{\partial L}{\partial y}=\underbrace{1}_{\text{aus }Q}\;+\;\underbrace{\lambda}_{\text{aus }\lambda(y-x)}=0$<br>
+  $\dfrac{\partial L}{\partial \lambda}=y-x=0$ &nbsp;<span class="src">← das ist genau die Restriktion zurück</span></p>
+
+  <h3><span class="st">Schritt 4</span> &nbsp;Auflösen — woher $\lambda=-1$ und $x^*=-0{,}88$ kommen</h3>
+  <p>Mittlere Gleichung: $1+\lambda=0 \Rightarrow \boxed{\lambda=-1}$.<br>
+  Einsetzen in die erste: $\sinh x-\lambda=0 \Rightarrow \sinh x=\lambda=-1$.<br>
+  Klausur-Hinweis $\sinh(0{,}88)=1$; $\sinh$ ist ungerade $\Rightarrow \sinh(-0{,}88)=-1 \Rightarrow \boxed{x^*=-0{,}88}$.<br>
+  Restriktion $y=x \Rightarrow \boxed{y^*=-0{,}88}$.</p>
+
+  <h3><span class="st">Schritt 5</span> &nbsp;Minimum oder Maximum? (Begründung)</h3>
+  <p>Restriktion einsetzen: $h(x)=Q(x,x)=x+\cosh x$, &nbsp;$h''(x)=\cosh x\ge 1>0$ &nbsp;$\Rightarrow$ <b>Minimum</b>.
+  <span class="src">← nie über das Vorzeichen von $\lambda$ begründen!</span></p>
+
+  <h3><span class="st">Schritt 6</span> &nbsp;Optimalwert — woher $0{,}53$ kommt</h3>
+  <p>$Q^*=y^*+\cosh x^*=-0{,}88+\cosh(0{,}88)$. &nbsp;Und $\cosh(0{,}88)=\sqrt{1+\sinh^2(0{,}88)}=\sqrt{1+1}=\sqrt2\approx1{,}41$.<br>
+  $\Rightarrow Q^*\approx-0{,}88+1{,}41=\boxed{0{,}53}$.</p>
+
+  <div class="box ok"><b>Das war das komplette Schema.</b> Die Rezepte unten sind nur die verallgemeinerte Form dieser 6 Schritte;
+  das passende Höhenlinien-Bild ziehst du dir im Labor.</div>
+</section>
+
+<section id="rezept">
+  <h2>2 · Die Rezepte</h2>
+  <h3>Weg A — Einsetzen (wenn die Restriktion nach $y$ aufgelöst ist: schnellster Weg)</h3>
+  <ol>
+    <li>Restriktion $y = r(x)$ in $Q$ einsetzen → 1D-Funktion $h(x) = Q(x, r(x))$.</li>
+    <li>$h'(x) = 0$ lösen → Kandidat $x^*$, dann $y^* = r(x^*)$.</li>
+    <li><b>Min/Max begründen:</b> $h''(x^*) > 0$ → Minimum, $h''(x^*) < 0$ → Maximum.</li>
+    <li>Optimalen Wert $Q^* = h(x^*)$ angeben.</li>
+  </ol>
+  <h3>Weg B — Lagrange (der „offizielle" Weg, gibt die Methodik-Punkte)</h3>
+  <ol>
+    <li>Restriktion auf Nullform bringen: $g(x,y) = 0$ (z.B. $y - ax = 0$).</li>
+    <li>$L(x,y,\lambda) = Q(x,y) + \lambda\, g(x,y)$ aufstellen.</li>
+    <li>Alle drei partiellen Ableitungen $\frac{\partial L}{\partial x} = \frac{\partial L}{\partial y} = \frac{\partial L}{\partial \lambda} = 0$ setzen.</li>
+    <li>System lösen — bei Reischl liefert die $\frac{\partial L}{\partial y}$-Gleichung fast immer direkt $\lambda$ (weil $Q$ linear in $y$ ist), dann $x$ aus der $\frac{\partial L}{\partial x}$-Gleichung, dann $y$ aus der Restriktion.</li>
+  </ol>
+  <h3>Weg C — zeichnerisch (Teilaufgaben a–c)</h3>
+  <ol>
+    <li>Höhenlinien: $Q(x,y)=c$ nach $y$ auflösen und für die geforderten $c$ zeichnen.</li>
+    <li>Restriktion einzeichnen.</li>
+    <li>Optimum = Berührpunkt Restriktion ↔ Höhenlinie markieren.</li>
+  </ol>
+  <div class="box warn"><b>Min oder Max? Immer begründen</b> — am schnellsten über Weg A: zweite Ableitung von
+  $h(x) = Q(x, r(x))$. Ein $\lambda$-Vorzeichen ist KEINE gültige Begründung.</div>
+</section>
+
+<section id="plot">
+  <h2>3 · Höhenlinien-Labor (interaktiv)</h2>
+  <p>Beide Klausur-Szenarien. Zieh am Regler und beobachte, wie der Berührpunkt (rot) wandert — genau das Bild musst du zeichnen können.</p>
+  <div style="margin:8px 0">
+    <button id="btnP1" onclick="setPreset(1)">Blatt 7.1: $Q=x^2+y$, $y=mx+1$</button>
+    <button id="btnP2" class="sec" onclick="setPreset(2)">Klausur 2024: $Q=y+\cosh x$, $y=ax$</button>
+  </div>
+  <div>
+    <label><b id="paramName">m</b> = <span id="paramVal">2</span></label>
+    <input type="range" id="param" min="-3" max="3" step="0.1" value="2" oninput="draw()">
+  </div>
+  <canvas id="cv" width="640" height="440"></canvas>
+  <div class="readout" id="readout"></div>
+</section>
+
+<section id="k2024">
+  <h2>4 · Klausur 2024, Aufgabe 3 (9 P) — komplett vorgerechnet</h2>
+  <div class="box warn"><b>⚠️ Protokollfehler in der Altklausur-PDF:</b> Dort steht $Q = y \cdot \cosh(x)$. Damit hätte
+  das Optimierungsproblem entlang $y=ax$ <b>keine Lösung</b> (nachgerechnet: $h'(x)=a(\cosh x + x\sinh x) \ge a > 0$, streng monoton)
+  und der Klausur-Hinweis „$\sinh(0{,}88)=1$" ergäbe keinen Sinn. Gemeint ist $\mathbf{Q = y + \cosh(x)}$ — damit passt alles.
+  (Die Altklausur ist ein Gedächtnisprotokoll.)</div>
+  <p class="aufg">$Q(x,y) = y + \cosh(x)$, Restriktion $y = ax$.</p>
+
+  <details><summary>3.1 Höhenlinien für Q = −1, 0, 1 zeichnen</summary><div class="det-body">
+    <p>$y + \cosh x = c \;\Rightarrow\; y = c - \cosh x$ — nach unten geöffnete „Glocken" (gespiegelte cosh-Kurven),
+    Scheitel bei $(0,\, c-1)$: für $c=-1$ Scheitel $(0,-2)$, für $c=0$ Scheitel $(0,-1)$, für $c=1$ Scheitel $(0,0)$.
+    Im Labor oben (Preset Klausur 2024) zu sehen.</p>
+  </div></details>
+
+  <details><summary>3.2 Restriktionen a = 1, a = 2 + zeichnerisches Optimum</summary><div class="det-body">
+    <p>Geraden $y=x$ und $y=2x$ durch den Ursprung. Optimum = Punkt, in dem die Gerade eine Höhenlinie berührt
+    (links unten im 3. Quadranten). Mit dem Regler: $a=1$ → Berührpunkt $(-0{,}88, -0{,}88)$; $a=2$ → $(-1{,}44, -2{,}89)$.</p>
+  </div></details>
+
+  <details><summary>3.3 Maximum oder Minimum? Begründung</summary><div class="det-body">
+    <p>Einsetzen: $h(x) = ax + \cosh x$, $h''(x) = \cosh x \ge 1 > 0$ überall → <b>Minimum</b> (für jedes $a$).</p>
+  </div></details>
+
+  <details><summary>3.4 ∇Q im Punkt P(0/0) bestimmen und einzeichnen</summary><div class="det-body">
+    <p>$\nabla Q = \begin{pmatrix}\sinh x\\ 1\end{pmatrix}$, also $\nabla Q(0,0) = \begin{pmatrix}0\\1\end{pmatrix}$ —
+    Pfeil senkrecht nach oben im Ursprung (senkrecht auf der dortigen Höhenlinie, in Anstiegsrichtung).</p>
+  </div></details>
+
+  <details><summary>3.5 Höhenlinie durch P(0/0)</summary><div class="det-body">
+    <p>$c = Q(0,0) = 0 + \cosh 0 = 1$ → Höhenlinie $y + \cosh x = 1$, als Funktion: $\mathbf{y = 1 - \cosh x}$.</p>
+  </div></details>
+
+  <details><summary>3.6 Optimierungsproblem für a = 1 lösen (3 P) — beide Wege</summary><div class="det-body">
+    <p><b>Weg B (Lagrange):</b> $g = y - x = 0$, $L = y + \cosh x + \lambda(y - x)$:</p>
+    <p>$\frac{\partial L}{\partial x} = \sinh x - \lambda = 0$; &nbsp; $\frac{\partial L}{\partial y} = 1 + \lambda = 0$; &nbsp; $\frac{\partial L}{\partial \lambda} = y - x = 0$</p>
+    <p>Aus der Mitte: $\lambda = -1$ → $\sinh x = -1$ → mit dem Hinweis $\sinh(0{,}88)=1$ (sinh ungerade):
+    $\mathbf{x^* = -0{,}88}$, $\mathbf{y^* = x^* = -0{,}88}$.</p>
+    <p><b>Weg A (Probe):</b> $h(x) = x + \cosh x$, $h'(x) = 1 + \sinh x = 0$ → $\sinh x = -1$ ✓ identisch.</p>
+    <p><b>Wert:</b> $Q^* = -0{,}88 + \cosh(0{,}88) = -0{,}88 + \sqrt{1+\sinh^2} = -0{,}88 + \sqrt2 \approx \mathbf{0{,}53}$ (Minimum, $h''=\cosh>0$).</p>
+  </div></details>
+
+  <details><summary>3.7 Eine Restriktion, entlang der kein Optimum existiert</summary><div class="det-body">
+    <p>Z.B. die <b>senkrechte Gerade $x = c$</b>: Dort ist $Q = y + \cosh c$ <b>linear/streng monoton in $y$</b> → kein Extremum.
+    Allgemeines Kriterium für $y=mx+b$: $h'(x) = m + \sinh x$ hat immer eine Nullstelle (sinh ist surjektiv) →
+    <em>jede</em> nicht-senkrechte Gerade liefert hier ein Optimum; deshalb weicht man auf $x=c$ aus.</p>
+  </div></details>
+</section>
+
+<section id="blatt">
+  <h2>5 · Blatt 7, Übung 7.1 — komplett</h2>
+  <p class="aufg">$Q(x,y) = x^2 + y$, Restriktion $y = mx + 1$.</p>
+  <details><summary>1–2) Höhenlinien (Q = −2…2) + Restriktionen m = 0, m = 1</summary><div class="det-body">
+    <p>$y = c - x^2$: nach unten geöffnete Normalparabeln mit Scheitel $(0,c)$. Restriktionen: waagrechte Gerade $y=1$
+    bzw. Gerade $y=x+1$. → Labor-Preset „Blatt 7.1", Regler auf 0 bzw. 1.</p>
+  </div></details>
+  <details><summary>3) Zeichnerische Lösung für m = 0 und m = 1 — Max oder Min?</summary><div class="det-body">
+    <p>$m=0$: Berührpunkt $(0, 1)$. $m=1$: Berührpunkt $\left(-\tfrac12, \tfrac12\right)$. Beides <b>Minima</b>:
+    $h(x)=x^2+mx+1$ ist eine nach oben geöffnete Parabel ($h''=2>0$).</p>
+  </div></details>
+  <details><summary>4) Rechnerisch für m = 2 (Lagrange)</summary><div class="det-body">
+    <p>$L = x^2 + y + \lambda(y - 2x - 1)$:
+    $\;\frac{\partial L}{\partial x} = 2x - 2\lambda = 0$, $\;\frac{\partial L}{\partial y} = 1 + \lambda = 0$, $\;\frac{\partial L}{\partial \lambda} = y - 2x - 1 = 0$.</p>
+    <p>$\lambda = -1 \Rightarrow x = \lambda = -1 \Rightarrow y = 2(-1)+1 = -1$ → $\mathbf{P(-1,-1)}$, $Q^* = (-1)^2 + (-1) = 0$.</p>
+    <div class="box warn"><b>⚠️ Fehler in der Blatt-Musterlösung:</b> Dort steht „$Q \to \max$: P(−1/−1)". Tatsächlich ist es ein
+    <b>Minimum</b>: entlang der Restriktion gilt $h(x) = x^2+2x+1 = (x+1)^2 \ge 0$ mit Minimum 0 bei $x=-1$ ($h''=2>0$).
+    Ein Maximum existiert entlang der Geraden gar nicht ($h$ unbeschränkt).</div>
+  </div></details>
+  <details><summary>5) Wie viele Lösungen maximal (in Abhängigkeit von m)?</summary><div class="det-body">
+    <p><b>Maximal eine:</b> $h'(x) = 2x + m$ ist linear → genau eine Nullstelle, für jedes $m$. ✓ (deckt sich mit Musterlösung)</p>
+  </div></details>
+</section>
+
+<section id="k2023">
+  <h2>6 · Klausur 2023, Aufgabe 5 (8 P) — Frageschema</h2>
+  <div class="box note">Im Gedächtnisprotokoll fehlt die Zielfunktion (war als Diagramm gegeben); erhalten ist die
+  Restriktion $y = -(x-1)^2 + 2$ (Parabel!). <b>Merke das Schema</b> — es ist identisch zu 2024: a) Gradienten von Ziel + Restriktion
+  · b) $\nabla Q$ in (0|0) einzeichnen · c) Optimum einzeichnen, Min/Max begründen · d) Höhenlinie durch (0|0) ·
+  e) Optimierungsproblem lösen · f) Konzeptfrage.</div>
+  <details><summary>f) „Welche Bedingung muss eine Geraden-Restriktion erfüllen, damit KEIN Extremum existiert?" — Antwortmuster</summary><div class="det-body">
+    <p>Entlang $y = mx+b$ gilt bei Zielfunktionen vom Reischl-Typ $Q = f(x) + y$: $\;h'(x) = f'(x) + m$.
+    <b>Kein</b> Extremum ⇔ $f'(x) = -m$ hat keine Lösung (mit Vorzeichenwechsel) ⇔ die Gerade wird <b>nie tangential</b>
+    zu einer Höhenlinie. Anschaulich: Die Gerade schneidet alle Höhenlinien nur. (Bei $f=x^2$ oder $f=\cosh$ ist $f'$
+    surjektiv → dort hat jede Gerade ein Optimum; dann bleibt nur die senkrechte Gerade $x=c$, vgl. 2024/3.7.)</p>
+  </div></details>
+</section>
+
+<section id="quiz">
+  <h2>7 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>8 · Stolpersteine</h2>
+  <ol>
+    <li><b>Höhenlinie ≠ Funktionsgraph:</b> Höhenlinie = Punktmenge $Q(x,y)=c$; erst nach $y$ auflösen, dann zeichnen.</li>
+    <li><b>$\nabla Q$ steht senkrecht auf der Höhenlinie</b> — beim Einzeichnen prüfen.</li>
+    <li><b>Restriktion auf Nullform</b> bringen, bevor $\lambda\,g$ angehängt wird ($y-ax=0$, nicht $y=ax$).</li>
+    <li><b>Min/Max immer über $h''$ begründen</b> (Einsetz-Funktion), nie über das $\lambda$-Vorzeichen.</li>
+    <li><b>Alle drei Gleichungen hinschreiben</b> ($\partial x$, $\partial y$, $\partial\lambda$) — die $\partial\lambda$-Gleichung ist die Restriktion selbst und gibt den Methodik-Punkt.</li>
+    <li><b>Quellen haben Fehler:</b> Blatt-Musterlösung 7.1.4 sagt „max" (richtig: Minimum), Klausur-Protokoll 2024 schreibt $y\cdot\cosh x$ (richtig: $y+\cosh x$). Rechne selbst nach.</li>
+    <li>$\cosh$-Werte über $\cosh = \sqrt{1+\sinh^2}$ holen, wenn nur $\sinh$ gegeben ist (Klausur-Hinweis-Trick).</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Thema 4 · Master-Session (2026-07-04) · Quellen: Blatt 7 (Übung 7.1 + Musterlösung), Altklausur 2024 A3,
+  Altklausur 2023 A5 (Protokoll unvollständig). Alle Rechnungen symbolisch gegen SymPy verifiziert; zwei Quellenfehler
+  dokumentiert (7.1.4 „max", 2024 „y·cosh x"). (MathJax via CDN.)
+</footer>
+<script>
+/* ===== Höhenlinien-Labor ===== */
+var preset = 1;
+var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+// Weltkoordinaten: x ∈ [-3.2, 3.2], y ∈ [-3.2, 3.2] (Preset 1) bzw. [-4.4, 2.4] (Preset 2)
+function world(){ return preset===1 ? {x0:-3.2,x1:3.2,y0:-3.2,y1:3.2} : {x0:-3.2,x1:3.2,y0:-4.4,y1:2.4}; }
+function toPx(wx,wy){ var w=world(); return [ (wx-w.x0)/(w.x1-w.x0)*cv.width, cv.height-(wy-w.y0)/(w.y1-w.y0)*cv.height ]; }
+function f(x){ return preset===1 ? x*x : Math.cosh(x); }           // Q = f(x) + y
+function fp(x){ return preset===1 ? 2*x : Math.sinh(x); }          // f'
+function rest(x,p){ return preset===1 ? p*x+1 : p*x; }             // Restriktion y=r(x)
+function setPreset(p){
+  preset=p;
+  document.getElementById('btnP1').className = p===1?'':'sec';
+  document.getElementById('btnP2').className = p===2?'':'sec';
+  document.getElementById('paramName').textContent = p===1?'m':'a';
+  draw();
+}
+function drawCurve(fn, color, width, dash){
+  ctx.strokeStyle=color; ctx.lineWidth=width; ctx.setLineDash(dash||[]);
+  ctx.beginPath(); var first=true, w=world();
+  for(var px=0;px<=cv.width;px+=2){
+    var wx = w.x0 + px/cv.width*(w.x1-w.x0), wy = fn(wx);
+    if(wy<w.y0-2||wy>w.y1+2){ first=true; continue; }
+    var p=toPx(wx,wy);
+    if(first){ ctx.moveTo(p[0],p[1]); first=false; } else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+}
+function draw(){
+  var p = parseFloat(document.getElementById('param').value);
+  document.getElementById('paramVal').textContent = p.toFixed(1);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  var w=world();
+  // Achsen
+  ctx.strokeStyle='#9aa5b1'; ctx.lineWidth=1;
+  var o=toPx(0,0);
+  ctx.beginPath(); ctx.moveTo(0,o[1]); ctx.lineTo(cv.width,o[1]); ctx.moveTo(o[0],0); ctx.lineTo(o[0],cv.height); ctx.stroke();
+  ctx.fillStyle='#9aa5b1'; ctx.font='11px sans-serif';
+  for(var t=Math.ceil(w.x0);t<=w.x1;t++){ if(!t)continue; var q=toPx(t,0); ctx.fillText(t, q[0]-4, o[1]+14); }
+  for(var s=Math.ceil(w.y0);s<=w.y1;s++){ if(!s)continue; var q2=toPx(0,s); ctx.fillText(s, o[0]+6, q2[1]+4); }
+  // Höhenlinien y = c - f(x)
+  var cs = preset===1 ? [-2,-1,0,1,2] : [-1,0,1,2];
+  cs.forEach(function(c){
+    drawCurve(function(x){return c - f(x);}, '#8fb3dd', 1.4);
+    var lp = toPx(0, c - f(0)); ctx.fillStyle='#4a7ab5'; ctx.fillText('Q='+c, lp[0]+4, lp[1]-4);
+  });
+  // Restriktion
+  drawCurve(function(x){return rest(x,p);}, '#2a9d5c', 2.2, [7,4]);
+  // Tangentialpunkt: f'(x) = -m  (h' = f'(x)+m = 0)
+  var xs = preset===1 ? -p/2 : Math.asinh(-p);
+  var ys = rest(xs,p), Qs = f(xs)+ys;
+  var tp = toPx(xs,ys);
+  // berührte Höhenlinie
+  drawCurve(function(x){return Qs - f(x);}, '#d9534f', 1.6, [2,3]);
+  ctx.fillStyle='#d9534f'; ctx.beginPath(); ctx.arc(tp[0],tp[1],6,0,7); ctx.fill();
+  // ∇Q am Ursprung (0, f'(0)=0 → (0,1)) als Pfeil
+  var g0=toPx(0,0), g1=toPx(0, preset===1?0.7:0.7);
+  ctx.strokeStyle='#b3261e'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(g0[0],g0[1]); ctx.lineTo(g1[0],g1[1]); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(g1[0],g1[1]); ctx.lineTo(g1[0]-5,g1[1]+8); ctx.lineTo(g1[0]+5,g1[1]+8); ctx.fill();
+  ctx.fillText('∇Q(0,0)', g1[0]+8, g1[1]+2);
+  var pname = preset===1?'m':'a';
+  var form = preset===1
+    ? 'h\'(x) = 2x + m = 0 → x* = −m/2 = ' + (-p/2).toFixed(2)
+    : 'h\'(x) = sinh(x) + a = 0 → x* = arsinh(−a) = ' + xs.toFixed(2);
+  document.getElementById('readout').innerHTML =
+    '<b>Berührpunkt:</b> x* = ' + xs.toFixed(2) + ', y* = ' + ys.toFixed(2) +
+    ' &nbsp;·&nbsp; <b>Q*</b> = ' + Qs.toFixed(3) +
+    ' &nbsp;·&nbsp; <b>Minimum</b> (h\'\' = ' + (preset===1?'2':'cosh x*') + ' &gt; 0)' +
+    '<br><span style="color:#5a6675">' + form + ' &nbsp;·&nbsp; λ = −1 (aus ∂L/∂y = 1+λ = 0)</span>';
+}
+setPreset(1);
+
+/* ===== Quiz ===== */
+var Q=[
+ {q:"Im Optimum unter einer Restriktion gilt grafisch:",
+  o:["Die Restriktion schneidet die Höhenlinie senkrecht","Die Restriktion berührt eine Höhenlinie tangential","∇Q ist Null","Die Höhenlinie hat dort einen Knick"],c:1,
+  fb:"Tangentialbedingung: ∇Q ∥ ∇g — genau das erzwingt der Lagrange-Ansatz."},
+ {q:"Der Gradient ∇Q steht zu den Höhenlinien …",
+  o:["parallel","senkrecht","im 45°-Winkel","beliebig"],c:1,
+  fb:"∇Q ⊥ Höhenlinie, Richtung des stärksten Anstiegs."},
+ {q:"L = x²+y+λ(y−2x−1). Was liefert ∂L/∂y = 0 sofort?",
+  o:["x = −1","λ = −1","y = −1","nichts Brauchbares"],c:1,
+  fb:"∂L/∂y = 1+λ = 0 → λ = −1. Reischl-Muster: Q linear in y → λ direkt."},
+ {q:"Wie begründet man in der Klausur Min vs. Max?",
+  o:["Vorzeichen von λ","h''(x*) der eingesetzten 1D-Funktion","∇Q-Länge","Ausprobieren zweier Punkte reicht immer"],c:1,
+  fb:"Restriktion einsetzen → h(x); h''>0 Min, h''<0 Max. λ-Vorzeichen ist keine Begründung."},
+ {q:"Q = y + cosh x entlang x = 5 (senkrechte Gerade) hat …",
+  o:["ein Minimum","ein Maximum","kein Extremum (monoton in y)","zwei Extrema"],c:2,
+  fb:"Q = y + cosh(5) ist linear in y → streng monoton → kein Optimum (2024/3.7)."},
+ {q:"Höhenlinie von Q = y + cosh x durch den Punkt (0|0)?",
+  o:["y = −cosh x","y = 1 − cosh x","y = cosh x − 1","y = 0"],c:1,
+  fb:"c = Q(0,0) = 1 → y = 1 − cosh x."}
+];
+(function(){
+  var c=document.getElementById('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div');
+    var pq=document.createElement('p'); pq.innerHTML='<b>'+(qi+1)+'.</b> '+item.q; w.appendChild(pq);
+    item.o.forEach(function(opt,oi){
+      var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){
+        var fb=w.querySelector('.qfb');
+        Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(el){el.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}
+        else{b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+      };
+      w.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='qfb'; w.appendChild(fb);
+    c.appendChild(w);
+  });
+})();
+</script>
+</body>
+</html>

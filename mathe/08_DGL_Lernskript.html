@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thema 8 – Differentialgleichungen</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.35rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap} nav a:hover{background:var(--note)}
+  main{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f} .ok{background:var(--ok);border-left:4px solid #3aa765} .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none} details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)} details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  .st{background:var(--note);border-radius:8px;padding:4px 9px;font-size:.82rem;font-weight:700;color:var(--akz2)} .src{color:#2a9d5c;font-size:.86em}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:.9rem;cursor:pointer;margin:3px} button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  .reveal{display:none;background:#fff;border:1px solid var(--bd);border-radius:9px;padding:12px 14px;margin-top:6px} .reveal.show{display:block}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;margin:8px 0} th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)}
+  footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem} code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 8 — Differentialgleichungen</h1>
+  <p>Analysis · Prof. Reischl · Klausur 23.07.2026 · Blatt 11 (+ Blatt 10 separabel, Altklausur 2024 A6/A7, 2023 A1)</p>
+  <p>Interaktiv — erst eine komplette DGL gelöst, dann Rezepte, char.-Polynom-Trainer, Ansatz-Tabelle, Quiz.</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a><a href="#durchlauf">Komplett-Beispiel</a><a href="#sep">Separabel</a><a href="#lin">Linear</a>
+  <a href="#trainer">char.-Polynom-Trainer</a><a href="#ansatz">Ansatz-Tabelle</a><a href="#laplace">Laplace</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <p>Eine <b>Differentialgleichung (DGL)</b> verknüpft $y$ mit seinen Ableitungen $y',y'',\dots$. Gesucht ist die Funktion $y(x)$.
+  Zwei Typen decken die Klausur ab:</p>
+  <table>
+    <tr><th>Typ</th><th>Erkennungsmerkmal</th><th>Methode</th></tr>
+    <tr><td><b>A) Separabel</b> (1. Ordnung)</td><td>lässt sich in $g(y)\,dy=f(x)\,dx$ trennen</td><td>Trennung der Variablen, beide Seiten integrieren</td></tr>
+    <tr><td><b>B) Linear, konst. Koeff.</b></td><td>$y''+py'+qy=s(x)$</td><td>homogen (char. Polynom) + spezielle Lösung, dann Anfangsbedingungen</td></tr>
+  </table>
+</section>
+
+<section id="durchlauf">
+  <h2>1b · Ein komplettes Beispiel — jede Zahl erklärt</h2>
+  <div class="box note"><b>Aufgabe (Blatt 11, Üb. 10.2):</b> $y''-4y'+4y=4$ mit $y(0)=1,\ y'(0)=1$.</div>
+
+  <h3><span class="st">Schritt 1</span> &nbsp;Charakteristisches Polynom (woher $\lambda^2-4\lambda+4$ kommt)</h3>
+  <p>Ansatz $y=e^{\lambda x}$ in die <b>homogene</b> Gleichung $y''-4y'+4y=0$: $y''\to\lambda^2,\ y'\to\lambda,\ y\to1$:</p>
+  <p>$\lambda^2-4\lambda+4=0 \Rightarrow (\lambda-2)^2=0 \Rightarrow \boxed{\lambda=2}$ (doppelt).</p>
+
+  <h3><span class="st">Schritt 2</span> &nbsp;Homogene Lösung (warum das extra $x$)</h3>
+  <p>Doppelte Nullstelle → zweite Lösung mit Faktor $x$: &nbsp;$y_h=c_1e^{2x}+c_2\,x\,e^{2x}$.</p>
+
+  <h3><span class="st">Schritt 3</span> &nbsp;Spezielle Lösung (woher $q_1=1$)</h3>
+  <p>Rechte Seite $=4$ (konstant) → Ansatz $y_s=q_1$ (konstant). Einsetzen ($y_s'=0,\ y_s''=0$):</p>
+  <p>$0-0+4q_1=4 \Rightarrow \boxed{q_1=1}\Rightarrow y_s=1$.</p>
+
+  <h3><span class="st">Schritt 4</span> &nbsp;Gesamtlösung = homogen + speziell</h3>
+  <p>$y=c_1e^{2x}+c_2\,x\,e^{2x}+1$.</p>
+
+  <h3><span class="st">Schritt 5</span> &nbsp;Anfangsbedingungen (woher $c_1=0,\ c_2=1$)</h3>
+  <p>$y(0)=c_1\cdot1+c_2\cdot0+1=c_1+1\overset{!}{=}1 \Rightarrow \boxed{c_1=0}$.</p>
+  <p>$y'(x)=2c_1e^{2x}+c_2(1+2x)e^{2x}$ &nbsp;<span class="src">← Produktregel bei $x e^{2x}$</span>, &nbsp;$y'(0)=2c_1+c_2\overset{!}{=}1 \Rightarrow 0+c_2=1 \Rightarrow \boxed{c_2=1}$.</p>
+
+  <div class="box ok"><b>Ergebnis: $y(x)=x\,e^{2x}+1$.</b> (deckt sich mit Musterlösung, auch mit der Laplace-Methode unten). Das ist das komplette Schema für lineare DGLs.</div>
+</section>
+
+<section id="sep">
+  <h2>2 · Typ A — Separabel (Trennung der Variablen)</h2>
+  <ol>
+    <li>Auf $g(y)\,dy=f(x)\,dx$ bringen (alle $y$ nach links, alle $x$ nach rechts).</li>
+    <li>Beide Seiten integrieren (Konstante $c$ nicht vergessen).</li>
+    <li>Anfangsbedingung einsetzen → $c$ bestimmen, nach $y$ auflösen.</li>
+  </ol>
+  <details><summary>Beispiel $y\,y'=\frac{1}{1+x^2}$, $y(0)=1$ (Blatt 10, Üb. 10.3)</summary><div class="det-body">
+    <p>$y\,dy=\frac{1}{1+x^2}dx \Rightarrow \frac{y^2}{2}=\arctan x+c$. &nbsp;$y(0)=1: \frac12=0+c\Rightarrow c=\frac12$.</p>
+    <p>$\Rightarrow y=\sqrt{2\arctan x+1}$.</p>
+  </div></details>
+  <details><summary>Beispiel $2y'y=\cos x$, $y(0)=1$ (Blatt 11, Üb. 10.1.1)</summary><div class="det-body">
+    <p>$2y\,dy=\cos x\,dx \Rightarrow y^2=\sin x+c$. &nbsp;$y(0)=1:1=0+c\Rightarrow c=1 \Rightarrow y=\sqrt{\sin x+1}$.</p>
+  </div></details>
+</section>
+
+<section id="lin">
+  <h2>3 · Typ B — Linear, konstante Koeffizienten</h2>
+  <ol>
+    <li><b>Homogen lösen:</b> char. Polynom (ersetze $y^{(k)}\to\lambda^k$), Nullstellen bestimmen → $y_h$ (Fälle im Trainer unten).</li>
+    <li><b>Spezielle Lösung $y_s$:</b> Ansatz „vom Typ der rechten Seite" (Tabelle unten), einsetzen, Koeffizienten vergleichen.</li>
+    <li><b>Gesamtlösung</b> $y=y_h+y_s$.</li>
+    <li><b>Anfangsbedingungen</b> einsetzen → $c_1,c_2$.</li>
+  </ol>
+  <div class="box warn"><b>Resonanz/Summen:</b> Passt der Ansatz schon zu $y_h$, mit $x$ multiplizieren. Ist die rechte Seite eine <b>Summe</b> verschiedener Typen (z.B. $x+\sin x$, Klausur 2024/7.2), löst man <b>für jeden Summanden getrennt</b> (Superposition) und addiert — deshalb geht es nicht „in einem Rutsch".</div>
+</section>
+
+<section id="trainer">
+  <h2>4 · char.-Polynom → homogene Lösung (Trainer)</h2>
+  <p>Der Kern jeder linearen DGL. Nullstellen ansehen, homogene Lösung selbst überlegen, dann aufdecken:</p>
+  <div id="tbtns"></div>
+  <div id="treveal" class="reveal"></div>
+  <div class="box note" style="margin-top:10px"><b>Drei Fälle:</b> zwei verschiedene reelle $\lambda_1\ne\lambda_2$ → $c_1e^{\lambda_1x}+c_2e^{\lambda_2x}$; &nbsp;doppelte $\lambda$ → $c_1e^{\lambda x}+c_2\,x\,e^{\lambda x}$; &nbsp;komplex $a\pm bi$ → $e^{ax}(c_1\cos bx+c_2\sin bx)$.</div>
+</section>
+
+<section id="ansatz">
+  <h2>5 · Ansatz-Tabelle für die spezielle Lösung</h2>
+  <table>
+    <tr><th>Rechte Seite $s(x)$</th><th>Ansatz $y_s$</th></tr>
+    <tr><td>Konstante $k$</td><td>$q_0$</td></tr>
+    <tr><td>Polynom Grad $n$ (z.B. $6x+1$)</td><td>$q_0+q_1x+\dots+q_nx^n$</td></tr>
+    <tr><td>$e^{kx}$</td><td>$q\,e^{kx}$ (falls $k$ keine Nullstelle; sonst $\cdot x$)</td></tr>
+    <tr><td>$\sin(\omega x)$ oder $\cos(\omega x)$</td><td>$q_1\cos(\omega x)+q_2\sin(\omega x)$</td></tr>
+  </table>
+  <details><summary>Beispiel $y''-5y'+6y=6x+1$, $y(0)=0,y'(0)=1$ (Blatt 11, Üb. 10.4)</summary><div class="det-body">
+    <p>char.: $(\lambda-2)(\lambda-3)=0$ → $y_h=c_1e^{2x}+c_2e^{3x}$.</p>
+    <p>Ansatz $y_s=q_1+q_2x$: einsetzen $-5q_2+6(q_1+q_2x)=6x+1$ → $6q_2=6\Rightarrow q_2=1$; $-5q_2+6q_1=1\Rightarrow q_1=1$. $y_s=1+x$.</p>
+    <p>Gesamt $y=c_1e^{2x}+c_2e^{3x}+1+x$. AB: $c_1+c_2+1=0$, $2c_1+3c_2+1=1$ → $c_1=-3,c_2=2$.</p>
+    <p><b>$y(x)=-3e^{2x}+2e^{3x}+1+x$.</b></p>
+  </div></details>
+  <details><summary>Beispiel 3. Ordnung $y'''-3y'-2y=0$ (Blatt 11, Üb. 10.1.2)</summary><div class="det-body">
+    <p>char. $\lambda^3-3\lambda-2=0$, Hinweis Nullstelle $2$: $(\lambda-2)(\lambda+1)^2=0$ → Nullstellen $2$ und $-1$ (doppelt).</p>
+    <p>$y=c_1e^{2x}+c_2e^{-x}+c_3xe^{-x}$; mit $y(0)=0,y'(0)=0,y''(0)=9$: $y(x)=e^{2x}-e^{-x}-3xe^{-x}$.</p>
+  </div></details>
+</section>
+
+<section id="laplace">
+  <h2>6 · Laplace-Methode (Alternative, Blatt 11 Üb. 10.3)</h2>
+  <p>Für dieselbe DGL $y''-4y'+4y=4$, $y(0)=1,y'(0)=1$:</p>
+  <ol>
+    <li>Transformieren mit $\mathcal L\{y'\}=sY-y(0)$, $\mathcal L\{y''\}=s^2Y-sy(0)-y'(0)$, $\mathcal L\{4\}=\frac4s$.</li>
+    <li>Nach $Y$ auflösen: $Y=\dfrac{s^2-3s+4}{s(s-2)^2}$.</li>
+    <li>Partialbruchzerlegung: $Y=\dfrac{1}{(s-2)^2}+\dfrac1s$.</li>
+    <li>Rücktransformieren: $\dfrac{1}{(s-2)^2}\to xe^{2x}$, $\dfrac1s\to1$ → $y(x)=xe^{2x}+1$ (gleich wie oben ✓).</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>7 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>8 · Stolpersteine</h2>
+  <ol>
+    <li><b>Doppelte Nullstelle</b> → zweite homogene Lösung mit Faktor $x$ ($xe^{\lambda x}$). Bei 3-facher: zusätzlich $x^2e^{\lambda x}$.</li>
+    <li><b>Komplexe Nullstellen</b> $a\pm bi$ → $e^{ax}(\cos bx,\sin bx)$, nicht $e^{(a+bi)x}$ stehen lassen.</li>
+    <li><b>Spezielle Lösung nach Typ der rechten Seite</b>; bei Resonanz (Ansatz ∈ $y_h$) mit $x$ multiplizieren.</li>
+    <li><b>Summe verschiedener Typen</b> auf der rechten Seite → getrennt lösen und addieren (Superposition).</li>
+    <li><b>Anfangsbedingungen erst am Schluss</b> (an der Gesamtlösung), nicht an $y_h$.</li>
+    <li>Separabel: nach dem Integrieren die <b>Konstante $c$</b> über die Anfangsbedingung bestimmen, dann nach $y$ auflösen.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Thema 8 · interaktiv · Quelle: Blatt 11 (Üb. 10.1–10.4 + Musterlösung), Blatt 10 (separabel), Altklausur 2024 A6/A7, 2023 A1.
+  Quellnotiz <code>08_DGL_Uebungen.md</code>. Ergebnisse gegen Musterlösung geprüft. (MathJax via CDN.)
+</footer>
+<script>
+var CHAR=[
+ {l:"(\\lambda-2)^2=0", t:"doppelte reelle Nullstelle $\\lambda=2$", y:"y_h=c_1e^{2x}+c_2\\,x\\,e^{2x}"},
+ {l:"(\\lambda-2)(\\lambda-3)=0", t:"zwei verschiedene reelle Nullstellen $2,3$", y:"y_h=c_1e^{2x}+c_2e^{3x}"},
+ {l:"\\lambda^2+4=0", t:"rein komplex $\\pm 2i$ (a=0, b=2)", y:"y_h=c_1\\cos(2x)+c_2\\sin(2x)"},
+ {l:"\\lambda^2-2\\lambda+5=0", t:"komplex $1\\pm 2i$ (a=1, b=2)", y:"y_h=e^{x}\\big(c_1\\cos(2x)+c_2\\sin(2x)\\big)"},
+ {l:"(\\lambda+3)^2=0", t:"doppelt $\\lambda=-3$ (Klausur 2024: $y''+6y'+9y=0$)", y:"y_h=c_1e^{-3x}+c_2\\,x\\,e^{-3x}"}
+];
+(function(){
+  var wrap=document.getElementById('tbtns'), rev=document.getElementById('treveal');
+  CHAR.forEach(function(it){
+    var b=document.createElement('button'); b.className='sec'; b.innerHTML='$'+it.l+'$';
+    b.onclick=function(){ rev.className='reveal show';
+      rev.innerHTML='<div style="margin-bottom:6px">$'+it.l+'$ &nbsp;—&nbsp; '+it.t+'</div><div><b>Homogene Lösung:</b> $'+it.y+'$</div>';
+      if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([rev]);}
+    };
+    wrap.appendChild(b);
+  });
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([wrap]);}
+})();
+var Q=[
+ {q:"$y''-4y'+4y=0$: char. Polynom und homogene Lösung?",
+  o:["$\\lambda^2-4\\lambda+4$, $c_1e^{2x}+c_2e^{-2x}$","$(\\lambda-2)^2$, $c_1e^{2x}+c_2xe^{2x}$","$\\lambda^2+4$, $\\cos2x,\\sin2x$","$(\\lambda-4)$, $c_1e^{4x}$"],c:1,
+  fb:"$(\\lambda-2)^2=0$, doppelte Nullstelle → zweite Lösung $xe^{2x}$."},
+ {q:"Rechte Seite $=4$ (konstant): welcher Ansatz für $y_s$?",
+  o:["$q_0$ (Konstante)","$q_0+q_1x$","$q\\,e^{4x}$","$\\sin(4x)$"],c:0,
+  fb:"Konstante Störung → konstanter Ansatz $y_s=q_0$."},
+ {q:"Char. Polynom $\\lambda^2+4=0$ → Lösung?",
+  o:["$c_1e^{2x}+c_2e^{-2x}$","$c_1\\cos2x+c_2\\sin2x$","$c_1e^{2x}+c_2xe^{2x}$","$c_1+c_2x$"],c:1,
+  fb:"Nullstellen $\\pm2i$ (a=0,b=2) → $\\cos2x,\\sin2x$."},
+ {q:"Separable DGL $y\\,y'=\\frac{1}{1+x^2}$: erster Schritt?",
+  o:["char. Polynom","$y\\,dy=\\frac{1}{1+x^2}dx$ trennen","Laplace","Ansatz $q_0$"],c:1,
+  fb:"Variablen trennen, dann beide Seiten integrieren."},
+ {q:"Rechte Seite $x+\\sin x$ (Summe) — wie vorgehen?",
+  o:["gar nicht lösbar","für jeden Summanden getrennt (Superposition), dann addieren","nur den ersten nehmen","quadrieren"],c:1,
+  fb:"Superposition: spezielle Lösung für $x$ und für $\\sin x$ getrennt, dann summieren."},
+ {q:"Wann bekommt die homogene Lösung ein extra $x$?",
+  o:["nie","bei doppelter Nullstelle","bei komplexen Nullstellen","immer"],c:1,
+  fb:"Doppelte (mehrfache) Nullstelle → $xe^{\\lambda x}$ (bzw. $x^2e^{\\lambda x}$)."}
+];
+(function(){
+  var c=document.getElementById('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div'); var pq=document.createElement('p'); pq.innerHTML='<b>'+(qi+1)+'.</b> '+item.q; w.appendChild(pq);
+    item.o.forEach(function(opt,oi){ var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){ var fb=w.querySelector('.qfb'); Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(el){el.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;} else {b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+        if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([w]);} };
+      w.appendChild(b); });
+    var fb=document.createElement('div'); fb.className='qfb'; w.appendChild(fb); c.appendChild(w);
+  });
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([c]);}
+})();
+</script>
+</body>
+</html>

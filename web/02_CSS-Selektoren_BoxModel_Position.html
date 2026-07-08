@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS-Selektoren + Box-Model + Positionierung — WE-Klausur Gen A</title>
+<style>
+  :root{
+    --bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;
+    --acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14;--hl:#264f78;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}
+  h2{font-size:19px;margin:36px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--warn);margin-right:6px}
+  .tag.prod{color:var(--ok)}.tag.mc{color:var(--acc)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .codebox{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px;overflow:auto;font-size:13px;line-height:1.65}
+  .kw{color:#ff7b72}.fn{color:#d2a8ff}.str{color:#a5d6ff}.num{color:#79c0ff}.com{color:#8b949e}.sel{color:#7ee787}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .sels{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0 14px}
+  .sels button{background:var(--code);color:#7ee787;border:1px solid var(--line);border-radius:7px;padding:7px 11px;font-family:monospace;font-size:13px;cursor:pointer}
+  .sels button:hover{border-color:var(--acc)}
+  .sels button.act{background:var(--acc);color:#06121f;border-color:var(--acc);font-weight:700}
+  /* rendered demo body */
+  .demo{background:#fff;color:#111;border-radius:8px;padding:14px 16px;font-family:Georgia,serif}
+  .demo h1{font-size:20px;margin:6px 0}.demo h2{font-size:16px;border:0;margin:6px 0}.demo p{margin:5px 0}
+  .demo ol{margin:6px 0}
+  .demo [data-id]{transition:.2s;border-radius:3px;padding:0 2px;outline:2px solid transparent}
+  .demo .match{background:#fff3a0;outline:2px solid #e3b341;box-shadow:0 0 0 2px #e3b34155}
+  .ans{font-family:monospace;color:var(--ok);min-height:22px;margin-top:6px}
+  .exp{background:var(--panel2);border-left:3px solid var(--acc);border-radius:0 8px 8px 0;padding:9px 13px;margin-top:10px;font-size:14px;min-height:40px}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted);font-weight:600}
+  table.t td:first-child{font-family:monospace;color:#7ee787;white-space:nowrap}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  /* box model */
+  .bm{display:inline-block;text-align:center;font-family:monospace;font-size:11px}
+  .bm .margin{background:#f9d29955;padding:22px;border-radius:6px}
+  .bm .border{background:#f8514944;padding:18px}
+  .bm .padding{background:#3fb95044;padding:22px}
+  .bm .content{background:#4ea1ff;color:#06121f;padding:24px 30px;font-weight:700}
+  .bm .lab{color:var(--muted);display:block;margin-bottom:3px}
+  /* position canvas */
+  .canvas{position:relative;background:#fff;border:1px dashed #888;border-radius:6px;height:220px;color:#111;font-family:monospace;font-size:11px;overflow:hidden}
+  .box{position:absolute;width:90px;height:90px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;border-radius:4px;opacity:0;transition:.5s}
+  .box.show{opacity:1}
+  #bxblue{background:#2f81f7;left:10px;top:10px}
+  #bxgreen{background:#2ea043;left:20px;top:20px;width:70px;height:70px;font-size:10px}
+  #bxred{background:#da3633;left:0;top:0}
+  .coord{position:absolute;font-size:10px;color:#555}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CSS — Selektoren · Box-Model · Positionierung</h1>
+  <p class="sub">WE-Klausur Generation A (Haefner 2023/24/25 + Probe) · Aufgabe 2. Selektor-Matching & top/left kommen <b>jedes Jahr</b>.</p>
+
+  <!-- ===== SELEKTOR MATCHING ===== -->
+  <h2><span class="tag">Tracen</span> Aufgabe 2 — Welche IDs matchen den Selektor?</h2>
+  <p class="sub">Klick einen Selektor → passende Elemente werden im echten gerenderten Body gelb markiert (Browser wertet selbst aus → garantiert korrekt).</p>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="sels" id="sels"></div>
+      <div class="ans" id="ans">— Selektor wählen —</div>
+      <div class="exp" id="exp">Die Antwort erscheint hier mit Begründung.</div>
+    </div>
+    <div class="panel">
+      <div class="demo" id="demo">
+        <h1 id="h1" data-id="h1">Meine Überschrift</h1>
+        <p id="p1" data-id="p1">Absatz 1</p>
+        <h2 id="h2" data-id="h2">Überschrift 2</h2>
+        <p id="p2" data-id="p2">Absatz 2</p>
+        <ol id="ol1" data-id="ol1" class="awe">
+          <li id="li1" data-id="li1">Aufzählung 1</li>
+          <li id="li2" data-id="li2">Aufzählung<b id="b" data-id="b">2</b></li>
+          <li id="li3" data-id="li3">Aufzählung 3</li>
+        </ol>
+        <p id="p3" data-id="p3">Absatz 3</p>
+        <h2 id="h3" data-id="h3">Noch eine Überschrift</h2>
+        <p id="p4" data-id="p4" class="awe maria">Absatz 4</p>
+      </div>
+    </div>
+  </div>
+
+  <details>
+    <summary>✅ Komplette Lösungstabelle</summary>
+    <table class="t">
+      <tr><th>Selektor</th><th>Matcht</th><th>Begründung</th></tr>
+      <tr><td>#p1</td><td>p1</td><td>ID ist eindeutig.</td></tr>
+      <tr><td>#awe</td><td>(nichts)</td><td>Kein Element hat <code>id="awe"</code> — <code>awe</code> ist eine <b>Klasse</b>, keine ID.</td></tr>
+      <tr><td>.awe</td><td>ol1, p4</td><td>Beide haben die Klasse awe (p4 = "awe maria" zählt mit).</td></tr>
+      <tr><td>ol[class="awe"]</td><td>ol1</td><td>Exakter Attributwert → nur "awe". p4 hat "awe maria" → kein Match.</td></tr>
+      <tr><td>[class~="awe"]</td><td>ol1, p4</td><td><code>~=</code> = Wort in Leerzeichen-Liste → matcht "awe" UND "awe maria".</td></tr>
+      <tr><td>ol:first-child</td><td>(nichts)</td><td>ol1 ist das 5. Kind seines Elternelements (in der Klausur: body), nicht das erste → kein Match.</td></tr>
+      <tr><td>ol first-child</td><td>(nichts)</td><td>⚠️ OHNE Doppelpunkt: sucht ein Element namens <code>&lt;first-child&gt;</code> INNERHALB einer ol. Existiert nicht → 0 Treffer (ist NICHT ungültig, nur leer!).</td></tr>
+      <tr><td>ol &gt; li</td><td>li1, li2, li3</td><td>Direkte Kind-li von ol.</td></tr>
+      <tr><td>li + li</td><td>li2, li3</td><td>Jedes li, dem direkt ein li vorausgeht (li1 hat keinen li-Vorgänger).</td></tr>
+      <tr><td>p + p</td><td>(nichts)</td><td>Kein p folgt direkt auf ein p (immer ein h2/ol dazwischen).</td></tr>
+      <tr><td>p ~ p</td><td>p2, p3, p4</td><td>Allgemeines Geschwister: jedes p mit vorausgehendem p (gleicher Elternteil). Direkter Kontrast zu <code>p + p</code>.</td></tr>
+      <tr><td>[class^="awe"]</td><td>ol1, p4</td><td><code>^=</code> Attributwert <b>beginnt</b> mit "awe".</td></tr>
+      <tr><td>[class$="maria"]</td><td>p4</td><td><code>$=</code> Attributwert <b>endet</b> mit "maria".</td></tr>
+      <tr><td>[class*="ari"]</td><td>p4</td><td><code>*=</code> Attributwert <b>enthält</b> Teilstring "ari".</td></tr>
+    </table>
+  </details>
+
+  <div class="falle"><b>Falle 1 — exakt vs. Wortliste:</b> <code>[class="awe"]</code> (exakt) ≠ <code>[class~="awe"]</code> (enthält das Wort). Bei Mehrfachklassen entscheidend.</div>
+  <div class="falle"><b>Falle 2 — fehlender Doppelpunkt:</b> <code>ol:first-child</code> = Pseudoklasse. <code>ol first-child</code> = Deszendant-Kombinator + Tag-Name → sucht <code>&lt;first-child&gt;</code>-Tag → 0 Treffer. Klassischer Fallenselektor.</div>
+  <div class="falle"><b>Falle 3 — # vs .:</b> <code>#awe</code> sucht eine ID, nicht die Klasse. Kein Element hat die ID awe.</div>
+  <div class="falle"><b>Falle 4 — Teilstring-Attributselektoren:</b> <code>[a^="x"]</code> beginnt · <code>[a$="x"]</code> endet · <code>[a*="x"]</code> enthält (beliebiger Teilstring, KEINE Wortgrenze — <code>~=</code> dagegen matcht nur ganze, leerzeichengetrennte Wörter). Aus der Dozenten-Zusammenfassung; <code>[class^="…"]</code> kam in Altklausur 2019 dran.</div>
+  <div class="falle"><b>Falle 5 — Geschwister-Kombinatoren:</b> <code>E + F</code> = nur der DIREKTE nächste Nachbar · <code>E ~ F</code> = ALLE nachfolgenden Geschwister.</div>
+
+  <!-- ===== BOX MODEL ===== -->
+  <h2><span class="tag prod">Benennen</span> Box-Model</h2>
+  <div class="panel" style="text-align:center">
+    <div class="bm"><div class="margin"><span class="lab">margin (außen, transparent)</span>
+      <div class="border"><span class="lab">border</span>
+        <div class="padding"><span class="lab">padding (innen)</span>
+          <div class="content">content<br>(width × height)</div>
+        </div></div></div></div>
+    <p class="sub" style="margin-top:14px">Von innen nach außen: <b>content → padding → border → margin</b>. Standard <code>box-sizing:content-box</code>: <code>width</code>/<code>height</code> = nur Content. Gesamtbreite = width + 2·padding + 2·border + 2·margin.</p>
+  </div>
+
+  <!-- ===== POSITION ===== -->
+  <h2><span class="tag">Tracen</span> Aufgabe 2e — top/left vom Seitenrand</h2>
+  <p class="sub">Klick „Schritt", um blau → grün → rot einzublenden und die berechnete Position zu sehen.</p>
+  <div class="grid">
+    <div class="panel">
+      <div class="codebox"><pre>#blue  { <span class="kw">position</span>:absolute; left:10px; top:10px; border:5px; w/h:100px }
+#green { <span class="kw">position</span>:relative; left:10px; top:10px; border:5px; w/h:100px }
+#red   { left:10px; top:10px; border:5px; w/h:100px }  <span class="com">/* kein position! */</span>
+
+<span class="kw">&lt;div</span> id=<span class="str">"blue"</span><span class="kw">&gt;</span>
+   <span class="kw">&lt;div</span> id=<span class="str">"green"</span><span class="kw">&gt;&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;div</span> id=<span class="str">"red"</span><span class="kw">&gt;&lt;/div&gt;</span></pre></div>
+      <div style="margin-top:12px"><button id="pstep" class="primary" style="background:var(--acc);color:#06121f;border:0;border-radius:7px;padding:8px 14px;font-weight:700;cursor:pointer">Schritt ▶</button>
+      <button id="preset" style="background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:8px 14px;cursor:pointer">⟲</button></div>
+      <div class="exp" id="pexp">Drücke „Schritt".</div>
+    </div>
+    <div class="panel">
+      <div class="canvas" id="canvas">
+        <div class="coord" style="left:2px;top:2px">(0,0)</div>
+        <div class="box" id="bxblue">blue</div>
+        <div class="box" id="bxgreen">green</div>
+        <div class="box" id="bxred">red</div>
+      </div>
+      <table class="t" style="margin-top:10px">
+        <tr><th>Element</th><th>top</th><th>left</th><th>warum</th></tr>
+        <tr><td>#blue</td><td>10px</td><td>10px</td><td>absolute → relativ zum Viewport-Ursprung</td></tr>
+        <tr><td>#green</td><td>20px</td><td>20px</td><td>relative: Normalposition (=blaus Ursprung 10,10) + Verschiebung 10/10</td></tr>
+        <tr><td>#red</td><td>0px</td><td>0px</td><td>static! top/left wirkungslos; blue ist aus dem Fluss → rot oben</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="falle"><b>Falle — <code>border:5px</code> ist wirkungslos!</b> Die Border-Kurzform braucht einen <b>style</b> (z.B. <code>border:5px solid</code>). <code>border:5px</code> allein → <code>border-style:none</code> → keine Border, 0px. Deshalb verschiebt die "5px" nichts.</div>
+  <div class="falle"><b>Falle — <code>#red</code> hat kein <code>position</code>:</b> Default ist <code>static</code> → <code>top</code>/<code>left</code> werden ignoriert. Da <code>#blue</code> absolut (aus dem Fluss) ist, rutscht rot an den Anfang → (0,0).</div>
+  <div class="falle"><b>Falle — <code>absolute</code> vs <code>relative</code>:</b> absolute = relativ zum nächsten positionierten Vorfahren (sonst Viewport), aus dem Fluss. relative = verschoben relativ zur EIGENEN Normalposition, bleibt im Fluss.</div>
+
+  <h2>Drill</h2>
+  <details><summary>[Tracen] Welche IDs matcht <code>.maria</code>?</summary><p>Nur <code>p4</code> (einziges Element mit Klasse maria).</p></details>
+  <details><summary>[MC] Matcht <code>ol[class="awe"]</code> das Element p4 (class="awe maria")?</summary><p>Nein — <code>=</code> verlangt den exakten Wert "awe". Für Teiltreffer bräuchte man <code>[class~="awe"]</code>. Außerdem ist p4 kein <code>ol</code>.</p></details>
+  <details><summary>[Tracen] Wäre #green bei <code>position:absolute</code> statt relative, wo läge es?</summary><p>Dann relativ zum nächsten positionierten Vorfahren = #blue (absolut). left/top:10 → (10,10) INNERHALB von blue → Seitenposition (10+10, 10+10) = (20,20). Gleiche Zahl hier zufällig, aber andere Begründung (Bezug = blue statt Normalfluss).</p></details>
+
+  <p class="sub" style="margin-top:30px">Selektor-Treffer gegen jsdom verifiziert; Positionslogik nach CSS-Spec. WE-Klausur-Lernpaket · Säule 2 (CSS) · <code>Materialien/CSS/</code></p>
+</div>
+
+<script>
+const selectors = [
+  {s:'#p1', ans:'p1', ex:'ID ist eindeutig.'},
+  {s:'#awe', ans:'(nichts)', ex:'awe ist eine Klasse, keine ID. # sucht IDs.'},
+  {s:'.awe', ans:'ol1, p4', ex:'Beide tragen die Klasse awe (auch "awe maria").'},
+  {s:'ol[class="awe"]', ans:'ol1', ex:'Exakter Attributwert "awe" — p4 hat "awe maria" → raus.'},
+  {s:'[class~="awe"]', ans:'ol1, p4', ex:'~= = Wort in Leerzeichen-Liste → matcht beide.'},
+  {s:'ol:first-child', ans:'(nichts)', ex:'ol1 ist nicht das erste Kind von body.'},
+  {s:'ol first-child', ans:'(nichts)', ex:'⚠ Ohne : sucht es ein <first-child>-Tag in einer ol → existiert nicht.'},
+  {s:'ol > li', ans:'li1, li2, li3', ex:'Direkte li-Kinder von ol.'},
+  {s:'li + li', ans:'li2, li3', ex:'Jedes li mit direktem li-Vorgänger.'},
+  {s:'.maria', ans:'p4', ex:'Einziges Element mit Klasse maria.'},
+  {s:'p + p', ans:'(nichts)', ex:'Kein p folgt unmittelbar auf ein p.'},
+  {s:'p ~ p', ans:'p2, p3, p4', ex:'Allgemeines Geschwister: JEDES p mit einem vorausgehenden p (gleicher Elternteil). Kontrast zu p+p.'},
+  {s:'[class^="awe"]', ans:'ol1, p4', ex:'^= Wert BEGINNT mit "awe".'},
+  {s:'[class$="maria"]', ans:'p4', ex:'$= Wert ENDET mit "maria".'},
+  {s:'[class*="ari"]', ans:'p4', ex:'*= Wert ENTHÄLT den Teilstring "ari" (ohne Wortgrenze — anders als ~=).'}
+];
+const selBox=document.getElementById('sels'), demo=document.getElementById('demo'),
+      ansEl=document.getElementById('ans'), expEl=document.getElementById('exp');
+selectors.forEach((o,i)=>{
+  const b=document.createElement('button');b.textContent=o.s;b.onclick=()=>pick(i,b);selBox.appendChild(b);
+});
+function pick(i,btn){
+  document.querySelectorAll('#sels button').forEach(x=>x.classList.remove('act'));
+  btn.classList.add('act');
+  demo.querySelectorAll('.match').forEach(e=>e.classList.remove('match'));
+  const o=selectors[i];
+  let hits=[];
+  try{ hits=[...demo.querySelectorAll(o.s)]; }catch(e){ hits=[]; }
+  hits.forEach(e=>e.classList.add('match'));
+  const ids = hits.map(e=>e.getAttribute('data-id')||e.tagName.toLowerCase());
+  ansEl.innerHTML = '<b>'+o.s+'</b> → ' + (ids.length?ids.join(', '):'(nichts)') ;
+  expEl.textContent = o.ex;
+}
+
+// position stepper
+let ps=0;
+const steps=[
+  {id:'bxblue',ex:'#blue: position:absolute, left:10 top:10 → (10,10) vom Seitenrand.'},
+  {id:'bxgreen',ex:'#green: relative INNERHALB blue. Normalposition = blaus Ursprung (10,10), Verschiebung +10/+10 → (20,20). (border:5px wirkungslos → kein style!)'},
+  {id:'bxred',ex:'#red: static! left/top ignoriert. blue ist aus dem Fluss → rot oben → (0,0).'}
+];
+const pexp=document.getElementById('pexp');
+document.getElementById('pstep').onclick=()=>{
+  if(ps<steps.length){ const s=steps[ps]; document.getElementById(s.id).classList.add('show'); pexp.textContent=s.ex; ps++; }
+  else { pexp.textContent='Alle drei Boxen platziert. Reset mit ⟲.'; }
+};
+document.getElementById('preset').onclick=()=>{ps=0;['bxblue','bxgreen','bxred'].forEach(id=>document.getElementById(id).classList.remove('show'));pexp.textContent='Drücke „Schritt".';};
+</script>
+</body>
+</html>

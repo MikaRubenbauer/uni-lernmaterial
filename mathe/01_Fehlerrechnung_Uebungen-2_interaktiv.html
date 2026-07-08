@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Übungen 2 – Jacobi · div/grad · implizite Ableitung</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.35rem}
+  header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px}
+  nav a:hover{background:var(--note)}
+  main{max-width:840px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.18rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:9px 13px;font-size:.9rem;cursor:pointer;margin:3px}
+  button:hover{background:var(--akz2)}
+  button.sec{background:#eef1f6;color:var(--akz2)}
+  .trainer{background:var(--note);border-radius:10px;padding:14px;margin:10px 0}
+  .reveal{margin-top:10px;padding:12px 14px;background:#fff;border:1px solid var(--bd);border-radius:9px;display:none}
+  .reveal.show{display:block}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);
+      border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)}
+  .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600}
+  .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  footer{max-width:840px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+  <h1>Übungen 2 — Jacobi · Divergenz/Gradient · implizite Ableitung</h1>
+  <p>Thema 1 · Blatt 4 + 6 · Prof. Reischl · Klausur 23.07.2026</p>
+  <p>Interaktive Übungsfassung — erst selbst, dann aufklappen / Trainer nutzen.</p>
+</header>
+<nav>
+  <a href="#jac">4.2 Jacobi</a>
+  <a href="#div">4.3 div/grad</a>
+  <a href="#imp">6.1 Implizit-Trainer</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+<main>
+
+<section id="jac">
+  <h2>4.2 · Jacobi-Matrix &amp; Funktionaldeterminante</h2>
+  <p class="box note"><b>Aufgabe.</b> $f=\begin{pmatrix}x_1e^{x_1x_2}\\ x_1/\ln x_2\end{pmatrix}$ — Jacobi und Funktionaldeterminante.
+  Tipp: Jacobi = zeilenweise der Gradient jeder Komponente; Zeile 1 braucht die Produktregel.</p>
+  <details><summary>Lösung zeigen</summary><div class="det-body">
+    <p>$\frac{\partial f_1}{\partial x_1}=e^{x_1x_2}+x_1x_2e^{x_1x_2}=e^{x_1x_2}(1+x_1x_2)$, &nbsp; $\frac{\partial f_1}{\partial x_2}=x_1^2e^{x_1x_2}$.</p>
+    <p>$\frac{\partial f_2}{\partial x_1}=\frac{1}{\ln x_2}$, &nbsp; $\frac{\partial f_2}{\partial x_2}=-\frac{x_1}{x_2(\ln x_2)^2}$.</p>
+    <p>$\dfrac{\partial f}{\partial x^T}=\begin{pmatrix}e^{x_1x_2}(1+x_1x_2)&x_1^2e^{x_1x_2}\\ \frac{1}{\ln x_2}&-\frac{x_1}{x_2(\ln x_2)^2}\end{pmatrix}$</p>
+    <p>$\det=-\dfrac{x_1e^{x_1x_2}(1+x_1x_2)}{x_2(\ln x_2)^2}-\dfrac{x_1^2e^{x_1x_2}}{\ln x_2}$.</p>
+  </div></details>
+</section>
+
+<section id="div">
+  <h2>4.3 · Divergenz &amp; Gradient — Typ-Check</h2>
+  <p>Bestimme erst den <b>Feldtyp</b>, dann das Ergebnis. Klick die richtige Aussage:</p>
+  <div id="divquiz"></div>
+  <details><summary>Lösungen zeigen</summary><div class="det-body">
+    <p><b>(1)</b> $F=xyz$ (Skalarfeld): $\nabla F=(yz,xz,xy)^T$, $\operatorname{div}(\nabla F)=0$.</p>
+    <p><b>(2)</b> $F=(x,y^2,z^3)^T$ (Vektorfeld): $\operatorname{div}F=1+2y+3z^2$, $\nabla(\operatorname{div}F)=(0,2,6z)^T$.</p>
+    <div class="box warn"><b>Stolperstein.</b> $\operatorname{div}(\nabla F)$ startet mit einem Skalarfeld (Ergebnis Skalar);
+    $\nabla(\operatorname{div}F)$ startet mit einem Vektorfeld (Ergebnis Vektor).</div>
+  </div></details>
+</section>
+
+<section id="imp">
+  <h2>6.1 · Implizite-Ableitung-Trainer</h2>
+  <p>Rezept: $F(x,y)=0\Rightarrow \frac{dy}{dx}=-\frac{F_x}{F_y}$. Wähl eine Gleichung &amp; Stelle, rechne selbst, dann aufdecken:</p>
+  <div class="trainer">
+    <div id="impBtns"></div>
+    <div id="impReveal" class="reveal"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2>Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+</main>
+<footer>
+  Interaktive Übungsfassung · Quelle: <code>01_Fehlerrechnung_Uebungen-2_Jacobi-divgrad-implizit.md</code>,
+  Blatt 4 &amp; 6. Ergebnisse gegen die Musterlösungen geprüft. (MathJax via CDN — Internet nötig.)
+</footer>
+
+<script>
+/* ---- 4.3 Typ-Check ---- */
+var DIV=[
+ {q:"(1) $F=xyz$ — welcher Feldtyp und was liefert $\\operatorname{div}(\\nabla F)$?",
+  o:["Skalarfeld → Ergebnis ein Skalar: $0$","Vektorfeld → Ergebnis ein Vektor","Skalarfeld → Ergebnis ein Vektor","nicht definiert"],c:0,
+  fb:"$F$ skalar → $\\nabla F=(yz,xz,xy)^T$, davon die Divergenz $=0$ (ein Skalar)."},
+ {q:"(2) $F=(x,y^2,z^3)^T$ — welcher Feldtyp und was liefert $\\nabla(\\operatorname{div}F)$?",
+  o:["Vektorfeld → Ergebnis ein Vektor: $(0,2,6z)^T$","Skalarfeld → Ergebnis ein Skalar","Vektorfeld → Ergebnis ein Skalar","immer $0$"],c:0,
+  fb:"$F$ ist ein Vektorfeld → $\\operatorname{div}F=1+2y+3z^2$ (Skalar), Gradient davon $=(0,2,6z)^T$ (Vektor)."}
+];
+/* ---- Selbsttest ---- */
+var Q=[
+ {q:"Wie entsteht Zeile $k$ der Jacobi-Matrix?",
+  o:["als Gradient der $k$-ten Komponente $f_k$","als $k$-te Spalte des Gradienten","durch Transponieren","durch die Hesse-Matrix"],c:0,
+  fb:"Jede Zeile ist der Gradient einer Komponente: $\\partial f_k/\\partial x_j$."},
+ {q:"$\\frac{dy}{dx}$ einer impliziten Funktion $F(x,y)=0$ ist …",
+  o:["$-F_x/F_y$","$F_x/F_y$","$-F_y/F_x$","$F_xF_y$"],c:0,
+  fb:"$\\frac{dy}{dx}=-\\frac{F_x}{F_y}$ — $F_x$ mit $y$ konstant, $F_y$ mit $x$ konstant."},
+ {q:"$F_x=F_y=0$ an einem Punkt bedeutet …",
+  o:["singulärer Punkt, Steigung nicht bestimmbar ($0/0$)","Steigung ist $0$","Steigung ist $\\infty$","Punkt liegt nicht auf der Kurve"],c:0,
+  fb:"$0/0$ ist unbestimmt → singulärer Punkt (z.B. $ye^x-xe^y$ an $(1,1)$)."}
+];
+/* ---- Implizit-Trainer-Daten ---- */
+var IMP=[
+ {name:"(1) $y\\ln x-2x\\ln y=0$ an $(1,1)$",
+  fx:"$F_x=\\frac{y}{x}-2\\ln y$", fy:"$F_y=\\ln x-\\frac{2x}{y}$",
+  res:"$\\frac{dy}{dx}=-\\frac{1-0}{0-2}=\\frac12$"},
+ {name:"(2) $xy^2+x^2y-16=0$ an $(2,2)$",
+  fx:"$F_x=y^2+2xy$", fy:"$F_y=2xy+x^2$",
+  res:"$\\frac{dy}{dx}=-\\frac{4+8}{8+4}=-1$"},
+ {name:"(3) $ye^x-xe^y=0$ an $(0,0)$",
+  fx:"$F_x=ye^x-e^y$", fy:"$F_y=e^x-xe^y$",
+  res:"$\\frac{dy}{dx}=-\\frac{-1}{1}=1$"},
+ {name:"(3) $ye^x-xe^y=0$ an $(1,1)$ — Falle!",
+  fx:"$F_x=ye^x-e^y=e-e=0$", fy:"$F_y=e^x-xe^y=e-e=0$",
+  res:"$\\frac{dy}{dx}=\\frac00$ → <b>singulärer Punkt</b>, Formel greift nicht."}
+];
+
+function mkQuiz(target,arr){
+  var c=document.getElementById(target);
+  arr.forEach(function(item){
+    var wrap=document.createElement('div');
+    var q=document.createElement('p'); q.innerHTML='<b>'+item.q+'</b>'; wrap.appendChild(q);
+    item.o.forEach(function(opt,oi){
+      var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){
+        var fb=wrap.querySelector('.qfb');
+        Array.prototype.forEach.call(wrap.querySelectorAll('.qa'),function(x){x.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}
+        else{b.classList.add('wrong');wrap.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ Nicht ganz. '+item.fb;}
+        if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([wrap]);}
+      };
+      wrap.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='qfb'; wrap.appendChild(fb);
+    c.appendChild(wrap);
+  });
+}
+mkQuiz('divquiz',DIV);
+mkQuiz('quiz',Q);
+
+/* Implizit-Trainer */
+(function(){
+  var btns=document.getElementById('impBtns'), rev=document.getElementById('impReveal');
+  IMP.forEach(function(it,i){
+    var b=document.createElement('button'); b.className='sec'; b.innerHTML=it.name;
+    b.onclick=function(){
+      rev.className='reveal show';
+      rev.innerHTML='<p>'+it.fx+'</p><p>'+it.fy+'</p><p><b>'+it.res+'</b></p>';
+      if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([rev]);}
+    };
+    btns.appendChild(b);
+  });
+})();
+</script>
+</body>
+</html>

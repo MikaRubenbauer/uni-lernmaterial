@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persistenz (N8) — WE-Klausur Restthemen</title>
+<style>
+  :root{--bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;--acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}h2{font-size:19px;margin:32px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:15px;margin:14px 0 6px;color:var(--acc)}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--ok);margin-right:6px}
+  .tag.def{color:var(--warn)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .codebox{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px;line-height:1.65}
+  .kw{color:#ff7b72}.fn{color:#d2a8ff}.st{color:#a5d6ff}.num{color:#79c0ff}.com{color:#8b949e}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted)}table.t td:first-child{font-family:monospace;white-space:nowrap}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:780px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Persistenz (N8)</h1>
+  <p class="sub">Restthema — Folien „NodeJS Day4: Persistenz". Daten über den einzelnen Request hinaus speichern.</p>
+
+  <h2><span class="tag def">Konzept</span> Warum Persistenz?</h2>
+  <div class="panel">
+    <p>Variablen im Server-Code sind <b>flüchtig</b> — bei Neustart weg, und nicht zwischen Nutzern geteilt. Persistenz speichert Daten dauerhaft: in <b>Dateien</b> oder einer <b>Datenbank</b>.</p>
+    <table class="t">
+      <tr><th>Art</th><th>Wann</th><th>Beispiel</th></tr>
+      <tr><td>Datei (z.B. JSON)</td><td>kleine Datenmengen, einfach</td><td><code>fs.writeFile</code></td></tr>
+      <tr><td>Datenbank</td><td>viele/strukturierte Daten, Abfragen</td><td>SQLite, PostgreSQL, MongoDB</td></tr>
+    </table>
+  </div>
+
+  <h2><span class="tag">Erstellen</span> Datei-Persistenz mit <code>fs</code></h2>
+  <div class="two">
+    <div class="panel">
+      <h3>Schreiben</h3>
+      <div class="codebox"><pre><span class="kw">const</span> fs = <span class="fn">require</span>(<span class="st">"fs"</span>);
+<span class="kw">const</span> daten = { count: <span class="num">5</span> };
+fs.<span class="fn">writeFileSync</span>(<span class="st">"data.json"</span>,
+  <span class="fn">JSON</span>.<span class="fn">stringify</span>(daten));</pre></div>
+    </div>
+    <div class="panel">
+      <h3>Lesen</h3>
+      <div class="codebox"><pre><span class="kw">const</span> roh = fs.<span class="fn">readFileSync</span>(<span class="st">"data.json"</span>, <span class="st">"utf-8"</span>);
+<span class="kw">const</span> daten = <span class="fn">JSON</span>.<span class="fn">parse</span>(roh);
+console.<span class="fn">log</span>(daten.count); <span class="com">// 5</span></pre></div>
+    </div>
+  </div>
+  <div class="falle"><b>Sync vs. Async:</b> <code>writeFileSync</code> blockiert (einfach, für kleine Skripte). In echten Servern besser asynchron (<code>fs.promises.writeFile</code> + <code>await</code>), damit der Event-Loop nicht blockiert.</div>
+
+  <h2><span class="tag">Erstellen</span> Datenbank (Skizze, SQLite)</h2>
+  <div class="codebox"><pre><span class="com">// Konzept — pro DB-Lib unterschiedlich</span>
+db.<span class="fn">run</span>(<span class="st">"INSERT INTO besucher (name) VALUES (?)"</span>, [name]);   <span class="com">// schreiben (Prepared Statement!)</span>
+db.<span class="fn">all</span>(<span class="st">"SELECT * FROM besucher"</span>, (err, rows) <span class="kw">=&gt;</span> { … });   <span class="com">// lesen</span></pre></div>
+  <p class="sub">Platzhalter <code>?</code> = Prepared Statement → schützt vor SQL-Injection (siehe Sicherheit-Restthema).</p>
+
+  <h2>Drill</h2>
+  <details><summary>[Beschreiben] Warum reicht eine normale Variable im Server nicht für Persistenz?</summary><p>Sie ist flüchtig: bei Server-Neustart verloren und nicht dauerhaft gespeichert. Persistenz braucht Datei oder Datenbank.</p></details>
+  <details><summary>[Erstellen] Objekt <code>{n:1}</code> in eine Datei schreiben (NodeJS).</summary>
+    <div class="codebox"><pre>require(<span class="st">"fs"</span>).<span class="fn">writeFileSync</span>(<span class="st">"d.json"</span>, <span class="fn">JSON</span>.<span class="fn">stringify</span>({n:<span class="num">1</span>}));</pre></div></details>
+  <details><summary>[MC] Wofür steht das <code>?</code> in einer SQL-Abfrage?</summary><p>Prepared-Statement-Platzhalter — Wert wird sicher gebunden, schützt vor SQL-Injection.</p></details>
+
+  <p class="sub" style="margin-top:30px">WE-Klausur-Lernpaket · Restthemen · Säule 5 (NodeJS) · <code>Materialien/Restthemen/</code></p>
+</div>
+</body>
+</html>

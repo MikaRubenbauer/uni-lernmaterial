@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sicherheit & Datenschutz (D1–D4) — WE-Klausur Restthemen</title>
+<style>
+  :root{--bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;--acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}h2{font-size:19px;margin:32px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:15px;margin:14px 0 6px;color:var(--acc)}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--red);margin-right:6px}
+  .tag.def{color:var(--warn)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .codebox{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px;line-height:1.6}
+  .st{color:#a5d6ff}.com{color:#8b949e}.kw{color:#ff7b72}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted)}table.t td:first-child{font-family:monospace;white-space:nowrap}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:780px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Sicherheit & Datenschutz (D1–D4)</h1>
+  <p class="sub">Restthema — Folien „Sicherheit und Privacy". Niedrige Klausur-Prio bei Gen A, aber Grundbegriffe sicher können.</p>
+
+  <h2><span class="tag">D1</span> Typische Web-Angriffe</h2>
+  <table class="t">
+    <tr><th>Angriff</th><th>Prinzip</th><th>Schutz</th></tr>
+    <tr><td>XSS<br>(Cross-Site Scripting)</td><td>Angreifer schleust fremdes JavaScript in eine Seite ein (z.B. über ein ungefiltertes Eingabefeld), das im Browser anderer Nutzer läuft.</td><td>Eingaben escapen/validieren, <code>HttpOnly</code>-Cookies, Content-Security-Policy</td></tr>
+    <tr><td>CSRF<br>(Cross-Site Request Forgery)</td><td>Eine fremde Seite löst im Namen des eingeloggten Nutzers ungewollt Aktionen aus (Cookie wird automatisch mitgeschickt).</td><td>CSRF-Token, <code>SameSite</code>-Cookies</td></tr>
+    <tr><td>SQL-Injection</td><td>Schad-SQL wird über Eingabefelder in eine Datenbankabfrage eingeschleust.</td><td>Prepared Statements / Parameterbindung, Eingaben validieren</td></tr>
+  </table>
+  <div class="codebox"><span class="com">// XSS-anfällig:</span> element.innerHTML = userInput;
+<span class="com">// sicher:</span> element.textContent = userInput;   <span class="com">// kein HTML/JS-Interpretieren</span></div>
+
+  <h2><span class="tag def">D2</span> HTTPS / TLS</h2>
+  <div class="panel">
+    <p><b>HTTPS</b> = HTTP über <b>TLS</b> (verschlüsselte Transportschicht). Bietet:</p>
+    <table class="t">
+      <tr><td>Vertraulichkeit</td><td>Daten verschlüsselt → niemand kann mitlesen</td></tr>
+      <tr><td>Integrität</td><td>Manipulation unterwegs wird erkannt</td></tr>
+      <tr><td>Authentizität</td><td>Zertifikat beweist, dass der Server echt ist</td></tr>
+    </table>
+    <p class="sub">Ablauf grob: TLS-Handshake (Zertifikat prüfen, Schlüssel aushandeln) → danach verschlüsselte HTTP-Kommunikation.</p>
+  </div>
+
+  <h2><span class="tag def">D4</span> Sichere Cookies</h2>
+  <div class="two">
+    <div class="panel">
+      <table class="t">
+        <tr><th>Attribut</th><th>Wirkung</th></tr>
+        <tr><td>HttpOnly</td><td>Cookie für JavaScript unsichtbar → schützt vor XSS-Diebstahl</td></tr>
+        <tr><td>Secure</td><td>nur über HTTPS gesendet</td></tr>
+        <tr><td>SameSite</td><td>nicht bei Cross-Site-Requests → CSRF-Schutz</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="codebox">Set-Cookie: id=abc;
+  <span class="st">HttpOnly</span>; <span class="st">Secure</span>;
+  <span class="st">SameSite</span>=Strict</div>
+      <p class="sub" style="margin-top:8px"><b>D3 Datenschutz/DSGVO (Kurz):</b> personenbezogene Daten nur mit Rechtsgrundlage/Einwilligung verarbeiten; Datensparsamkeit; Auskunfts-/Löschrecht. Cookie-Banner für nicht-essenzielle Cookies.</p>
+    </div>
+  </div>
+
+  <h2>Drill</h2>
+  <details><summary>[MC] Welches Cookie-Attribut schützt gegen XSS-Cookie-Diebstahl?</summary><p><code>HttpOnly</code> — JavaScript kann das Cookie dann nicht auslesen.</p></details>
+  <details><summary>[Beschreiben] Was macht ein Angreifer bei SQL-Injection?</summary><p>Er schleust SQL-Code über ein Eingabefeld in eine Datenbankabfrage ein. Schutz: Prepared Statements.</p></details>
+  <details><summary>[Nennen] Drei Eigenschaften, die HTTPS/TLS bietet?</summary><p>Vertraulichkeit (Verschlüsselung), Integrität (Manipulationsschutz), Authentizität (Server-Zertifikat).</p></details>
+
+  <p class="sub" style="margin-top:30px">WE-Klausur-Lernpaket · Restthemen · Säule 6 (Sicherheit) · <code>Materialien/Restthemen/</code></p>
+</div>
+</body>
+</html>

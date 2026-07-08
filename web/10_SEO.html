@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO (Day6) — WE-Klausur Restthemen</title>
+<style>
+  :root{--bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;--acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}h2{font-size:19px;margin:30px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:15px;margin:14px 0 6px;color:var(--acc)}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--ok);margin-right:6px}
+  .tag.def{color:var(--warn)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .codebox{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px;line-height:1.6}
+  .kw{color:#7ee787}.at{color:#79c0ff}.st{color:#a5d6ff}.com{color:#8b949e}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted)}table.t td:first-child{font-family:monospace;white-space:nowrap}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:780px){.two{grid-template-columns:1fr}}
+  .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;font-weight:700;background:#2ea04333;color:#7ee787}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>SEO — Suchmaschinenoptimierung</h1>
+  <p class="sub">Restthema aus <code>Web Engineering_Day6.pdf</code>. <b>Laut Dozent das einzige klausurrelevante Thema aus Day6</b> (WCAG, Responsive, Core Web Vitals, i18n, Entwurfsmuster sind NICHT dran).</p>
+
+  <div class="panel">
+    <b>Was ist SEO?</b> Maßnahmen, damit eine Website in Suchmaschinen (Google &amp; Co.) <b>besser gefunden</b> und <b>höher gerankt</b> wird. Drei Hebel: <span class="pill">On-Page</span> <span class="pill">Technisch</span> <span class="pill">Off-Page</span>.
+  </div>
+
+  <h2><span class="tag def">Beschreiben</span> On-Page-SEO (Inhalt & Struktur)</h2>
+  <table class="t">
+    <tr><th>Maßnahme</th><th>Warum</th></tr>
+    <tr><td>Semantisches HTML</td><td>Saubere Überschriften-Hierarchie <code>&lt;h1&gt;</code>→<code>&lt;h6&gt;</code>, ein <code>&lt;h1&gt;</code> pro Seite; Struktur-Tags (<code>header/nav/main/article</code>) → Suchmaschine versteht Inhalt.</td></tr>
+    <tr><td>&lt;title&gt;</td><td>Wichtigstes On-Page-Signal; erscheint als Klick-Titel im Suchergebnis.</td></tr>
+    <tr><td>&lt;meta name="description"&gt;</td><td>Snippet-Text unter dem Titel im Suchergebnis (kein direkter Ranking-Faktor, aber Klickrate).</td></tr>
+    <tr><td>Sprechende URLs</td><td><code>/produkte/laptop</code> statt <code>/p?id=42</code>.</td></tr>
+    <tr><td>alt-Texte für Bilder</td><td>Bilder sind sonst für Suchmaschinen „unsichtbar"; auch Barrierefreiheit.</td></tr>
+    <tr><td>Interne Verlinkung</td><td>Verteilt „Link-Kraft", hilft Crawlern, alle Seiten zu finden.</td></tr>
+  </table>
+
+  <h2><span class="tag def">Beschreiben</span> Technisches SEO</h2>
+  <div class="two">
+    <div class="panel">
+      <table class="t">
+        <tr><th>Datei/Tag</th><th>Funktion</th></tr>
+        <tr><td>robots.txt</td><td>Sagt Crawlern, welche Bereiche sie (nicht) crawlen dürfen.</td></tr>
+        <tr><td>sitemap.xml</td><td>Liste aller URLs für Suchmaschinen → schnellere/vollständige Indexierung.</td></tr>
+        <tr><td>rel="canonical"</td><td>Benennt die „Haupt-URL" → vermeidet Duplicate-Content-Abwertung.</td></tr>
+        <tr><td>JSON-LD / Schema.org</td><td>Strukturierte Daten → Rich Snippets (Sterne, Preise, FAQ).</td></tr>
+        <tr><td>hreflang</td><td>Kennzeichnet Sprach-/Ländervarianten einer Seite.</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h3>Beispiele</h3>
+      <div class="codebox"><span class="com"># robots.txt</span>
+User-agent: *
+Disallow: /admin/
+Sitemap: https://x.de/sitemap.xml</div>
+      <div class="codebox" style="margin-top:8px"><span class="kw">&lt;link</span> <span class="at">rel</span>=<span class="st">"canonical"</span>
+      <span class="at">href</span>=<span class="st">"https://x.de/artikel"</span><span class="kw">&gt;</span>
+<span class="kw">&lt;link</span> <span class="at">rel</span>=<span class="st">"alternate"</span> <span class="at">hreflang</span>=<span class="st">"en"</span>
+      <span class="at">href</span>=<span class="st">"https://x.de/en/article"</span><span class="kw">&gt;</span></div>
+    </div>
+  </div>
+
+  <h2><span class="tag def">Beschreiben</span> Off-Page-SEO</h2>
+  <div class="panel"><b>Backlinks</b> — Verweise anderer (glaubwürdiger) Websites auf die eigene Seite. Gelten als Empfehlung/Reputationssignal → höheres Ranking. Qualität &gt; Quantität.</div>
+
+  <div class="falle"><b>Abgrenzung:</b> <code>robots.txt</code> steuert das <b>Crawlen</b> (Zugriff), <code>&lt;meta name="robots" content="noindex"&gt;</code> steuert das <b>Indexieren</b> (Aufnahme in den Index) — nicht verwechseln.</div>
+  <div class="falle"><b>Klausur-Fokus:</b> Day6 ist sonst NICHT relevant — nur SEO. Kernbegriffe sicher benennen können (title/description, robots.txt, sitemap.xml, canonical, Backlinks).</div>
+
+  <h2>Drill</h2>
+  <details><summary>[Nennen] Zwei On-Page-SEO-Maßnahmen?</summary><p>z.B. aussagekräftiger <code>&lt;title&gt;</code> + semantische Überschriften-Hierarchie (oder alt-Texte, meta description, sprechende URLs).</p></details>
+  <details><summary>[Erklären] Wofür dient <code>rel="canonical"</code>?</summary><p>Benennt die bevorzugte URL bei mehreren gleichen/ähnlichen Seiten → vermeidet Duplicate-Content-Probleme.</p></details>
+  <details><summary>[Kontrast] robots.txt vs. sitemap.xml?</summary><p>robots.txt = was darf gecrawlt werden (Verbote); sitemap.xml = welche URLs es gibt (Einladung zur Indexierung).</p></details>
+  <details><summary>[MC] On-Page, Technisch oder Off-Page: Backlinks?</summary><p>Off-Page.</p></details>
+
+  <p class="sub" style="margin-top:30px">WE-Klausur-Lernpaket · Restthemen · Day6/SEO · <code>Materialien/Restthemen/</code></p>
+</div>
+</body>
+</html>

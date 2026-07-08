@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thema 3 – l'Hospital & Grenzwerte</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.4rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}
+  nav a:hover{background:var(--note)}
+  main{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:.9rem;cursor:pointer;margin:3px}
+  button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  .trainer{background:var(--note);border-radius:10px;padding:12px}
+  .tbtns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .reveal{display:none;background:#fff;border:1px solid var(--bd);border-radius:9px;padding:12px 14px;margin-top:6px}
+  .reveal.show{display:block}
+  .badge{display:inline-block;background:#d9534f;color:#fff;border-radius:6px;padding:2px 8px;font-size:.8rem;font-weight:700}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;margin:8px 0}
+  th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)}
+  footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 3 — l'Hospital &amp; Grenzwerte</h1>
+  <p>Analysis · Prof. Reischl · Klausur 23.07.2026 · Blatt 5 (+ Altklausur 2024/7, 2023/7a)</p>
+  <p>Interaktiv — Grenzwert-Trainer, aufklappbare Lösungen, Quiz. (Taylor-Übung: siehe Skript Thema 2.)</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a><a href="#durchlauf">Komplett-Beispiel</a><a href="#rezept">Rezept</a><a href="#formen">Sonderformen</a>
+  <a href="#trainer">Grenzwert-Trainer</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <p>Grenzwerte wie $\frac{0}{0}$ oder $\frac{\infty}{\infty}$ sind <b>unbestimmte Ausdrücke</b> — man kann nicht einfach einsetzen.
+  Die <b>Regel von l'Hospital</b> sagt: bei genau diesen zwei Formen darf man Zähler und Nenner <b>getrennt ableiten</b> und dann erneut den Grenzwert bilden:</p>
+  <div class="box note" style="text-align:center;font-size:1.05rem">
+  $$\lim_{x\to a}\frac{f(x)}{g(x)} \overset{\text{H}}{=} \lim_{x\to a}\frac{f'(x)}{g'(x)}\quad\text{falls } \tfrac{f}{g}\to\tfrac00 \text{ oder } \tfrac{\infty}{\infty}.$$
+  </div>
+  <div class="box warn"><b>Das $\tfrac{f'}{g'}$ ist KEINE Quotientenregel!</b> Zähler und Nenner werden <em>einzeln</em> abgeleitet.</div>
+</section>
+
+<section id="durchlauf">
+  <style>#durchlauf .src{color:#2a9d5c;font-size:.86em}#durchlauf h3{margin-top:16px}#durchlauf .st{background:var(--note);border-radius:8px;padding:4px 9px;font-size:.82rem;font-weight:700;color:var(--akz2)}</style>
+  <h2>1b · Ein komplettes Beispiel — jede Zahl erklärt</h2>
+  <div class="box note">Bevor das abstrakte Rezept kommt: einmal alles konkret durchziehen, damit später keine Zahl „aus dem Nichts" auftaucht.
+  <b>Beispiel (Klausur):</b> $\displaystyle\lim_{x\to0}\frac{\sin(5x^2)}{x^2}$.</div>
+
+  <h3><span class="st">Schritt 1</span> &nbsp;Form prüfen — ist l'Hospital überhaupt erlaubt?</h3>
+  <p>$x=0$ einsetzen: $\dfrac{\sin(5\cdot0)}{0}=\dfrac{\sin 0}{0}=\dfrac{0}{0}$ &nbsp;<span class="src">← unbestimmte Form $\tfrac00$ ⇒ l'Hospital erlaubt</span></p>
+
+  <h3><span class="st">Schritt 2</span> &nbsp;Zähler und Nenner GETRENNT ableiten</h3>
+  <p>Zähler: $\dfrac{d}{dx}\sin(5x^2)=\cos(5x^2)\cdot\underbrace{10x}_{\text{innere Ableitung von }5x^2}$ &nbsp;<span class="src">← Kettenregel; $\tfrac{d}{dx}(5x^2)=10x$</span><br>
+  Nenner: $\dfrac{d}{dx}x^2=2x$</p>
+  <div class="box warn" style="margin:8px 0"><b>Keine Quotientenregel!</b> Oben und unten werden <em>einzeln</em> abgeleitet.</div>
+
+  <h3><span class="st">Schritt 3</span> &nbsp;Neuen Grenzwert bilden — woher die 5 kommt</h3>
+  <p>$\overset{\text{H}}{=}\displaystyle\lim_{x\to0}\frac{10x\cos(5x^2)}{2x}=\lim_{x\to0}5\cos(5x^2)$ &nbsp;<span class="src">← $\tfrac{10x}{2x}=5$, das $x$ kürzt sich</span><br>
+  $x\to0$ einsetzen: $5\cdot\cos(0)=5\cdot1=\boxed{5}$.</p>
+
+  <h3><span class="st">Prinzip</span> &nbsp;Wann man aufhört — die häufigste Falle</h3>
+  <div class="box note">Man wiederholt l'Hospital <b>nur, solange wieder $\tfrac00$/$\tfrac{\infty}{\infty}$ herauskommt</b>. Sobald der Ausdruck <b>bestimmt</b> ist, sofort stoppen:</div>
+  <p>$\displaystyle\lim_{x\to1}\frac{x^3-2x+1}{x^2-1}$: einsetzen $\dfrac{1-2+1}{1-1}=\dfrac00$ ✓ $\overset{\text{H}}{=}\dfrac{3x^2-2}{2x}\Big|_{x=1}=\dfrac{3-2}{2}=\boxed{\tfrac12}$.</p>
+  <p><span class="src">← $\tfrac12$ ist <b>bestimmt</b> (kein $\tfrac00$ mehr) → fertig. Ein zweiter l'Hospital-Schritt wäre falsch (genau der Fehler in Übung 5.1.6).</span></p>
+
+  <div class="box ok"><b>Das ist das ganze Verfahren.</b> Das Rezept unten ist nur die Kurzform dieser Schritte; der Trainer weiter unten zeigt dieselbe Logik an allen Blatt-5- und Klausur-Grenzwerten (inkl. der Fälle, wo man erst umformen muss oder l'Hospital versagt).</div>
+</section>
+
+<section id="rezept">
+  <h2>2 · Das Rezept</h2>
+  <ol>
+    <li><b>Form prüfen:</b> Einsetzen. Kommt $\tfrac00$ oder $\tfrac{\infty}{\infty}$ heraus? Nur dann ist l'Hospital erlaubt.</li>
+    <li><b>Getrennt ableiten:</b> $f'(x)$ und $g'(x)$ bilden.</li>
+    <li><b>Neu auswerten:</b> $\lim \tfrac{f'}{g'}$. Ist es <em>immer noch</em> $\tfrac00$/$\tfrac{\infty}{\infty}$ → Schritt wiederholen. Sonst: einsetzen, fertig.</li>
+  </ol>
+  <div class="box warn"><b>Sobald die Form bestimmt ist (z.B. $\tfrac12$), SOFORT aufhören.</b> Ein weiterer l'Hospital-Schritt auf einen bestimmten Ausdruck liefert falsche Ergebnisse (genau die Falle in Übung 5.1.6).</div>
+</section>
+
+<section id="formen">
+  <h2>3 · Andere unbestimmte Formen zuerst umformen</h2>
+  <p>l'Hospital greift nur bei $\tfrac00$ und $\tfrac{\infty}{\infty}$. Andere Formen erst passend umschreiben:</p>
+  <table>
+    <tr><th>Form</th><th>Trick</th><th>Ziel</th></tr>
+    <tr><td>$0\cdot\infty$</td><td>einen Faktor in den Nenner: $f\cdot g=\dfrac{f}{1/g}$</td><td>$\tfrac00$ oder $\tfrac{\infty}{\infty}$</td></tr>
+    <tr><td>$\infty-\infty$</td><td>Hauptnenner bilden (zu einem Bruch zusammenfassen)</td><td>$\tfrac00$</td></tr>
+    <tr><td>$0^0,\ 1^\infty,\ \infty^0$</td><td>$e$-Trick: $u^v=e^{v\ln u}$, dann Exponent $v\ln u$ untersuchen</td><td>$0\cdot\infty$ im Exponenten</td></tr>
+  </table>
+</section>
+
+<section id="trainer">
+  <h2>4 · Grenzwert-Trainer</h2>
+  <p>Klick einen Grenzwert — erst selbst Form + Strategie überlegen, dann aufdecken. (5.1.1–5.1.6 = Blatt 5, dazu die beiden Klausur-Limits.)</p>
+  <div class="trainer">
+    <div class="tbtns" id="tbtns"></div>
+    <div id="treveal" class="reveal"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2>5 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>6 · Stolpersteine</h2>
+  <ol>
+    <li><b>Nur $\tfrac00$ oder $\tfrac{\infty}{\infty}$.</b> Vorher Form prüfen. Ein bestimmter Ausdruck darf nicht weiter „l'hospitalisiert" werden (5.1.6 → richtig ist $0{,}5$).</li>
+    <li><b>Keine Quotientenregel</b> — Zähler und Nenner getrennt ableiten.</li>
+    <li><b>l'Hospital kann versagen:</b> bei $\tfrac{\cos^2 x}{x}$ (Klausur!) liefert die Ableitung $-\sin(2x)$ ohne Grenzwert. Richtig über Einschnürung: Zähler beschränkt, Nenner $\to\infty$ ⇒ Grenzwert $0$.</li>
+    <li><b>$0\cdot\infty$, $\infty-\infty$, $0^0$</b> erst umformen (Tabelle oben), sonst ist l'Hospital gar nicht anwendbar.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Thema 3 · interaktiv · Quelle: Blatt 5 (Übung 5.1), Altklausur 2024 Aufg.7 / 2023 Aufg.7a,
+  Quellnotiz <code>03_lHospital_Uebungen.md</code>. Gegen Musterlösung geprüft. (MathJax via CDN.)
+</footer>
+
+<script>
+var LIM=[
+ {l:"\\lim_{x\\to\\infty} x\\tan\\frac1x", form:"0·∞",
+  strat:"Umschreiben zum Bruch: $\\tan(1/x)\\,/\\,(1/x)\\to 0/0$.",
+  calc:"\\lim_{x\\to\\infty}\\frac{\\tan(1/x)}{1/x}\\overset{H}{=}\\lim\\frac{(1+\\tan^2\\frac1x)(-\\frac1{x^2})}{-\\frac1{x^2}}=1", res:"1"},
+ {l:"\\lim_{x\\to0}\\left(\\frac{1}{\\sin x}-\\frac1x\\right)", form:"∞−∞",
+  strat:"Hauptnenner: $\\frac{x-\\sin x}{x\\sin x}\\to 0/0$, dann 2× l'Hospital.",
+  calc:"\\frac{x-\\sin x}{x\\sin x}\\overset{H}{=}\\frac{1-\\cos x}{\\sin x+x\\cos x}\\overset{H}{=}\\frac{\\sin x}{2\\cos x-x\\sin x}=0", res:"0"},
+ {l:"\\lim_{x\\to\\infty} x\\ln\\!\\left(1+\\frac ax\\right)", form:"0·∞",
+  strat:"$\\to \\ln(1+a/x)\\,/\\,(1/x)\\to 0/0$.",
+  calc:"=\\lim\\frac{\\frac{1}{1+a/x}\\,(-a/x^2)}{-1/x^2}=a", res:"a"},
+ {l:"\\lim_{x\\to\\infty} x\\ln\\frac{x+1}{x-1}", form:"0·∞",
+  strat:"$\\to \\ln\\frac{x+1}{x-1}\\,/\\,(1/x)\\to 0/0$.",
+  calc:"=2", res:"2"},
+ {l:"\\lim_{x\\to0^+} x^{2x}", form:"0^0",
+  strat:"$e$-Trick: $x^{2x}=e^{2x\\ln x}$; Exponent $2x\\ln x\\to 0$.",
+  calc:"=e^{\\lim 2x\\ln x}=e^{0}=1", res:"1"},
+ {l:"\\lim_{x\\to1}\\frac{x^3-2x+1}{x^2-1}\\ \\text{(Was ist falsch?)}", form:"0/0 → dann bestimmt!",
+  strat:"1. Schritt ok ($0/0$). Danach ist $\\frac{3x^2-2}{2x}\\big|_1=\\frac12$ <b>bestimmt</b> → STOP. Fehler im Blatt: l'Hospital ein 2. Mal angewandt.",
+  calc:"\\lim_{x\\to1}\\frac{x^3-2x+1}{x^2-1}\\overset{H}{=}\\frac{3x^2-2}{2x}\\Big|_{x=1}=\\tfrac12", res:"0{,}5"},
+ {l:"\\lim_{x\\to0}\\frac{\\sin(5x^2)}{x^2}\\ \\text{(Klausur)}", form:"0/0",
+  strat:"l'Hospital ODER $\\frac{\\sin u}{u}\\to1$.",
+  calc:"\\overset{H}{=}\\lim\\frac{10x\\cos(5x^2)}{2x}=\\lim 5\\cos(5x^2)=5", res:"5"},
+ {l:"\\lim_{x\\to\\infty}\\frac{\\cos^2 x}{x}\\ \\text{(Klausur-Falle)}", form:"beschränkt/∞ — l'Hospital VERSAGT",
+  strat:"l'Hospital gäbe $-\\sin(2x)$ (kein Grenzwert). Richtig: Einschnürung, da Zähler beschränkt.",
+  calc:"0\\le\\frac{\\cos^2 x}{x}\\le\\frac1x\\xrightarrow{x\\to\\infty}0\\ \\Rightarrow\\ 0", res:"0"}
+];
+(function(){
+  var wrap=document.getElementById('tbtns'), rev=document.getElementById('treveal');
+  LIM.forEach(function(it,i){
+    var b=document.createElement('button'); b.className='sec';
+    b.innerHTML='$'+it.l.replace(/\\text\{[^}]*\}/g,'').replace(/\\big|\\!|\\left|\\right/g,'')+'$';
+    b.onclick=function(){
+      rev.className='reveal show';
+      rev.innerHTML='<div style="margin-bottom:6px">$'+it.l+'$</div>'+
+        '<div style="margin:6px 0"><span class="badge">Form: '+it.form+'</span></div>'+
+        '<div style="margin:6px 0"><b>Strategie:</b> '+it.strat+'</div>'+
+        '<div style="margin:6px 0">$'+it.calc+'$</div>'+
+        '<div class="box ok" style="margin:6px 0 0"><b>Ergebnis: $'+it.res+'$</b></div>';
+      if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([rev]);}
+    };
+    wrap.appendChild(b);
+  });
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([wrap]);}
+})();
+
+var Q=[
+ {q:"l'Hospital ist nur erlaubt bei welcher Form?",
+  o:["jeder Bruch","$0/0$ oder $\\infty/\\infty$","$0\\cdot\\infty$","$1+1$"],c:1,
+  fb:"Nur unbestimmte Formen $0/0$ und $\\infty/\\infty$. Andere erst umformen."},
+ {q:"Wie leitet man bei l'Hospital ab?",
+  o:["mit der Quotientenregel","Zähler und Nenner getrennt","nur den Zähler","nur den Nenner"],c:1,
+  fb:"$\\frac{f'}{g'}$ — Zähler und Nenner einzeln, KEINE Quotientenregel."},
+ {q:"$\\lim_{x\\to0}\\frac{\\sin(5x^2)}{x^2}=$ ?",
+  o:["0","1","5","$\\infty$"],c:2,
+  fb:"$\\frac{10x\\cos(5x^2)}{2x}=5\\cos(5x^2)\\to5$ (oder $\\sin u/u\\to1$)."},
+ {q:"$\\lim_{x\\to\\infty}\\frac{\\cos^2 x}{x}$ — richtiges Vorgehen?",
+  o:["l'Hospital anwenden","l'Hospital versagt → Einschnürung, Ergebnis 0","Ergebnis $\\infty$","kein Grenzwert"],c:1,
+  fb:"l'Hospital gäbe $-\\sin(2x)$ (divergent). Zähler beschränkt, Nenner $\\to\\infty$ ⇒ 0."},
+ {q:"Bei $0\\cdot\\infty$ ist der erste Schritt…",
+  o:["direkt l'Hospital","einen Faktor in den Nenner → Bruch bilden","quadrieren","aufgeben"],c:1,
+  fb:"$f\\cdot g=\\frac{f}{1/g}$ → $0/0$ bzw. $\\infty/\\infty$, dann l'Hospital."}
+];
+(function(){
+  var c=document.getElementById('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div');
+    var q=document.createElement('p'); q.innerHTML='<b>'+(qi+1)+'.</b> '+item.q; w.appendChild(q);
+    item.o.forEach(function(opt,oi){
+      var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){
+        var fb=w.querySelector('.qfb');
+        Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(x){x.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}
+        else{b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+        if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([w]);}
+      };
+      w.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='qfb'; w.appendChild(fb);
+    c.appendChild(w);
+  });
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([c]);}
+})();
+</script>
+</body>
+</html>

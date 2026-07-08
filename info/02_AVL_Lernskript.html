@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info Thema 2 – AVL-Bäume</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.4rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}
+  nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:9px 13px;font-size:.9rem;cursor:pointer;margin:3px}
+  button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  input[type=text]{padding:8px 10px;border:1px solid var(--bd);border-radius:7px;font-size:.95rem;font-family:"JetBrains Mono",Consolas,monospace}
+  .calc-row{display:flex;gap:8px;margin:6px 0;align-items:center;flex-wrap:wrap}
+  .calc-row label{font-size:.85rem;color:#5a6675;min-width:150px}
+  mono,.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em;font-family:"JetBrains Mono",Consolas,monospace}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;margin:8px 0}
+  th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)}
+  td.mono,th.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  .badge{display:inline-block;background:#28508c;color:#fff;border-radius:6px;padding:2px 8px;font-size:.78rem;font-weight:700;margin-right:6px}
+  .badge.top{background:#b3261e}
+  .snap{display:inline-block;vertical-align:top;margin:8px 10px 8px 0;padding:8px;border:1px solid var(--bd);border-radius:9px;background:#fff}
+  .snap .cap{font-size:.82rem;color:#5a6675;margin-bottom:4px;max-width:220px}
+  .rlog{font-size:.86rem;color:#8a3b12;margin-top:2px}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  svg text{font-family:"JetBrains Mono",Consolas,monospace}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 2 — AVL-Bäume</h1>
+  <p>Theoretische Informatik II · Prof. Ritterbusch · Klausur 31.07.2026, 09:00 · <b>Lernblock Sa 25.07</b></p>
+  <p><span class="badge top">TOP-Prio</span> 15 P in Prof-Altklausur 2024 (Aufgabe 5) · Arbeitsheft 53–60 · Skript Kap. 2.4</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a><a href="#rezepte">Rotationen</a><a href="#einfuegen">Einfügen</a>
+  <a href="#loeschen">Löschen</a><a href="#trainer">Trainer</a><a href="#klausur">Klausur 2024</a>
+  <a href="#drills">AH-Drills</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <p>Ein <b>AVL-Baum</b> ist ein <b>binärer Suchbaum</b> (links &lt; Knoten &lt; rechts), der zusätzlich
+  <b>höhenbalanciert</b> ist: In <em>jedem</em> Knoten unterscheiden sich die Höhen des linken und rechten
+  Teilbaums um höchstens 1. Dadurch bleibt die Höhe $\in O(\log n)$ — Suchen/Einfügen/Löschen sind $O(\log n)$.</p>
+  <div class="box note"><b>Balancefaktor (BF).</b> $\mathrm{BF}(k) = h(\text{links}) - h(\text{rechts})$.
+  Erlaubt sind nur <b>−1, 0, +1</b>. Höhe eines leeren Teilbaums $= 0$, eines Blattes $= 1$.
+  Sobald nach Einfügen/Löschen irgendwo $|\mathrm{BF}| = 2$ auftritt, wird <b>rotiert</b>.</div>
+  <p>Klausur-Konvention (Prof-Altklausur 2024, A5): Es werden Werte eingefügt bzw. gelöscht und <b>alle
+  resultierenden Bäume</b> nach jeder Operation gezeichnet. Punkte gibt es für korrekte Zwischenzustände.</p>
+</section>
+
+<section id="rezepte">
+  <h2>2 · Die 4 Rotationen</h2>
+  <p>Man betrachtet den <b>untersten</b> Knoten $z$ mit $|\mathrm{BF}(z)| = 2$ (nahe am Einfüge-/Löschort).
+  Aus der Richtung der „Schieflage" folgt der Rotationstyp — merke: <b>Rotation immer in Richtung der leichteren Seite</b>.</p>
+  <table>
+    <tr><th>Fall</th><th>Erkennung (von $z$ aus)</th><th>Aktion</th></tr>
+    <tr><td><b>LL</b> (links-links)</td><td class="mono">BF(z)=+2, BF(z.links)≥0</td><td>1× <b>Rechtsrotation</b> um $z$</td></tr>
+    <tr><td><b>RR</b> (rechts-rechts)</td><td class="mono">BF(z)=−2, BF(z.rechts)≤0</td><td>1× <b>Linksrotation</b> um $z$</td></tr>
+    <tr><td><b>LR</b> (links-rechts)</td><td class="mono">BF(z)=+2, BF(z.links)&lt;0</td><td>Linksrotation um $z$.links, <b>dann</b> Rechtsrotation um $z$</td></tr>
+    <tr><td><b>RL</b> (rechts-links)</td><td class="mono">BF(z)=−2, BF(z.rechts)&gt;0</td><td>Rechtsrotation um $z$.rechts, <b>dann</b> Linksrotation um $z$</td></tr>
+  </table>
+  <div class="box note"><b>Rechtsrotation um $y$</b> (linkslastig): linkes Kind $x$ steigt auf, $y$ wird rechtes Kind von $x$,
+  der alte rechte Teilbaum von $x$ ($T_2$) hängt sich als linker Teilbaum an $y$. Linksrotation ist spiegelbildlich.
+  Die BST-Ordnung bleibt dabei immer erhalten.</div>
+  <div class="box warn"><b>LR/RL = Doppelrotation.</b> Immer <b>zwei</b> Einzelrotationen, und die erste dreht am
+  <em>Kind</em> von $z$, nicht an $z$ selbst. Zeichne beide Schritte — die Klausur will den Zwischenstand.</div>
+</section>
+
+<section id="einfuegen">
+  <h2>3 · Einfügen — Rezept</h2>
+  <ol>
+    <li>Wie im <b>BST</b> einfügen (links/rechts absteigen bis zum leeren Platz).</li>
+    <li>Vom neuen Blatt aus <b>nach oben</b> die Höhen/BF aktualisieren.</li>
+    <li>Beim <b>ersten</b> Knoten $z$ mit $|\mathrm{BF}|=2$: passenden Rotationstyp (LL/RR/LR/RL) anwenden.</li>
+    <li>Beim Einfügen genügt <b>eine</b> (Doppel-)Rotation — danach ist der ganze Baum wieder AVL.</li>
+  </ol>
+</section>
+
+<section id="loeschen">
+  <h2>4 · Löschen — Rezept</h2>
+  <ol>
+    <li>BST-Löschen: <b>Blatt</b> → entfernen. <b>Ein Kind</b> → durch das Kind ersetzen.
+    <b>Zwei Kinder</b> → durch das <b>kleinste Element des rechten Teilbaums</b> (In-Order-Nachfolger) ersetzen, dann dieses löschen. <span class="mono">(Prof-Regel A5b)</span></li>
+    <li>Vom Löschort <b>nach oben</b> BF prüfen und bei $|\mathrm{BF}|=2$ rotieren.</li>
+    <li><b>Wichtig:</b> Beim Löschen kann eine Rotation die Teilbaumhöhe senken → es können <b>mehrere</b> Rotationen auf dem Weg zur Wurzel nötig werden (anders als beim Einfügen).</li>
+    <li>Rotationstyp am Geschwister-/Kind-BF ablesen (gleiche LL/RR/LR/RL-Logik).</li>
+  </ol>
+  <div class="box warn"><b>Vorzeichen der Doppelrotation beim Löschen:</b> Ist der Ziel-Teilbaum ausbalanciert
+  (BF des Kindes $=0$), reicht die <em>einfache</em> Rotation in Richtung der leichteren Seite.</div>
+</section>
+
+<section id="trainer">
+  <h2>5 · AVL-Trainer — alle Zwischenzustände</h2>
+  <p>Reihenfolge zum <b>Aufbauen</b> (per AVL-Einfügen) und dann <b>Operationen</b> angeben:
+  <code>+n</code> = einfügen, <code>−n</code> (oder <code>-n</code>) = löschen. Jeder Schritt wird als Baum mit
+  Balancefaktoren gezeichnet, Rotationen werden protokolliert.</p>
+  <div class="calc-row"><label>Aufbau (Einfüge-Reihenfolge)</label>
+    <input type="text" id="buildIn" value="7,0,8,1" size="24"></div>
+  <div class="calc-row"><label>Operationen</label>
+    <input type="text" id="opIn" value="+5 +4 +2" size="24">
+    <button onclick="runAVL()">▶ Ausführen</button></div>
+  <div class="calc-row">
+    <button class="sec" onclick="preset('7,0,8,1','+5 +4 +2')">Klausur 2024 A5a (Baum A, +5,+4,+2)</button>
+    <button class="sec" onclick="preset('5,3,8,4,6,9,7','-4 -5')">Klausur 2024 A5b (Baum B, −4,−5)</button>
+  </div>
+  <div id="avlOut" style="margin-top:12px"></div>
+</section>
+
+<section id="klausur">
+  <h2>6 · Prof-Altklausur 2024, Aufgabe 5 (15 P) — komplett vorgerechnet</h2>
+  <p>Erst mit dem Trainer selbst nachstellen, dann aufklappen. (Notation: <span class="mono">k(links,rechts)</span>, <span class="mono">·</span> = leer.)</p>
+
+  <details><summary>a) Baum A = <span class="mono">7(0(·,1),8)</span> — Werte 5, 4, 2 einfügen (7 P)</summary><div class="det-body">
+    <p><b>+5:</b> 5 landet rechts unter 1 → Knoten 0 wird rechts-rechts-lastig (BF −2) → <b>Linksrotation um 0</b>.<br>
+    Ergebnis: <b class="mono">7(1(0,5),8)</b></p>
+    <p><b>+4:</b> 4 landet links unter 5 → Wurzel 7 wird links-rechts-lastig (BF +2, linkes Kind BF −1) →
+    <b>LR an 7</b> (erst Linksrotation um 1, dann Rechtsrotation um 7).<br>
+    Ergebnis: <b class="mono">5(1(0,4),7(·,8))</b></p>
+    <p><b>+2:</b> 2 landet links unter 4 → keine Verletzung, keine Rotation.<br>
+    Ergebnis: <b class="mono">5(1(0,4(2,·)),7(·,8))</b></p>
+    <div class="box ok mono">Endbaum: 5(1(0,4(2,·)),7(·,8)) — programmatisch als gültiger AVL-Baum verifiziert.</div>
+  </div></details>
+
+  <details><summary>b) Baum B = <span class="mono">5(3(·,4),8(6(·,7),9))</span> — Werte 4, 5, 4 löschen (8 P)</summary><div class="det-body">
+    <p><b>−4:</b> 4 ist Blatt → entfernen. Knoten 3 verliert Höhe, Wurzel 5 wird rechts-links-lastig
+    (BF −2, rechtes Kind 8 hat BF +1) → <b>RL an 5</b> (erst Rechtsrotation um 8, dann Linksrotation um 5).<br>
+    Ergebnis: <b class="mono">6(5(3,·),8(7,9))</b></p>
+    <p><b>−5:</b> 5 hat nur ein linkes Kind (3) → durch 3 ersetzen. Rebalancieren nicht nötig.<br>
+    Ergebnis: <b class="mono">6(3,8(7,9))</b></p>
+    <div class="box warn"><b>−4 (dritter Wert):</b> Die 4 wurde bereits im ersten Schritt gelöscht und existiert nicht mehr →
+    <b>diese Operation ist leer</b>. Die reproduzierte Altklausur nennt „4, 5 und 4"; der dritte Wert ist mit hoher
+    Wahrscheinlichkeit ein <b>Abschreibfehler</b> (4 kommt nur einmal vor). Kläre den echten dritten Wert aus deiner
+    Erinnerung/Übung; im Trainer beliebig nachstellbar.</div>
+    <div class="box ok mono">Zwischen- und Endbäume programmatisch als gültige AVL-Bäume verifiziert (In-Order-Nachfolger-Regel).</div>
+  </div></details>
+</section>
+
+<section id="drills">
+  <h2>7 · Arbeitsheft-Drills 53–60 (Trainer-gestützt)</h2>
+  <p>Diese Aufgaben geben jeweils einen <b>gezeichneten Startbaum</b> vor (Figur im Arbeitsheft). Bau ihn im Trainer
+  über eine passende Einfüge-Reihenfolge nach, führe die Operation aus und vergleiche mit der Musterlösung
+  <span class="mono">(Lösungen 47–60)</span>.</p>
+  <table>
+    <tr><th>Aufg.</th><th>Typ</th><th>Aufgabe</th></tr>
+    <tr><td>53 / 54</td><td>Binärbaum (ungewuchtet)</td><td>Wert einfügen (3 bzw. 5), dann 2 löschen — geordneten Binärbaum angeben.</td></tr>
+    <tr><td><b>55 / 56</b></td><td><b>AVL</b></td><td>Wert einfügen (3 bzw. 5), dann 2 löschen — <b>mit Rebalancierung</b>. Kernübung für A5.</td></tr>
+    <tr><td>57 / 58</td><td>Rot-Schwarz</td><td>Werte einfügen (5,6 bzw. 3,7). <span class="badge">Restrisiko-Pool</span></td></tr>
+    <tr><td>59 / 60</td><td>Klassifikation</td><td>Ist der Baum AVL und/oder Rot-Schwarz? RS ggf. zeichnen.</td></tr>
+  </table>
+  <div class="box note"><b>Fokus „sicher bestehen":</b> 55/56 sind das direkte AVL-Training. Rot-Schwarz (57–60)
+  kam 2024 nicht dran → nur am Mock-Tag überfliegen.</div>
+</section>
+
+<section id="quiz">
+  <h2>8 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>9 · Stolpersteine</h2>
+  <ol>
+    <li><b>BF nur −1/0/+1.</b> Sobald irgendwo ±2 steht, sofort rotieren — nicht „liegen lassen".</li>
+    <li><b>Untersten unbalancierten Knoten</b> nehmen, nicht die Wurzel, wenn tiefer schon eine Verletzung sitzt.</li>
+    <li><b>LR/RL = zwei Rotationen</b>, erste am Kind von $z$. Häufigster Punktverlust.</li>
+    <li><b>Löschen kann mehrere Rotationen</b> nach oben auslösen — beim Einfügen reicht immer eine.</li>
+    <li><b>Zwei Kinder löschen:</b> Prof-Regel „<b>kleinstes Element aus dem rechten Teilbaum</b>" (In-Order-Nachfolger) verwenden — konsistent bleiben.</li>
+    <li><b>Alle Zwischenbäume zeichnen</b> (nach jedem Einfügen/Löschen) — dafür gibt es die Teilpunkte.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Info Thema 2 · Session 2 des Master-Chats (2026-07-07) · Quellen: Prof-Altklausur 2024 A5 (Bäume aus
+  PDF-Figur rekonstruiert), Arbeitsheft 53–60 (+ Lösungen 47–60), Skript Kap. 2.4. AVL-Einfügen/Löschen inkl.
+  aller Rotationen programmatisch verifiziert (Python-AVL, |BF|≤1 in jedem Zwischenzustand geprüft).
+</footer>
+<script>
+/* ===== AVL-Kern ===== */
+function Nn(k){return {k:k,l:null,r:null,h:1};}
+function hh(n){return n?n.h:0;}
+function bff(n){return n?hh(n.l)-hh(n.r):0;}
+function upd(n){n.h=1+Math.max(hh(n.l),hh(n.r));}
+function rotR(y){var x=y.l,t=x.r;x.r=y;y.l=t;upd(y);upd(x);return x;}
+function rotL(x){var y=x.r,t=y.l;y.l=x;x.r=t;upd(x);upd(y);return y;}
+var RLOG=[];
+function reb(n){
+  upd(n);var b=bff(n);
+  if(b>1){ if(bff(n.l)<0){RLOG.push('LR an '+n.k+': Linksrotation um '+n.l.k+', dann Rechtsrotation um '+n.k);n.l=rotL(n.l);return rotR(n);}
+           else {RLOG.push('LL an '+n.k+': Rechtsrotation um '+n.k);return rotR(n);} }
+  if(b<-1){ if(bff(n.r)>0){RLOG.push('RL an '+n.k+': Rechtsrotation um '+n.r.k+', dann Linksrotation um '+n.k);n.r=rotR(n.r);return rotL(n);}
+            else {RLOG.push('RR an '+n.k+': Linksrotation um '+n.k);return rotL(n);} }
+  return n;
+}
+function ins(n,k){ if(!n)return Nn(k); if(k<n.k)n.l=ins(n.l,k); else if(k>n.k)n.r=ins(n.r,k); else return n; return reb(n); }
+function minN(n){ while(n.l)n=n.l; return n; }
+function del(n,k){ if(!n)return null;
+  if(k<n.k)n.l=del(n.l,k);
+  else if(k>n.k)n.r=del(n.r,k);
+  else { if(!n.l)return n.r; if(!n.r)return n.l; var m=minN(n.r); n.k=m.k; n.r=del(n.r,m.k); }
+  return reb(n);
+}
+function has(n,k){ while(n){ if(k===n.k)return true; n = k<n.k?n.l:n.r; } return false; }
+
+/* ===== SVG-Render ===== */
+function layout(root){var nodes=[],edges=[],c={i:0};
+  (function rec(n,d){ if(!n)return; rec(n.l,d+1); n._x=c.i++; n._d=d; nodes.push(n);
+     if(n.l)edges.push([n,n.l]); if(n.r)edges.push([n,n.r]); rec(n.r,d+1); })(root,0);
+  return {nodes:nodes,edges:edges,w:c.i};
+}
+function svgTree(root){
+  if(!root)return '<div class="mono" style="color:#8a93a0">(leerer Baum)</div>';
+  var L=layout(root),dx=40,dy=52,pad=20;
+  var maxd=0; L.nodes.forEach(function(n){if(n._d>maxd)maxd=n._d;});
+  var W=Math.max(1,L.w)*dx+pad*2, H=(maxd+1)*dy+pad*2;
+  function X(n){return pad+n._x*dx+dx/2;} function Y(n){return pad+n._d*dy+dy/2;}
+  var s='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">';
+  L.edges.forEach(function(e){ s+='<line x1="'+X(e[0])+'" y1="'+Y(e[0])+'" x2="'+X(e[1])+'" y2="'+Y(e[1])+'" stroke="#9fb0c6" stroke-width="1.5"/>'; });
+  L.nodes.forEach(function(n){ var b=bff(n),bad=Math.abs(b)>1,
+     fill=bad?'#fdeded':'#eef3fb', stroke=bad?'#d9534f':'#28508c';
+     s+='<circle cx="'+X(n)+'" cy="'+Y(n)+'" r="15" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
+     s+='<text x="'+X(n)+'" y="'+(Y(n)+4)+'" text-anchor="middle" font-size="13" fill="#1c2530">'+n.k+'</text>';
+     s+='<text x="'+(X(n)+16)+'" y="'+(Y(n)-10)+'" font-size="9" fill="'+(bad?'#d9534f':'#7787a0')+'">'+(b>=0?'+':'')+b+'</text>';
+  });
+  s+='</svg>'; return s;
+}
+function snap(cap,root,logs){
+  var r='<div class="snap"><div class="cap">'+cap+'</div>'+svgTree(root);
+  if(logs&&logs.length)r+='<div class="rlog">↻ '+logs.join('<br>↻ ')+'</div>';
+  r+='</div>'; return r;
+}
+function runAVL(){
+  var build=document.getElementById('buildIn').value.split(/[ ,]+/).filter(function(x){return x!=='';});
+  var root=null;
+  build.forEach(function(v){ RLOG.length=0; root=ins(root,parseInt(v,10)); });
+  var out='<h3>Startbaum (aufgebaut)</h3>'+snap('Aufbau: '+build.join(', '),root,null)+'<h3>Operationen</h3>';
+  var ops=document.getElementById('opIn').value.split(/\s+/).filter(function(x){return x!=='';});
+  ops.forEach(function(op){
+    var m=op.replace('−','-'), sign=m[0], val=parseInt(m.slice(1),10);
+    if(isNaN(val))return;
+    RLOG.length=0; var cap,logs;
+    if(sign==='-'){ var ex=has(root,val); root=del(root,val); cap=(ex?'löschen ':'löschen (nicht vorhanden!) ')+val; }
+    else { root=ins(root,val); cap='einfügen '+val; }
+    logs=RLOG.slice();
+    out+=snap(cap+' → '+txt(root),root,logs);
+  });
+  document.getElementById('avlOut').innerHTML=out;
+}
+function txt(n){ if(!n)return '·'; if(!n.l&&!n.r)return ''+n.k; return n.k+'('+txt(n.l)+','+txt(n.r)+')'; }
+function preset(b,o){ document.getElementById('buildIn').value=b; document.getElementById('opIn').value=o; runAVL(); }
+
+/* ===== Quiz ===== */
+var Q=[
+ {q:"Wann ist ein binärer Suchbaum ein AVL-Baum?",
+  o:["Er ist vollständig gefüllt","In jedem Knoten unterscheiden sich die Teilbaumhöhen um höchstens 1","Alle Blätter auf gleicher Tiefe","Die Wurzel hat BF 0"],c:1,
+  fb:"AVL = höhenbalanciert: |BF| ≤ 1 in JEDEM Knoten."},
+ {q:"BF(z) = +2 und BF(z.links) = −1. Welcher Fall?",
+  o:["LL → Rechtsrotation","RR → Linksrotation","LR → Links- dann Rechtsrotation","RL → Rechts- dann Linksrotation"],c:2,
+  fb:"Links-lastig (+2) aber linkes Kind rechts-lastig (−1) → LR-Doppelrotation."},
+ {q:"Wie viele Rotationen können beim EINFÜGEN maximal nötig sein?",
+  o:["genau eine (ggf. Doppelrotation)","bis zu log n","zwei","keine"],c:0,
+  fb:"Beim Einfügen genügt immer eine (Doppel-)Rotation. Löschen kann mehrere brauchen."},
+ {q:"Löschen eines Knotens mit zwei Kindern — Prof-Regel?",
+  o:["größtes Element aus linkem Teilbaum","kleinstes Element aus rechtem Teilbaum","Wurzel neu aufbauen","linkes Kind hochziehen"],c:1,
+  fb:"In-Order-Nachfolger = kleinstes Element des rechten Teilbaums (A5b)."},
+ {q:"Klausur A5a, Baum A + einfügen 5: welche Rotation?",
+  o:["keine","LL an 7","RR (Linksrotation) an 0","RL an 8"],c:2,
+  fb:"5 hängt sich rechts unter 1 → Knoten 0 wird BF −2 (rechts-rechts) → Linksrotation um 0."},
+ {q:"Warum bleibt die BST-Ordnung bei einer Rotation erhalten?",
+  o:["Zufall","Weil nur Höhen geändert werden","Weil die In-Order-Reihenfolge der Schlüssel unverändert bleibt","Tut sie nicht"],c:2,
+  fb:"Rotationen sind ordnungserhaltend: die In-Order-Sequenz ist vorher = nachher."}
+];
+(function(){
+  var c=document.getElementById('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div');
+    var p=document.createElement('p');p.innerHTML='<b>'+(qi+1)+'.</b> '+item.q;w.appendChild(p);
+    item.o.forEach(function(opt,oi){
+      var b=document.createElement('button');b.className='qa';b.innerHTML=opt;
+      b.onclick=function(){
+        var fb=w.querySelector('.qfb');
+        Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(x){x.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}
+        else{b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+      };
+      w.appendChild(b);
+    });
+    var fb=document.createElement('div');fb.className='qfb';w.appendChild(fb);
+    c.appendChild(w);
+  });
+})();
+
+/* Startzustand */
+runAVL();
+</script>
+</body>
+</html>

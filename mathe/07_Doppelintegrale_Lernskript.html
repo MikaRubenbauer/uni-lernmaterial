@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thema 7 – Doppelintegrale &amp; div/rot</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.35rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap} nav a:hover{background:var(--note)}
+  main{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f} .ok{background:var(--ok);border-left:4px solid #3aa765} .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none} details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)} details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  .st{background:var(--note);border-radius:8px;padding:4px 9px;font-size:.82rem;font-weight:700;color:var(--akz2)} .src{color:#2a9d5c;font-size:.86em}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:.9rem;cursor:pointer;margin:3px} button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  .reveal{display:none;background:#fff;border:1px solid var(--bd);border-radius:9px;padding:12px 14px;margin-top:6px} .reveal.show{display:block}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;margin:8px 0} th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)}
+  footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem} code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 7 — Doppelintegrale &amp; div/rot</h1>
+  <p>Analysis · Prof. Reischl · Klausur 23.07.2026 · Blatt 10 (Übung 10.1)</p>
+  <p>Interaktiv — erst ein komplett vorgerechnetes Doppelintegral, dann Rezept, Trainer, Quiz.</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a><a href="#durchlauf">Komplett-Beispiel</a><a href="#rezept">Rezept</a>
+  <a href="#trainer">Integral-Trainer</a><a href="#vek">div &amp; rot</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <p>Ein <b>Doppelintegral</b> $\displaystyle\int_a^b\!\int_{c}^{d} f(x,y)\,dy\,dx$ rechnest du <b>von innen nach außen</b>:
+  zuerst das innere Integral (über $y$, dabei $x$ als Konstante), das Ergebnis ist eine Funktion von $x$; dann das äußere Integral (über $x$).</p>
+  <div class="box note"><b>Regel für die Grenzen:</b> die <b>inneren</b> Grenzen dürfen von der äußeren Variable abhängen (z.B. $\int_{-x}^{x}$),
+  die <b>äußeren</b> Grenzen sind reine Zahlen. Reihenfolge $dy\,dx$ heißt: innen $y$, außen $x$.</p>
+</section>
+
+<section id="durchlauf">
+  <h2>1b · Ein komplettes Beispiel — jede Zahl erklärt</h2>
+  <div class="box note"><b>Aufgabe (Blatt 10, Üb. 10.1.1):</b> $\displaystyle\int_0^1\!\int_{-x}^{x} 3x\,dy\,dx$.</div>
+
+  <h3><span class="st">Schritt 1</span> &nbsp;Inneres Integral (über $y$, $x$ ist konstant)</h3>
+  <p>$3x$ hängt nicht von $y$ ab → als Konstante vor das $dy$-Integral ziehen:</p>
+  <p>$\displaystyle\int_{-x}^{x} 3x\,dy = 3x\cdot\big[y\big]_{-x}^{x}=3x\cdot\big(x-(-x)\big)=3x\cdot 2x=6x^2$ &nbsp;<span class="src">← Länge des $y$-Intervalls ist $x-(-x)=2x$</span></p>
+
+  <h3><span class="st">Schritt 2</span> &nbsp;Äußeres Integral (über $x$)</h3>
+  <p>$\displaystyle\int_0^1 6x^2\,dx = 6\cdot\Big[\tfrac{x^3}{3}\Big]_0^1 = 6\cdot\tfrac{1}{3}=\boxed{2}$ &nbsp;<span class="src">← $\int x^2=\tfrac{x^3}{3}$, bei $x=1$ gleich $\tfrac13$</span></p>
+
+  <div class="box ok"><b>Ergebnis: $2$.</b> Merke die zwei Stufen: innen $y$ (mit $x$ konstant, Grenzen dürfen $x$ enthalten) → dann außen $x$. Genau das ist das ganze Verfahren.</div>
+</section>
+
+<section id="rezept">
+  <h2>2 · Das Rezept</h2>
+  <ol>
+    <li><b>Innen zuerst:</b> das innere Integral bilden; die andere Variable ist dabei konstant.</li>
+    <li>Innere Grenzen einsetzen → ein Ausdruck in der äußeren Variable.</li>
+    <li><b>Außen integrieren</b> und die äußeren (Zahlen-)Grenzen einsetzen.</li>
+  </ol>
+  <div class="box note"><b>Faktor-Trick:</b> Was nicht von der inneren Variable abhängt, darf als Konstante vor das innere Integral (spart Arbeit). Bei $\int x e^{xy}\,dy$ ist $\int x e^{xy}\,dy = e^{xy}$ — praktisch, weil $\frac{\partial}{\partial y}e^{xy}=x e^{xy}$.</div>
+</section>
+
+<section id="trainer">
+  <h2>3 · Integral-Trainer (Blatt 10)</h2>
+  <p>Erst selbst rechnen, dann aufdecken:</p>
+  <div id="tbtns"></div>
+  <div id="treveal" class="reveal"></div>
+</section>
+
+<section id="vek">
+  <h2>4 · div &amp; rot vom Gradienten (2 Merksätze)</h2>
+  <table>
+    <tr><th>Ausdruck</th><th>Ergebnis</th><th>warum</th></tr>
+    <tr><td>$\operatorname{div}(\nabla F)$ (Skalarfeld $F$)</td><td>Laplace $\Delta F$; für $xyz$ = $0$</td><td>erst Gradient, dann Divergenz</td></tr>
+    <tr><td>$\operatorname{rot}(\nabla f)$</td><td><b>immer</b> $(0,0,0)^T$</td><td>Rotation eines Gradientenfeldes ist stets null</td></tr>
+  </table>
+  <div class="box note"><b>Üb. 10.1.4:</b> $\nabla(xyz)=(yz,xz,xy)^T$, $\operatorname{div}=0$. &nbsp; <b>Üb. 10.1.6:</b> $\nabla(x^2+y+z)=(2x,1,1)^T$, $\operatorname{rot}=(0,0,0)^T$.</div>
+</section>
+
+<section id="quiz">
+  <h2>5 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>6 · Stolpersteine</h2>
+  <ol>
+    <li><b>Von innen nach außen.</b> Innere Grenzen dürfen die äußere Variable enthalten; äußere Grenzen sind Zahlen.</li>
+    <li>Beim inneren Integral die <b>andere Variable als Konstante</b> behandeln (vorziehen spart Arbeit).</li>
+    <li><b>$\operatorname{rot}(\nabla f)=0$ immer</b> — kein Rechnen nötig. $\operatorname{div}(\nabla F)$ ist der Laplace-Operator.</li>
+    <li><b>Polstelle im Intervall</b> (Üb. 10.1.7): $\int_0^2\frac{1}{x-1}dx$ hat bei $x=1$ eine Polstelle → Integral muss dort <b>zerlegt</b> werden, die naive Rechnung „$=0$" ist falsch (uneigentliches Integral, divergiert).</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Thema 7 · interaktiv · Quelle: Blatt 10 (Üb. 10.1 + Musterlösung), Quellnotiz <code>07_Doppelintegrale_Uebungen.md</code>. Ergebnisse gegen Musterlösung geprüft. (MathJax via CDN.)
+</footer>
+<script>
+var INT=[
+ {l:"\\int_0^1\\!\\int_{-1}^{1} x e^{xy}\\,dy\\,dx",
+  calc:"\\text{innen: }\\int_{-1}^{1}x e^{xy}dy=[e^{xy}]_{-1}^{1}=e^{x}-e^{-x};\\quad \\text{außen: }\\int_0^1(e^{x}-e^{-x})dx=[e^{x}+e^{-x}]_0^1=(e+e^{-1})-2", res:"e+e^{-1}-2"},
+ {l:"\\int_0^1\\!\\int_0^1 6y^2\\,dy\\,dx",
+  calc:"\\text{innen: }\\int_0^1 6y^2dy=6\\cdot\\tfrac13=2;\\quad \\text{außen: }\\int_0^1 2\\,dx=2", res:"2"},
+ {l:"\\int_1^2\\!\\int_1^2 \\tfrac{1}{xy}\\,dy\\,dx",
+  calc:"\\text{innen: }\\int_1^2\\tfrac{1}{xy}dy=\\tfrac1x[\\ln y]_1^2=\\tfrac{\\ln 2}{x};\\quad \\text{außen: }\\int_1^2\\tfrac{\\ln2}{x}dx=\\ln2\\,[\\ln x]_1^2=\\ln2\\cdot\\ln2", res:"(\\ln 2)^2"},
+ {l:"\\int\\!\\int \\cos(x+y)\\,dy\\,dx\\ \\text{(unbestimmt)}",
+  calc:"\\text{innen: }\\int\\cos(x+y)dy=\\sin(x+y);\\quad \\text{außen: }\\int\\sin(x+y)dx=-\\cos(x+y)", res:"-\\cos(x+y)\\;(+c_1x+c_2)"}
+];
+(function(){
+  var wrap=document.getElementById('tbtns'), rev=document.getElementById('treveal');
+  INT.forEach(function(it){
+    var b=document.createElement('button'); b.className='sec'; b.innerHTML='$'+it.l+'$';
+    b.onclick=function(){ rev.className='reveal show';
+      rev.innerHTML='<div style="margin-bottom:6px">$'+it.l+'$</div><div style="margin:6px 0">$'+it.calc+'$</div><div class="box ok" style="margin:6px 0 0"><b>Ergebnis: $'+it.res+'$</b></div>';
+      if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([rev]);}
+    };
+    wrap.appendChild(b);
+  });
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([wrap]);}
+})();
+var Q=[
+ {q:"Wie rechnet man $\\int_a^b\\int_c^d f\\,dy\\,dx$?",
+  o:["außen zuerst","innen ($y$) zuerst, dann außen ($x$)","beide gleichzeitig","Reihenfolge egal, aber Grenzen tauschen"],c:1,
+  fb:"Von innen nach außen: erst $\\int dy$ (x konstant), dann $\\int dx$."},
+ {q:"$\\int_0^1\\int_{-x}^{x}3x\\,dy\\,dx=$ ?",
+  o:["0","1","2","6"],c:2,
+  fb:"Innen $3x\\cdot2x=6x^2$, außen $\\int_0^1 6x^2=2$."},
+ {q:"$\\operatorname{rot}(\\nabla f)$ ist …",
+  o:["$\\Delta f$","immer $(0,0,0)^T$","$\\nabla f$","nicht definiert"],c:1,
+  fb:"Rotation eines Gradientenfeldes ist immer null."},
+ {q:"$\\int_0^2\\frac{1}{x-1}dx$ — was ist zu beachten?",
+  o:["nichts, Ergebnis 0","Polstelle bei $x=1$ → zerlegen (uneigentlich)","erst substituieren","Ergebnis $\\ln2$"],c:1,
+  fb:"Bei $x=1$ ist der Integrand nicht definiert → Integral divergiert; die naive Rechnung ist falsch."}
+];
+(function(){
+  var c=document.getElementById('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div'); var pq=document.createElement('p'); pq.innerHTML='<b>'+(qi+1)+'.</b> '+item.q; w.appendChild(pq);
+    item.o.forEach(function(opt,oi){ var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){ var fb=w.querySelector('.qfb'); Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(el){el.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;} else {b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+        if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([w]);} };
+      w.appendChild(b); });
+    var fb=document.createElement('div'); fb.className='qfb'; w.appendChild(fb); c.appendChild(w);
+  });
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([c]);}
+})();
+</script>
+</body>
+</html>

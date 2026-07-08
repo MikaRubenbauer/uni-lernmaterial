@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML-Produktions-Pack (Aufgabe 1) — WE-Klausur Gen A</title>
+<style>
+  :root{--bg:#0f1419;--panel:#1a212b;--panel2:#232d3a;--ink:#e6edf3;--muted:#8b98a5;--acc:#4ea1ff;--ok:#3fb950;--warn:#d29922;--red:#f85149;--line:#30363d;--code:#0b0f14}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1050px;margin:0 auto;padding:24px 20px 80px}
+  h1{font-size:24px;margin:0 0 4px}
+  h2{font-size:19px;margin:34px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:15px;margin:18px 0 6px;color:var(--acc)}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--ok);margin-right:6px}
+  .tag.def{color:var(--warn)}.tag.mc{color:var(--acc)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  pre,code{font-family:"JetBrains Mono",Consolas,monospace}
+  .live{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:8px 0}
+  @media(max-width:760px){.live{grid-template-columns:1fr}}
+  .live .src{background:var(--code);padding:12px;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow:auto}
+  .live .out{background:#fff;color:#111;padding:12px;font-family:Georgia,serif}
+  .live .hdr{grid-column:1/-1;background:var(--panel2);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:5px 12px;display:flex;justify-content:space-between}
+  .kw{color:#7ee787}.at{color:#79c0ff}.st{color:#a5d6ff}.com{color:#8b949e}.txt{color:#e6edf3}
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t td,table.t th{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  table.t th{color:var(--muted)}
+  table.t td:first-child{font-family:monospace;color:#7ee787;white-space:nowrap}
+  .falle{border-left:3px solid var(--warn);padding:8px 14px;margin:8px 0;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+  details{margin:8px 0;background:var(--panel2);border-radius:8px;padding:0 14px;border:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600}details[open]{padding-bottom:12px}
+  .drill textarea{width:100%;background:var(--code);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:10px;font-family:monospace;font-size:13px;min-height:62px;resize:vertical}
+  .drill .out{background:#fff;color:#111;border-radius:7px;padding:10px;font-family:Georgia,serif;margin-top:8px;min-height:40px}
+  .drill button{background:var(--acc);color:#06121f;border:0;border-radius:7px;padding:7px 13px;font-weight:700;cursor:pointer;margin-top:8px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:760px){.two{grid-template-columns:1fr}}
+  .badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;font-weight:700}
+  .bl{background:#1f6feb33;color:#79c0ff}.il{background:#2ea04333;color:#7ee787}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>HTML-Produktions-Pack</h1>
+  <p class="sub">WE-Klausur Generation A (Haefner 2023/24/25 + Probe) · <b>Aufgabe 1</b>. Reine Produktion — Code aus dem Kopf schreiben. Links Quelltext, rechts Browser-Ausgabe.</p>
+
+  <!-- H1 minimal doc -->
+  <h2><span class="tag">Erstellen</span> H1 — Minimales HTML-Dokument („Hello World")</h2>
+  <div class="live">
+    <div class="hdr"><span>Quelltext (minimal & valide HTML5)</span><span>Ausgabe</span></div>
+    <div class="src"><span class="com">&lt;!DOCTYPE html&gt;</span>
+<span class="kw">&lt;html</span> <span class="at">lang</span>=<span class="st">"de"</span><span class="kw">&gt;</span>
+<span class="kw">&lt;head&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="at">charset</span>=<span class="st">"UTF-8"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;title&gt;</span><span class="txt">Titel</span><span class="kw">&lt;/title&gt;</span>
+<span class="kw">&lt;/head&gt;</span>
+<span class="kw">&lt;body&gt;</span><span class="txt">Hello World</span><span class="kw">&lt;/body&gt;</span>
+<span class="kw">&lt;/html&gt;</span></div>
+    <div class="out">Hello World</div>
+  </div>
+  <div class="falle"><b>Pflicht-Bausteine:</b> <code>&lt;!DOCTYPE html&gt;</code> (HTML5-Deklaration, KEIN Tag), <code>&lt;html&gt;</code> (Root), <code>&lt;head&gt;</code> mit <code>&lt;title&gt;</code> (für Validität nötig), <code>&lt;body&gt;</code> mit dem sichtbaren Inhalt. <code>&lt;meta charset&gt;</code> + <code>lang</code> = empfohlen.</div>
+
+  <!-- H2 tag structure + block/inline -->
+  <h2><span class="tag def">Beschreiben</span> H2 — Struktur eines HTML-Tags & Block vs. Inline</h2>
+  <div class="panel">
+    <h3>Aufbau eines Elements</h3>
+    <div class="live">
+      <div class="hdr"><span>Anatomie</span><span>Begriffe</span></div>
+      <div class="src"><span class="kw">&lt;a</span> <span class="at">href</span>=<span class="st">"seite.html"</span><span class="kw">&gt;</span><span class="txt">Linktext</span><span class="kw">&lt;/a&gt;</span>
+ │   │       │            │       │
+ │   Attr.  Wert       Inhalt   End-Tag
+ Start-Tag (öffnend)</div>
+      <div class="out" style="font-family:monospace;font-size:12.5px;color:#111">
+        <b>Start-Tag</b> + <b>Attribut(e)=Wert</b> + <b>Inhalt</b> + <b>End-Tag</b>.<br><br>
+        <b>Leeres Element</b> (keine schließende Form, kein Inhalt):<br><code>&lt;br&gt;</code>, <code>&lt;img src=…&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;hr&gt;</code>
+      </div>
+    </div>
+    <h3>Block vs. Inline</h3>
+    <table class="t">
+      <tr><th></th><th><span class="badge bl">Block</span></th><th><span class="badge il">Inline</span></th></tr>
+      <tr><td>Breite</td><td>nimmt volle Zeilenbreite</td><td>nur so breit wie Inhalt</td></tr>
+      <tr><td>Umbruch</td><td>beginnt neue Zeile</td><td>bleibt im Textfluss</td></tr>
+      <tr><td>width/height</td><td>wirken</td><td>wirken NICHT (nur padding/margin teils; Ausnahme: ersetzte Elemente wie <code>img</code> — dort wirken sie)</td></tr>
+      <tr><td>Beispiele</td><td><code>div p h1 ul ol li table</code></td><td><code>span a b em strong img</code></td></tr>
+    </table>
+    <div class="live" style="margin-top:10px">
+      <div class="hdr"><span>Demo</span><span>Ausgabe</span></div>
+      <div class="src"><span class="kw">&lt;div&gt;</span><span class="txt">Block 1</span><span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;div&gt;</span><span class="txt">Block 2</span><span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;span&gt;</span><span class="txt">Inline</span><span class="kw">&lt;/span&gt;</span> <span class="kw">&lt;span&gt;</span><span class="txt">nebeneinander</span><span class="kw">&lt;/span&gt;</span></div>
+      <div class="out"><div style="background:#cde">Block 1</div><div style="background:#dce">Block 2</div><span style="background:#dfd">Inline</span> <span style="background:#dfd">nebeneinander</span></div>
+    </div>
+  </div>
+
+  <!-- H3 fragment completion + nachbauen -->
+  <h2><span class="tag">Erstellen</span> H3 — Fragment vervollständigen & nachbauen</h2>
+  <div class="two">
+    <div class="panel">
+      <h3>Vervollständigen</h3>
+      <p class="sub">Aufgabe: <code>&lt;p&gt; xyz &lt;span&gt; Test123</code></p>
+      <div class="live">
+        <div class="hdr"><span>Lösung</span><span>Ausgabe</span></div>
+        <div class="src"><span class="kw">&lt;p&gt;</span><span class="txt"> xyz </span><span class="kw">&lt;span&gt;</span><span class="txt"> Test123 </span><span class="kw">&lt;/span&gt;&lt;/p&gt;</span></div>
+        <div class="out"> xyz  Test123 </div>
+      </div>
+      <p class="sub">Innerste zuerst schließen: <code>&lt;/span&gt;</code> dann <code>&lt;/p&gt;</code> (korrekte Schachtelung).</p>
+    </div>
+    <div class="panel">
+      <h3>Nachbauen (ohne CSS): „fetter Text"</h3>
+      <div class="live">
+        <div class="hdr"><span>Lösung</span><span>Ausgabe</span></div>
+        <div class="src"><span class="kw">&lt;h3&gt;</span><span class="txt">Erster Absatz</span><span class="kw">&lt;/h3&gt;</span>
+<span class="kw">&lt;p&gt;</span><span class="txt">Dies ist der erste Absatz, mit </span><span class="kw">&lt;b&gt;</span><span class="txt">fettem</span><span class="kw">&lt;/b&gt;</span><span class="txt"> Text</span><span class="kw">&lt;/p&gt;</span></div>
+        <div class="out"><h3 style="margin:4px 0;color:#111">Erster Absatz</h3><p style="margin:4px 0">Dies ist der erste Absatz, mit <b>fettem</b> Text</p></div>
+      </div>
+      <p class="sub"><code>&lt;b&gt;</code> (optisch) oder <code>&lt;strong&gt;</code> (semantisch „wichtig"). Überschrift via <code>&lt;h1&gt;…&lt;h6&gt;</code>.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Nachbauen: Liste (ohne CSS)</h3>
+    <div class="live">
+      <div class="hdr"><span>geordnet vs. ungeordnet</span><span>Ausgabe</span></div>
+      <div class="src"><span class="com">&lt;!-- ungeordnet (Punkte) --&gt;</span>
+<span class="kw">&lt;ul&gt;</span>
+  <span class="kw">&lt;li&gt;</span><span class="txt">Apfel</span><span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;</span><span class="txt">Birne</span><span class="kw">&lt;/li&gt;</span>
+<span class="kw">&lt;/ul&gt;</span>
+<span class="com">&lt;!-- geordnet (1.2.3.) --&gt;</span>
+<span class="kw">&lt;ol&gt;</span>
+  <span class="kw">&lt;li&gt;</span><span class="txt">Erstens</span><span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;</span><span class="txt">Zweitens</span><span class="kw">&lt;/li&gt;</span>
+<span class="kw">&lt;/ol&gt;</span></div>
+      <div class="out"><ul style="margin:4px 0"><li>Apfel</li><li>Birne</li></ul><ol style="margin:4px 0"><li>Erstens</li><li>Zweitens</li></ol></div>
+    </div>
+    <p class="sub">Dritte Listenart: <b>Definitionsliste</b> <code>&lt;dl&gt;&lt;dt&gt;Begriff&lt;/dt&gt;&lt;dd&gt;Erklärung&lt;/dd&gt;&lt;/dl&gt;</code> (kam in 2010/Röthig-Generation).</p>
+  </div>
+
+  <!-- H4 head tags -->
+  <h2><span class="tag def">Nennen</span> H4 — Zwei Tags im &lt;head&gt; + Wirkung</h2>
+  <table class="t">
+    <tr><th>Tag</th><th>Wirkung</th></tr>
+    <tr><td>&lt;title&gt;</td><td>Titel im Browser-Tab / Lesezeichen / Suchergebnis. Pflicht für valide Seite.</td></tr>
+    <tr><td>&lt;meta charset="UTF-8"&gt;</td><td>Legt die Zeichenkodierung fest → Umlaute korrekt.</td></tr>
+    <tr><td>&lt;link rel="stylesheet" href&gt;</td><td>Bindet eine externe CSS-Datei ein.</td></tr>
+    <tr><td>&lt;script src&gt;</td><td>Bindet JavaScript ein.</td></tr>
+    <tr><td>&lt;meta name="viewport"&gt;</td><td>Steuert Skalierung auf Mobilgeräten.</td></tr>
+  </table>
+  <p class="sub">In der Klausur reichen <b>zwei</b> mit jeweils einem Satz Wirkung. Sichere Wahl: <code>&lt;title&gt;</code> + <code>&lt;link rel="stylesheet"&gt;</code>.</p>
+
+  <!-- H5 hyperlink + url -->
+  <h2><span class="tag">Erstellen</span> H5 — Hyperlink & URL-Bestandteile</h2>
+  <div class="live">
+    <div class="hdr"><span>Hyperlink</span><span>Ausgabe</span></div>
+    <div class="src"><span class="kw">&lt;a</span> <span class="at">href</span>=<span class="st">"https://example.com/pfad"</span><span class="kw">&gt;</span><span class="txt">Beschreibung</span><span class="kw">&lt;/a&gt;</span></div>
+    <div class="out"><a href="#" onclick="return false" style="color:#1a6">Beschreibung</a></div>
+  </div>
+  <p class="sub">Ein Hyperlink trägt zwei Bestandteile: das <b>Verweisziel (URL, <code>href</code>)</b> und die <b>textuelle Beschreibung</b> (Linktext).</p>
+  <table class="t">
+    <tr><th>URL-Bestandteil</th><th>Beispiel</th></tr>
+    <tr><td>Protokoll</td><td><code>https://</code></td></tr>
+    <tr><td>Host (Subdomain.Domain.TLD)</td><td><code>www.example.com</code></td></tr>
+    <tr><td>Port (optional)</td><td><code>:8080</code></td></tr>
+    <tr><td>Pfad</td><td><code>/ordner/datei.html</code></td></tr>
+    <tr><td>Query (optional)</td><td><code>?param=wert</code></td></tr>
+    <tr><td>Fragment (optional)</td><td><code>#abschnitt</code></td></tr>
+  </table>
+  <div class="falle"><b>Klausur-Frage „ein Bestandteil nennen + Beispiel":</b> z.B. Protokoll <code>https</code>, oder Host <code>example.com</code>. Ein Beispiel genügt.</div>
+
+  <!-- DRILL -->
+  <h2>Drill (interaktiv)</h2>
+  <div class="panel drill">
+    <p>[Erstellen] Schreibe ein HTML-Fragment für einen Absatz mit dem <b>fett</b> ausgezeichneten Wort „wichtig". Tippe rein und drücke <b>Rendern</b>:</p>
+    <textarea id="ta">&lt;p&gt;Das ist &lt;b&gt;wichtig&lt;/b&gt;.&lt;/p&gt;</textarea>
+    <button onclick="render()">Rendern ▶</button>
+    <div class="out" id="dout"></div>
+    <details><summary>Musterlösung</summary><code>&lt;p&gt;Das ist &lt;b&gt;wichtig&lt;/b&gt;.&lt;/p&gt;</code> — oder <code>&lt;strong&gt;</code> für semantische Wichtigkeit.</details>
+  </div>
+  <details><summary>[MC] Welches kommt im Backend an: <code>disabled</code> oder <code>readonly</code>?</summary><p><code>readonly</code> wird übertragen (Fokus möglich, nur Edit gesperrt). <code>disabled</code> wird NICHT übertragen.</p></details>
+  <details><summary>[MC] Ist <code>&lt;br&gt;</code> ein leeres oder normales Element?</summary><p>Leer — kein Inhalt, kein End-Tag. Ebenso <code>&lt;img&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;hr&gt;</code>, <code>&lt;input&gt;</code>.</p></details>
+  <details><summary>[Erstellen] Minimales valides HTML5-Dokument, das „Hi" anzeigt.</summary><div class="codebox"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="de"&gt;&lt;head&gt;&lt;meta charset="UTF-8"&gt;&lt;title&gt;T&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;Hi&lt;/body&gt;&lt;/html&gt;</pre></div></details>
+  <details><summary>[Erstellen] Hyperlink zu <code>https://dhbw.de</code> mit Text „DHBW".</summary><div class="codebox"><pre>&lt;a href="https://dhbw.de"&gt;DHBW&lt;/a&gt;</pre></div></details>
+  <details><summary>[Erstellen] Ungeordnete Liste mit zwei Einträgen (Apfel, Birne), ohne CSS.</summary><div class="codebox"><pre>&lt;ul&gt;
+  &lt;li&gt;Apfel&lt;/li&gt;
+  &lt;li&gt;Birne&lt;/li&gt;
+&lt;/ul&gt;</pre></div></details>
+  <details><summary>[Erstellen] Definitionsliste mit einem Begriff „HTTP" und Erklärung.</summary><div class="codebox"><pre>&lt;dl&gt;
+  &lt;dt&gt;HTTP&lt;/dt&gt;
+  &lt;dd&gt;Übertragungsprotokoll des Webs&lt;/dd&gt;
+&lt;/dl&gt;</pre></div></details>
+  <details><summary>[Vervollständigen] <code>&lt;p&gt;A &lt;b&gt;B</code> — korrekt schließen.</summary><p><code>&lt;p&gt;A &lt;b&gt;B&lt;/b&gt;&lt;/p&gt;</code> — innerste (<code>&lt;/b&gt;</code>) zuerst.</p></details>
+  <details><summary>[Nennen] Zwei Tags im <code>&lt;head&gt;</code> + Wirkung.</summary><p><code>&lt;title&gt;</code> = Tab-/Suchergebnis-Titel (Pflicht) · <code>&lt;meta charset="UTF-8"&gt;</code> = Zeichenkodierung (Umlaute). Auch möglich: <code>&lt;link rel="stylesheet"&gt;</code>, <code>&lt;script&gt;</code>.</p></details>
+
+  <p class="sub" style="margin-top:30px">WE-Klausur-Lernpaket · Säule 1 (HTML) · <code>Materialien/HTML/</code></p>
+</div>
+<script>
+function render(){
+  const v=document.getElementById('ta').value;
+  // einfache Vorschau: nur b,strong,em,i,p,br,ul,ol,li,h1-h6,span erlauben
+  document.getElementById('dout').innerHTML=v;
+}
+render();
+</script>
+</body>
+</html>
