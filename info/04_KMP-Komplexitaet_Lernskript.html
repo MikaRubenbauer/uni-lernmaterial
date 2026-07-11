@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info Thema 6+7 – KMP-Textsuche &amp; Komplexitätsanalyse</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.55;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.4rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap} nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f} .ok{background:var(--ok);border-left:4px solid #3aa765} .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none} details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)} details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:9px 13px;font-size:.9rem;cursor:pointer;margin:3px} button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  input[type=text]{padding:8px 10px;border:1px solid var(--bd);border-radius:7px;font-size:.95rem;font-family:"JetBrains Mono",Consolas,monospace}
+  .calc-row{display:flex;gap:8px;margin:6px 0;align-items:center;flex-wrap:wrap} .calc-row label{font-size:.85rem;color:#5a6675;min-width:130px}
+  mono,.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em;font-family:"JetBrains Mono",Consolas,monospace}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;margin:8px 0} th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)} td.mono,th.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  .badge{display:inline-block;background:#28508c;color:#fff;border-radius:6px;padding:2px 8px;font-size:.78rem;font-weight:700;margin-right:6px} .badge.top{background:#b3261e}
+  .cell{display:inline-flex;min-width:26px;height:26px;border:1px solid var(--bd);align-items:center;justify-content:center;font-family:"JetBrains Mono",Consolas,monospace;font-size:.9rem;background:#fff}
+  .cell.hit{background:#ebf7ee;border-color:#3aa765;font-weight:700} .cell.act{background:#fff6e6;border-color:#e0a640}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  .out{margin-top:10px;padding:12px 14px;background:var(--ok);border-radius:9px;font-size:.93rem;display:none;overflow-x:auto} .out.show{display:block}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 6 + 7 — KMP-Textsuche &amp; Komplexitätsanalyse</h1>
+  <p>Theoretische Informatik II · Prof. Ritterbusch · Klausur 31.07.2026, 09:00 · <b>Lernblock Di 28.07 (nachm.)</b></p>
+  <p><span class="badge">HOCH</span> KMP 8 P (A4) + zeilenweise Komplexität 8 P (A1) · Arbeitsheft 41–46 &amp; 7–10 · Skript Kap. 3.1 / 1.2</p>
+</header>
+<nav>
+  <a href="#kmp">KMP-Konzept</a><a href="#kmprez">KMP-Rezept</a><a href="#kmptrainer">KMP-Trainer</a><a href="#kmpklausur">Klausur A4</a>
+  <a href="#kx">Komplexität</a><a href="#kxklausur">Klausur A1</a><a href="#anim">Animationen</a><a href="#drills">AH-Drills</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="kmp">
+  <h2>1 · KMP — Konzept</h2>
+  <p>Naive Textsuche vergleicht bei jedem Mismatch von vorne → $O(n\cdot m)$. <b>Knuth-Morris-Pratt (KMP)</b> nutzt die
+  Struktur des Musters, um nach einem Mismatch <b>nicht zurück im Text</b> zu springen → $O(n+m)$.</p>
+  <div class="box note"><b>Rand (Border).</b> Ein <b>Rand</b> eines Strings ist ein echtes Präfix, das zugleich Suffix ist.
+  Die <b>Randlänge</b> (Präfixfunktion $\pi$) sagt: „Wie viele Zeichen am Anfang stimmen mit dem Ende überein?"
+  Bei einem Mismatch springt das Muster genau um diesen bereits passenden Rand weiter — kein Zeichen wird doppelt geprüft.</div>
+</section>
+
+<section id="kmprez">
+  <h2>2 · KMP — Rezept</h2>
+  <h3>R1 — Präfixfunktion / Randlängen berechnen</h3>
+  <p>Für jedes Präfix des Musters die <b>größte Randlänge</b> bestimmen. Trick: $\pi[i]$ aus $\pi[i-1]$ — passt
+  $P[i]$ zum Zeichen $P[\pi[i-1]]$, dann $\pi[i]=\pi[i-1]+1$, sonst auf $\pi[\pi[i-1]-1]$ zurückfallen.</p>
+  <h3>R2 — Suchen mit Rücksprung</h3>
+  <ol>
+    <li>Text von links durchlaufen, Zähler $k$ = aktuelle Match-Länge.</li>
+    <li>Mismatch ($T[i]\ne P[k]$): $k \leftarrow \pi[k-1]$ (Muster rutscht um den Rand), <b>ohne</b> $i$ zurückzusetzen.</li>
+    <li>Match: $k{+}{+}$. Bei $k = |P|$: Treffer bei Startindex $i-|P|+1$, dann $k \leftarrow \pi[k-1]$ (Weitersuchen).</li>
+  </ol>
+</section>
+
+<section id="kmptrainer">
+  <h2>3 · KMP-Trainer</h2>
+  <div class="calc-row"><label>Muster</label><input type="text" id="pat" value="anfang" size="16">
+    <button onclick="kmpPi()">Randlängen (π)</button></div>
+  <div id="piOut" class="out"></div>
+  <div class="calc-row"><label>Text</label><input type="text" id="txt" value="anfahrt am anfang" size="28">
+    <button onclick="kmpRun()">Suche tracen</button>
+    <button class="sec" onclick="document.getElementById('pat').value='anfang';document.getElementById('txt').value='anfahrt am anfang';kmpPi();kmpRun()">Klausur A4</button></div>
+  <div id="kmpOut" class="out"></div>
+</section>
+
+<section id="kmpklausur">
+  <h2>4 · Prof-Altklausur 2024, Aufgabe 4 (8 P) — Wort „anfang"</h2>
+  <details><summary>a) Größte Ränder + Randlängen der Teilstrings (4 P)</summary><div class="det-body">
+    <table><tr><th>Teilstring</th><th class="mono">a</th><th class="mono">an</th><th class="mono">anf</th><th class="mono">anfa</th><th class="mono">anfan</th><th class="mono">anfang</th></tr>
+      <tr><td>größter Rand</td><td class="mono">–</td><td class="mono">–</td><td class="mono">–</td><td class="mono">a</td><td class="mono">an</td><td class="mono">–</td></tr>
+      <tr><td>Randlänge π</td><td class="mono">0</td><td class="mono">0</td><td class="mono">0</td><td class="mono">1</td><td class="mono">2</td><td class="mono">0</td></tr></table>
+    <div class="box ok mono">π = [0,0,0,1,2,0] — verifiziert. „anfa": Rand „a"; „anfan": Rand „an"; „anfang": kein Rand (g passt zu nichts am Anfang).</div>
+  </div></details>
+  <details><summary>b) KMP-Suche von „anfang" in „anfahrt am anfang" (4 P)</summary><div class="det-body">
+    <p>Erkannte Teilstrings in Reihenfolge (Text-Index i, aktuelle Match-Länge):</p>
+    <table><tr><th class="mono">i</th><th class="mono">T[i]</th><th>erkannt</th><th>Kommentar</th></tr>
+      <tr><td class="mono">0–3</td><td class="mono">a n f a</td><td class="mono">a→an→anf→anfa</td><td>Aufbau bis Länge 4</td></tr>
+      <tr><td class="mono">4</td><td class="mono">h</td><td class="mono">–</td><td>Mismatch (P[4]=n): π[3]=1, dann π[0]=0 → Reset auf 0</td></tr>
+      <tr><td class="mono">5–7</td><td class="mono">r t ␣</td><td class="mono">–</td><td>keine Übereinstimmung</td></tr>
+      <tr><td class="mono">8</td><td class="mono">a</td><td class="mono">a</td><td>Neuanlauf</td></tr>
+      <tr><td class="mono">9–10</td><td class="mono">m ␣</td><td class="mono">–</td><td>Reset</td></tr>
+      <tr><td class="mono">11–16</td><td class="mono">a n f a n g</td><td class="mono">a→…→anfang</td><td><b>Treffer bei Startindex 11</b></td></tr></table>
+    <div class="box ok mono">Genau 1 Fundstelle: Position 11 (0-basiert). Der „falsche Anlauf" bei i=0–3 zeigt den KMP-Rücksprung ohne Text-Backtracking. Verifiziert.</div>
+  </div></details>
+</section>
+
+<section id="kx">
+  <h2>5 · Komplexitätsanalyse — Konzept &amp; zeilenweise Rezept</h2>
+  <p><b>Landau:</b> $O(f)$ = höchstens (obere Schranke), $\Omega(f)$ = mindestens, $\Theta(f)$ = genau diese Ordnung.
+  Konstanten und niedrigere Terme fallen weg; nur das <b>dominante Wachstum</b> zählt: $1 \ll \log n \ll n \ll n\log n \ll n^2 \ll n^3 \ll 2^n$.</p>
+  <div class="box note"><b>Zeilenweise Analyse (Prof-Methode).</b> Für jede Codezeile: <b>Aufwand pro Ausführung</b> × <b>Anzahl der Ausführungen</b>.
+  Alle Zeilenbeiträge summieren, dominanten Term nehmen.</div>
+  <table><tr><th>Zeile</th><th>Aufwand/Ausf.</th><th>Anzahl</th><th>Beitrag</th></tr>
+    <tr><td>einfache Anweisung</td><td class="mono">O(1)</td><td class="mono">1</td><td class="mono">O(1)</td></tr>
+    <tr><td>Schleife <span class="mono">for i=1..n</span></td><td class="mono">O(1) Kopf</td><td class="mono">n(+1)</td><td class="mono">O(n)</td></tr>
+    <tr><td>Körper einer $n$-Schleife</td><td class="mono">O(1)</td><td class="mono">n</td><td class="mono">O(n)</td></tr>
+    <tr><td>Aufruf $f(n)$ mit $T_f$</td><td class="mono">T_f(n)</td><td>je Aufruf</td><td class="mono">Anzahl · T_f(n)</td></tr></table>
+  <div class="box note"><b>Master-Theorem</b> (teilende Rekursion $T(n)=a\,T(n/b)+f(n)$, Restrisiko-Pool, AH 11–12): vergleiche $f(n)$ mit $n^{\log_b a}$ → drei Fälle.</div>
+</section>
+
+<section id="kxklausur">
+  <h2>6 · Prof-Altklausur 2024, Aufgabe 1 (8 P) — Compute(n)</h2>
+  <pre class="mono" style="background:var(--note);padding:10px;border-radius:8px">1  Algorithmus Compute(n)
+2  for j=1…n do
+3      p(n)
+4      for k=1…n do
+5          q(n)</pre>
+  <p class="mono">Gegeben: T_p(n) = c_p·n²,  T_q(n) = c_q·log n.</p>
+  <details><summary>a) Aufwand &amp; Anzahl der Aufrufe je Zeile (4 P)</summary><div class="det-body">
+    <table><tr><th>Zeile</th><th>Aufwand/Ausf.</th><th>Anzahl Ausführungen</th><th>Beitrag</th></tr>
+      <tr><td class="mono">2 (äußere for)</td><td class="mono">O(1)</td><td class="mono">n (+1 Test)</td><td class="mono">O(n)</td></tr>
+      <tr><td class="mono">3 p(n)</td><td class="mono">c_p·n²</td><td class="mono">n</td><td class="mono">c_p·n³</td></tr>
+      <tr><td class="mono">4 (innere for)</td><td class="mono">O(1)</td><td class="mono">n·(n+1)</td><td class="mono">O(n²)</td></tr>
+      <tr><td class="mono">5 q(n)</td><td class="mono">c_q·log n</td><td class="mono">n·n = n²</td><td class="mono">c_q·n²·log n</td></tr></table>
+  </div></details>
+  <details><summary>b) Asymptotische Laufzeit durch zeilenweise Analyse (3 P)</summary><div class="det-body">
+    <p class="mono">T(n) = c_p·n³ + c_q·n²·log n + O(n²)</p>
+    <p>Dominanter Term: <span class="mono">n³ ≫ n²·log n</span> (denn $n^3 / (n^2\log n) = n/\log n \to \infty$).</p>
+    <div class="box ok mono">T(n) = Θ(n³).</div>
+  </div></details>
+  <details><summary>c) Einfachste asymptotische Komplexitätsklasse (1 P)</summary><div class="det-body">
+    <p><b class="mono">Θ(n³)</b> — bzw. $O(n^3)$. Der Aufruf p(n) (n²-Kosten, n-mal) dominiert alles.</p>
+  </div></details>
+</section>
+
+<section id="anim">
+  <h2>7 · Animationen zum Thema</h2>
+  <ul>
+    <li><a href="../../Animations/KMP-Algorithmus.html"><b>KMP-Animation</b></a> — Präfixfunktion &amp; Suchlauf Schritt für Schritt (Kernthema A4).</li>
+    <li><a href="../../Animations/Boyer-Moore%20Aufgabe%2046.html">Boyer-Moore-Animation</a> <span class="badge">Restrisiko-Pool</span> — alternatives Suchverfahren (AH 46).</li>
+  </ul>
+</section>
+
+<section id="drills">
+  <h2>8 · Arbeitsheft-Drills</h2>
+  <table><tr><th>Aufg.</th><th>Thema</th></tr>
+    <tr><td>41 / 42</td><td>Ränder &amp; Randlängen der Teilstrings (tultatul, eikleike, okokorok, trattrad) — im KMP-Trainer prüfen.</td></tr>
+    <tr><td>43 / 44</td><td>Randlängen + KMP-Durchführung (aaab in aaaaaaaab; barbara in abbabarabarbarbara).</td></tr>
+    <tr><td>45 / 46</td><td>Wort im Text suchen (belli; barbara) — 46 auch als Boyer-Moore-Animation.</td></tr>
+    <tr><td>7 / 8</td><td>Zeilenweise asymptotische Komplexität eines Algorithmus (Indikator-Bits) — wie Klausur A1.</td></tr>
+    <tr><td>9 / 10</td><td>Lineare Suche in Java: best/worst/avg-Case in Abhängigkeit von k Bits.</td></tr></table>
+  <div class="box note">KMP-Ränder (41–44) + zeilenweise Analyse (7–10) sind die direkten Klausur-Drills. Boyer-Moore = Restrisiko.</div>
+</section>
+
+<section id="quiz">
+  <h2>9 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>10 · Stolpersteine</h2>
+  <ol>
+    <li><b>Rand = echtes Präfix = Suffix.</b> „echt" heißt: nicht der ganze String.</li>
+    <li><b>KMP setzt den Text-Zeiger nie zurück</b> — nur die Match-Länge $k$ springt via $\pi$.</li>
+    <li><b>Nach einem Treffer</b> weiter mit $k=\pi[|P|-1]$ (nicht bei 0 neu), um überlappende Vorkommen zu finden.</li>
+    <li><b>Komplexität: Aufwand × Anzahl</b> je Zeile — den Aufwand eines Aufrufs ($T_p, T_q$) nicht vergessen.</li>
+    <li><b>Nur der dominante Term zählt</b>: $n^3 + n^2\log n = \Theta(n^3)$.</li>
+    <li><b>$n \gg \log n$</b>: ein Faktor $n$ schlägt jeden $\log$.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Info Thema 6+7 · Session 4 des Master-Chats (2026-07-10) · Quellen: Prof-Altklausur 2024 A4 (KMP „anfang") + A1 (Compute(n) → Θ(n³)),
+  Arbeitsheft 41–46 &amp; 7–10, Skript Kap. 3.1 / 1.2. Präfixfunktion, Suchtrace &amp; Komplexität programmatisch verifiziert (Python + Node).
+</footer>
+<script>
+function el(id){return document.getElementById(id);}
+function show(id,html){var e=el(id);e.className='out show';e.innerHTML=html;}
+function prefixFunc(P){var pi=new Array(P.length).fill(0),k=0;
+  for(var i=1;i<P.length;i++){ while(k>0&&P[i]!==P[k])k=pi[k-1]; if(P[i]===P[k])k++; pi[i]=k;} return pi;}
+function kmpPi(){
+  var P=el('pat').value; if(!P){show('piOut','Muster eingeben.');return;}
+  var pi=prefixFunc(P), rows='';
+  for(var i=0;i<P.length;i++){ rows+='<tr><td class="mono">'+P.slice(0,i+1)+'</td><td class="mono">'+(pi[i]?P.slice(0,pi[i]):'–')+'</td><td class="mono">'+pi[i]+'</td></tr>'; }
+  show('piOut','<table><tr><th>Teilstring</th><th>größter Rand</th><th>π</th></tr>'+rows+'</table><div class="mono">π = ['+pi.join(',')+']</div>');
+}
+function kmpRun(){
+  var P=el('pat').value, T=el('txt').value; if(!P||!T){show('kmpOut','Muster und Text eingeben.');return;}
+  var pi=prefixFunc(P),k=0,rows='',hits=[];
+  for(var i=0;i<T.length;i++){
+    while(k>0&&T[i]!==P[k])k=pi[k-1];
+    if(T[i]===P[k])k++;
+    var hit=false;
+    if(k===P.length){hits.push(i-P.length+1);k=pi[k-1];hit=true;}
+    rows+='<tr><td class="mono">'+i+'</td><td class="mono">'+(T[i]===' '?'␣':T[i])+'</td><td class="mono">'+(hit?P.length:k)+'</td><td class="mono">'+(hit?'★ Treffer @'+(i-P.length+1):(k?P.slice(0,k):'–'))+'</td></tr>';
+  }
+  show('kmpOut','<table><tr><th>i</th><th>T[i]</th><th>Match-Länge</th><th>erkannt</th></tr>'+rows+'</table>'+
+    '<div class="box ok mono" style="margin:8px 0 0">Fundstellen (Startindex): '+(hits.length?hits.join(', '):'keine')+'</div>');
+}
+var Q=[
+ {q:"Was ist ein „Rand" eines Strings?",o:["die Hälfte","ein echtes Präfix, das zugleich Suffix ist","das letzte Zeichen","der längste Teilstring"],c:1,fb:"Präfix = Suffix, echt (nicht der ganze String)."},
+ {q:"Randlängen (π) von „anfang"?",o:["[0,0,0,1,2,0]","[0,1,2,3,4,5]","[0,0,1,1,2,2]","[1,1,1,1,1,1]"],c:0,fb:"anfa→1 (a), anfan→2 (an), sonst 0."},
+ {q:"Warum ist KMP $O(n+m)$ statt $O(nm)$?",o:["Es überspringt zufällig","Der Textzeiger geht nie zurück; nur k springt via π","Es sortiert vorher","Durch Hashing"],c:1,fb:"Kein Text-Backtracking → jedes Textzeichen wird ~1× betrachtet."},
+ {q:"Laufzeit von Compute(n): p(n)=c·n² wird n-mal aufgerufen. Beitrag?",o:["n²","c·n³","n·log n","c·n"],c:1,fb:"n Aufrufe · n²-Kosten = c·n³ — dominiert."},
+ {q:"T(n)=c₁n³+c₂n²log n. Komplexitätsklasse?",o:["Θ(n² log n)","Θ(n³)","Θ(n⁵ log n)","Θ(2ⁿ)"],c:1,fb:"n³ dominiert n²log n (Verhältnis n/log n → ∞)."},
+ {q:"Fund von „anfang" in „anfahrt am anfang" bei Startindex …",o:["0","8","11","keiner"],c:2,fb:"Genau eine Fundstelle: Index 11."}
+];
+(function(){var c=el('quiz');Q.forEach(function(item,qi){var w=document.createElement('div');var p=document.createElement('p');p.innerHTML='<b>'+(qi+1)+'.</b> '+item.q;w.appendChild(p);
+  item.o.forEach(function(opt,oi){var b=document.createElement('button');b.className='qa';b.innerHTML=opt;b.onclick=function(){var fb=w.querySelector('.qfb');Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(x){x.classList.remove('correct','wrong');});if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}else{b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}};w.appendChild(b);});
+  var fb=document.createElement('div');fb.className='qfb';w.appendChild(fb);c.appendChild(w);});})();
+kmpPi(); kmpRun();
+</script>
+</body>
+</html>

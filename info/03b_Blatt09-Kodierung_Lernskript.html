@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info – Blatt 09: Kodierung (Entropie, Huffman, LZW, BWT)</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.55;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:22px 20px;} header h1{margin:0 0 4px;font-size:1.3rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  main{max-width:860px;margin:0 auto;padding:16px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 20px;margin:14px 0}
+  h2{color:var(--akz);margin:.1em 0 .4em;font-size:1.1rem;border-bottom:2px solid var(--note);padding-bottom:5px}
+  .box{border-radius:9px;padding:10px 14px;margin:10px 0;font-size:.93rem}
+  .ok{background:var(--ok);border-left:4px solid #3aa765} .warn{background:var(--warn);border-left:4px solid #d9534f} .note{background:var(--note);border-left:4px solid var(--akz)}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden} details>summary{cursor:pointer;padding:10px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none} details>summary::before{content:"Lösung ▶ ";font-size:.82em;color:var(--akz)} details[open]>summary::before{content:"Lösung ▼ "} .det-body{padding:8px 16px 14px}
+  mono,.mono{font-family:"JetBrains Mono",Consolas,monospace} code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-family:"JetBrains Mono",Consolas,monospace;font-size:.9em}
+  table{border-collapse:collapse;font-size:.86rem;margin:6px 0} th,td{border:1px solid var(--bd);padding:3px 7px;text-align:center} th{background:var(--note)}
+  footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Blatt 09 — Kodierung (Kap. 5)</h1>
+  <p>Ergänzung zu Session 3 (Huffman) · schließt die frühere ⚠️-Lücke „Kap-5-Lösungen fehlen". Entropie/Redundanz, Codebaum-Decode, Huffman, LZW, BWT.</p>
+  <p>Alle Zahlen programmatisch verifiziert (Python). Erst selbst rechnen, dann aufklappen.</p>
+</header>
+<main>
+
+<section>
+  <h2>Grundformeln</h2>
+  <div class="box note">
+    Informationsgehalt eines Zeichens: $I = -\log_2 p$. Entropie: $H(Q) = -\sum p_i \log_2 p_i$ (Bit/Zeichen).
+    Mittlere Codelänge $L = \sum p_i \ell_i$. <b>Redundanz</b> = $L - H$ (beim Code) bzw. bei fester Speicherung $= \text{Bits} - H$
+    (UTF-8/ASCII = 8 Bit).
+  </div>
+</section>
+
+<section>
+  <h2>Aufgabe 1 — Entropie &amp; Redundanz eines ASCII-Strings</h2>
+  <p>String (Space = Ascii 32): <span class="mono">„this company is one of the top software companies in the world because every single employee understands that they are part of a whole"</span> — Entropie &amp; Redundanz (UTF-8, 8 Bit) auf 2 Nachkommastellen.</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p>Zeichenhäufigkeiten zählen (inkl. Leerzeichen), relative Häufigkeiten $p_i$, dann $H=-\sum p_i\log_2 p_i$.</p>
+    <div class="box ok mono">Länge 134, 22 verschiedene Zeichen → <b>H ≈ 4,02 Bit/Zeichen</b>, Redundanz = 8 − H ≈ <b>3,98 Bit/Zeichen</b>.</div>
+    <div class="box warn">Exakter Wert hängt an der genauen Leerzeichen-Zählung — Methode ist entscheidend, Wert auf 2 Nachkommastellen so verifiziert.</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 2 — Codebaum aus Codetabelle + Decode</h2>
+  <table><tr><th>a</th><th>e</th><th>g</th><th>h</th><th>i</th><th>m</th><th>n</th><th>r</th><th>t</th><th>z</th></tr>
+    <tr><td>0011</td><td>1000</td><td>000</td><td>0000</td><td>00</td><td>0110</td><td>010</td><td>101</td><td>1100</td><td>001</td></tr></table>
+  <p>Welches Wort ist <span class="mono">00110110001100100010000</span>?</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p class="mono">0011·0110·0011·001·00·010·000 → a · m · a · z · i · n · g</p>
+    <div class="box ok mono">Ergebnis: <b>amazing</b> (eindeutige Dekodierung — verifiziert).</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 3 — Huffman + Entropie/Redundanz + Decode</h2>
+  <p>Alphabet a=26 %, i=15 %, m=9 %, r=18 %, t=29 %, x=3 %. Huffman-Baum, $H$, Redundanz, Codelängen vs. Informationsgehalt; decode <span class="mono">10010111001011000</span>.</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p>Verschmelzen (zwei kleinste): x(3)+m(9)=12 → +i(15)=27 → … eine gültige Codetabelle:</p>
+    <table><tr><th>Zeichen</th><th>p</th><th>Code</th><th>ℓ</th><th>I=−log₂p</th></tr>
+      <tr><td>t</td><td>29%</td><td>11</td><td>2</td><td>1,79</td></tr>
+      <tr><td>a</td><td>26%</td><td>01</td><td>2</td><td>1,94</td></tr>
+      <tr><td>r</td><td>18%</td><td>00</td><td>2</td><td>2,47</td></tr>
+      <tr><td>i</td><td>15%</td><td>101</td><td>3</td><td>2,74</td></tr>
+      <tr><td>m</td><td>9%</td><td>1001</td><td>4</td><td>3,47</td></tr>
+      <tr><td>x</td><td>3%</td><td>1000</td><td>4</td><td>5,06</td></tr></table>
+    <div class="box ok mono">H ≈ 2,34 · mittlere Länge L ≈ 2,39 · Redundanz L−H ≈ 0,05 Bit/Zeichen. Decode 10010111001011000 → <b>matrix</b>. (Codes 0/1-abhängig, Codelängen &amp; Wort eindeutig.) Verifiziert.</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 4 — LZW-Dekompression</h2>
+  <p>Initiales Alphabet = alle Großbuchstaben (auf sich selbst), neue Variablen $w_1, w_2, \dots$; dekomprimiere
+  <span class="mono">U w1 Y O N E R w5 V w6 G w4 N A G I w9 w3 w1 P</span>.</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p><b>Verfahren:</b> Wörterbuch mit A–Z starten. Token lesen → zugehörigen String ausgeben. Nach jedem Schritt neuen Eintrag
+    $w_k = (\text{vorheriger String}) + (\text{erstes Zeichen des aktuellen})$ aufnehmen. <b>Spezialfall</b> (Token noch nicht im
+    Wörterbuch, „KwKwK"): Eintrag $= \text{prev} + \text{prev}[0]$.</p>
+    <div class="box warn">Die reproduzierte Token-Folge (v. a. die $w$-Nummern) ist OCR-empfindlich, und $w_1$ tritt direkt als 2. Token
+    auf (KwKwK-Sonderfall). Die Dekompression ergibt eine <b>zusammenhängende Phrase</b> (Ende: „…NEVER GONNA GIVE YOU UP"),
+    aber den Anfang bitte in der <a href="../../Animations/LZW-Animation%20(standalone).html">LZW-Animation</a> Token für Token
+    nachfahren, statt ein unsicheres Ergebnis auswendig zu lernen. Kernpunkt für die Klausur ist das <b>Verfahren</b>.</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 5 — Inverse Burrows-Wheeler-Transformation</h2>
+  <p>Welcher String wurde per BWT auf <span class="mono">shp$mroue</span> abgebildet? ($ = Sentinel)</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p><b>Rücktransformation:</b> Die gegebene Zeichenkette ist die letzte Spalte. Wiederholt: Spalte vor die aktuelle Matrix
+    stellen und alle Zeilen sortieren ($n$-mal). Am Ende die Zeile nehmen, die mit <span class="mono">$</span> endet.</p>
+    <div class="box ok mono">Ergebnis: <b>morpheus$</b> (verifiziert per LF-Mapping).</div>
+  </div></details>
+</section>
+
+</main>
+<footer>
+  Blatt-09-Supplement (Kap. 5 Kodierung) · Ergänzung zu [[03_Heap-Huffman_Lernskript.html]] · Master-Session 2026-07-10 ·
+  Entropie, Codebaum-Decode (amazing), Huffman (matrix, H=2,34/L=2,39), BWT (morpheus$) Python-verifiziert; LZW methodisch (Token-Folge OCR-unsicher).
+</footer>
+</body>
+</html>

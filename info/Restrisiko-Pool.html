@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info – Restrisiko-Pool (20-min-Überflug)</title>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.5;}
+  header{background:linear-gradient(135deg,#8a6d1a,#5f4a10);color:#fff;padding:22px 20px;}
+  header h1{margin:0 0 4px;font-size:1.3rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  main{max-width:900px;margin:0 auto;padding:16px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px 18px;margin:12px 0}
+  h2{color:var(--akz);margin:.1em 0 .4em;font-size:1.05rem;border-bottom:2px solid var(--note);padding-bottom:5px}
+  .grid{display:grid;grid-template-columns:1fr;gap:10px}
+  .card{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;background:#fff}
+  .card h3{margin:0 0 4px;color:var(--akz2);font-size:1rem} .card p{margin:3px 0;font-size:.9rem}
+  a{color:var(--akz)} .anim{font-size:.82rem}
+  .box{border-radius:9px;padding:9px 13px;margin:8px 0;font-size:.9rem}
+  .note{background:var(--note);border-left:4px solid var(--akz)} .ok{background:var(--ok);border-left:4px solid #3aa765} .warn{background:var(--warn);border-left:4px solid #d9534f}
+  mono,.mono{font-family:"JetBrains Mono",Consolas,monospace} code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-family:"JetBrains Mono",Consolas,monospace;font-size:.9em}
+  table{border-collapse:collapse;font-size:.86rem;margin:4px 0} th,td{border:1px solid var(--bd);padding:3px 7px;text-align:center} th{background:var(--note)}
+  footer{max-width:900px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Restrisiko-Pool — 20-Minuten-Überflug</h1>
+  <p>Themen, die 2024 NICHT drankamen, aber rotieren könnten (gleicher Rezept-Typ). Für den Mock-Tag 30.07: <b>nur überfliegen, nicht ausarbeiten</b>.</p>
+  <p>Kernthemen (sicher bestehen) sind die Lernskripte 01–05. Dies hier ist Versicherung.</p>
+</header>
+<main>
+
+<section>
+  <h2>Sortierverfahren (Kap. 3.2)</h2>
+  <div class="grid">
+    <div class="card"><h3>Quicksort</h3><p>Pivot (Prof: zentral abgerundet) wählen, partitionieren (&lt; Pivot links, &gt; rechts), rekursiv. Ø $O(n\log n)$, Worst $O(n^2)$.</p><p class="anim">AH 67–68.</p></div>
+    <div class="card"><h3>Radixsort</h3><p>Stellenweise stabil sortieren, <b>von der niederwertigsten Stelle</b> zur höchsten (Oktal/lexikografisch). $O(d\cdot n)$.</p><p class="anim">AH 69–70.</p></div>
+    <div class="card"><h3>Insertion / Selection Sort</h3><p>Insertion: jedes Element in den sortierten Anfang einschieben. Selection: Minimum suchen, nach vorn tauschen. Beide $O(n^2)$.</p><p class="anim">AH 61–64 · <a href="../../Animations/Max-Heap%20Animation.html">Max-Heap-Animation</a> (Heap-Aufbau)</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Graphen (Kap. 4)</h2>
+  <div class="grid">
+    <div class="card"><h3>Minimaler Spannbaum (MST)</h3><p><b>Kruskal:</b> Kanten aufsteigend, nimm jede, die keinen Zyklus bildet (Union-Find). <b>Prim:</b> vom Startknoten wachsen, immer die billigste Kante nach außen.</p><p class="anim">AH 77–78 · <a href="../../Animations/Spannbaum%20Animation.html">Spannbaum-Animation</a></p></div>
+    <div class="card"><h3>Topologische Sortierung</h3><p>Gerichteter azyklischer Graph: wiederholt einen Knoten mit Eingangsgrad 0 ausgeben und entfernen.</p><p class="anim">AH 75–76</p></div>
+    <div class="card"><h3>BFS / DFS</h3><p>BFS: Schlange (Ebene für Ebene). DFS: Keller/Rekursion (tief zuerst). Beide $O(V+E)$.</p><p class="anim"><a href="../../Animations/BFS-DFS%20Animation%20(standalone).html">BFS/DFS-Animation</a></p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Hashing &amp; Bäume (Kap. 2/3)</h2>
+  <div class="grid">
+    <div class="card"><h3>Hashing mit Sondierung</h3><p>$h(x)=x \bmod n$. Kollision: <b>linear</b> (+1), <b>quadratisch</b> ($+1,+4,+9,\dots$), <b>doppeltes Hashing</b> ($+i\cdot h_2(x)$).</p>
+      <div class="box ok mono">Bsp. AH 51: n=5, Werte 37,18,32,24 → h=2,3,2,4. Linear: 37→2, 18→3, 32→(2,3 belegt)→4, 24→(4 belegt)→0. Tabelle: [24,–,37,18,32]. Verifiziert.</div>
+      <p class="anim">AH 47–52 · <a href="../../Animations/Hashing%20mit%20Sondierung.html">Hashing-Animation</a></p></div>
+    <div class="card"><h3>Rot-Schwarz-Bäume</h3><p>Balance über Farben: Wurzel schwarz, keine zwei roten hintereinander, gleiche Schwarzhöhe auf allen Pfaden. Einfügen: rot, dann Umfärben/Rotieren.</p><p class="anim">AH 57–60</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Kompression (Kap. 5) <span style="font-size:.8rem;color:#8a6d1a">— siehe auch Session 3 + Blatt-09-Supplement</span></h2>
+  <div class="grid">
+    <div class="card"><h3>LZW</h3><p>Wörterbuch startet mit Einzelzeichen; längstes bekanntes Präfix ausgeben, neues (Präfix+nächstes Zeichen) aufnehmen. Dekompression baut Wörterbuch mit (Spezialfall KwKwK: <span class="mono">prev+prev[0]</span>).</p><p class="anim">AH 87–88 · <a href="../../Animations/LZW-Animation%20(standalone).html">LZW-Animation</a></p></div>
+    <div class="card"><h3>Burrows-Wheeler (BWT)</h3><p>Alle Rotationen sortieren, letzte Spalte ausgeben. Rücktransformation über wiederholtes Voranstellen + Sortieren, Zeile mit Sentinel <span class="mono">$</span> wählen.</p><p class="anim">AH 89 · <a href="../../Animations/BWT%20Animation%20standalone.html">BWT-Animation</a></p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Textsuche-Alternative</h2>
+  <div class="card"><h3>Boyer-Moore</h3><p>Vergleich von <b>rechts</b> nach links; bei Mismatch großer Sprung per Bad-Character-/Good-Suffix-Regel. Oft schneller als KMP.</p><p class="anim">AH 46 · <a href="../../Animations/Boyer-Moore%20Aufgabe%2046.html">Boyer-Moore-Animation</a></p></div>
+</section>
+
+<div class="box warn" style="max-width:900px;margin:12px auto"><b>Priorität:</b> Diese Themen NUR anschauen, wenn die 8 Kernverfahren (Lernskripte 01–05) sicher sitzen. Für „sicher bestehen" reichen die Kernthemen (≥ 78 % der Punkte).</div>
+
+</main>
+<footer>
+  Restrisiko-Pool Info · Master-Session 2026-07-10 · Kurzrezepte + verlinkte Animationen (Ordner Info/Animations/). Hashing-Beispiel Python-verifiziert.
+</footer>
+</body>
+</html>

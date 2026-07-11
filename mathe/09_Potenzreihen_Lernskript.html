@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thema 9 – Potenzreihen &amp; Konvergenz</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.35rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap} nav a:hover{background:var(--note)}
+  main{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f} .ok{background:var(--ok);border-left:4px solid #3aa765} .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none} details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)} details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  .st{background:var(--note);border-radius:8px;padding:4px 9px;font-size:.82rem;font-weight:700;color:var(--akz2)} .src{color:#2a9d5c;font-size:.86em}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:.9rem;cursor:pointer;margin:3px} button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  .reveal{display:none;background:#fff;border:1px solid var(--bd);border-radius:9px;padding:12px 14px;margin-top:6px} .reveal.show{display:block}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;margin:8px 0} th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left} th{background:var(--note)}
+  footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem} code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 9 — Potenzreihen &amp; Konvergenz</h1>
+  <p>Analysis · Prof. Reischl · Klausur 23.07.2026 · Blatt 2 · <b>vom Prof als sicher angekündigt</b></p>
+  <p>Interaktiv — erst ein komplettes Konvergenzgebiet, dann Rezept, Trainer, Quiz.</p>
+</header>
+<nav>
+  <a href="#konzept">Konzept</a><a href="#durchlauf">Komplett-Beispiel</a><a href="#rezept">Rezept</a>
+  <a href="#kriterien">Kriterien</a><a href="#trainer">Trainer</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Worum geht es?</h2>
+  <p>Eine <b>Potenzreihe</b> $\displaystyle\sum_{k} a_k\,(x-x_0)^k$ konvergiert nur für bestimmte $x$. Gesucht ist das
+  <b>Konvergenzgebiet</b>: es gibt einen <b>Konvergenzradius</b> $r$, sodass die Reihe für $|x-x_0|<r$ <b>konvergiert</b>,
+  für $|x-x_0|>r$ <b>divergiert</b>. Die <b>Ränder</b> $|x-x_0|=r$ muss man <b>einzeln prüfen</b>.</p>
+  <div class="box note"><b>Klausur-Standard (2024 Aufg. 7, Blatt 2):</b> Substitution → Konvergenzradius (Quotientenkriterium)
+  → Randwertbetrachtung → Rücksubstitution. Genau diese vier Schritte.</div>
+</section>
+
+<section id="durchlauf">
+  <h2>1b · Ein komplettes Beispiel — jede Zahl erklärt</h2>
+  <div class="box note"><b>Aufgabe (Blatt 2, Üb. 2.3):</b> $\displaystyle f(x)=\sum_{k=1}^{\infty}\frac{2k}{k+1}\Big(\frac{x}{2}-3\Big)^{k}$. Konvergenzgebiet inkl. Ränder.</div>
+
+  <h3><span class="st">Schritt 1</span> &nbsp;Substitution — die Reihe „normalisieren"</h3>
+  <p>$u=\dfrac{x}{2}-3$ &nbsp;$\Rightarrow f=\displaystyle\sum_{k=1}^{\infty}\frac{2k}{k+1}u^{k}$, &nbsp; also $a_k=\dfrac{2k}{k+1}$.</p>
+
+  <h3><span class="st">Schritt 2</span> &nbsp;Konvergenzradius (Quotientenkriterium) — woher $r=1$</h3>
+  <p>$r=\displaystyle\lim_{k\to\infty}\left|\frac{a_k}{a_{k+1}}\right|
+  =\lim_{k\to\infty}\frac{\tfrac{2k}{k+1}}{\tfrac{2(k+1)}{k+2}}
+  =\lim_{k\to\infty}\frac{2k(k+2)}{(k+1)\cdot 2(k+1)}
+  =\lim_{k\to\infty}\frac{k(k+2)}{(k+1)^2}=\boxed{1}$ &nbsp;<span class="src">← höchste Potenz $k^2$ oben und unten → Grenzwert 1</span></p>
+  <p>$\Rightarrow$ Konvergenz für $|u|<1$, also $u\in(-1,1)$.</p>
+
+  <h3><span class="st">Schritt 3</span> &nbsp;Ränder einzeln prüfen ($u=\pm 1$)</h3>
+  <p>$u=1$: $\displaystyle\sum\frac{2k}{k+1}$; die Glieder $\frac{2k}{k+1}\to 2\neq 0$ → <b>keine Nullfolge</b> → <b>divergent</b>.</p>
+  <p>$u=-1$: $\displaystyle\sum\frac{2k}{k+1}(-1)^k$; Glieder $\to\pm 2$, keine Nullfolge → <b>divergent</b>.</p>
+  <p>Beide Ränder gehören <b>nicht</b> dazu → $u\in(-1,1)$ (offen).</p>
+
+  <h3><span class="st">Schritt 4</span> &nbsp;Rücksubstitution — woher $(4,8)$</h3>
+  <p>$u=\dfrac{x}{2}-3\in(-1,1) \Rightarrow \dfrac{x}{2}\in(2,4) \Rightarrow \boxed{x\in(4,8)}$.</p>
+  <div class="box ok"><b>Konvergenzgebiet: $x\in(4,8)$.</b> (deckt sich mit Musterlösung) Immer die 4 Schritte: substituieren → Radius → Ränder → zurück.</div>
+</section>
+
+<section id="rezept">
+  <h2>2 · Das Rezept</h2>
+  <ol>
+    <li><b>Substituieren:</b> $u=$ innerer Ausdruck (z.B. $u=\frac x2-3$, $u=x^2+1$, $u=\sqrt{x-3}$). Reihe wird $\sum a_k u^k$.</li>
+    <li><b>Konvergenzradius</b> $r=\displaystyle\lim_{k\to\infty}\left|\frac{a_k}{a_{k+1}}\right|$ (Quotientenkriterium) oder $r=\displaystyle\lim\frac{1}{\sqrt[k]{|a_k|}}$ (Wurzelkriterium). $\Rightarrow u\in(-r,r)$.</li>
+    <li><b>Randwertbetrachtung:</b> $u=\pm r$ einsetzen, die entstehende Zahlenreihe auf Konvergenz prüfen (siehe Kriterien).</li>
+    <li><b>Rücksubstitution:</b> $u$-Intervall in $x$ umrechnen — <b>Definitionsbereich der Substitution beachten</b> (z.B. $x^2+1\ge 1$, $\sqrt{x-3}\ge 0$).</li>
+  </ol>
+</section>
+
+<section id="kriterien">
+  <h2>3 · Konvergenz-Kriterien (für die Ränder &amp; reine Reihen)</h2>
+  <table>
+    <tr><th>Kriterium</th><th>Aussage</th></tr>
+    <tr><td><b>Nullfolge (notwendig)</b></td><td>Gehen die Glieder <b>nicht</b> gegen 0 → sofort <b>divergent</b> (schnellster Rand-Check).</td></tr>
+    <tr><td><b>Leibniz</b> (alternierend)</td><td>$\sum(-1)^k b_k$ mit $b_k\ge 0$ monoton fallend, $b_k\to 0$ → <b>konvergent</b>.</td></tr>
+    <tr><td><b>Majorante/Minorante</b></td><td>$0\le a_k\le b_k$, $\sum b_k$ konv. → $\sum a_k$ konv.; $a_k\ge c_k\ge 0$, $\sum c_k$ div. → $\sum a_k$ div.</td></tr>
+    <tr><td><b>Integralkriterium</b></td><td>$f$ positiv, fallend: $\sum f(k)$ und $\int^\infty f$ haben dasselbe Konvergenzverhalten.</td></tr>
+  </table>
+  <div class="box note">Referenz: $\sum\frac{1}{k}$ <b>divergiert</b>, $\sum\frac{1}{k^2}$ (allg. $\sum\frac{1}{k^p}$, $p>1$) <b>konvergiert</b>. Am Rand oft der entscheidende Vergleich.</div>
+</section>
+
+<section id="trainer">
+  <h2>4 · Konvergenzgebiet-Trainer</h2>
+  <p>Erst selbst rechnen (Substitution → Radius → Ränder → zurück), dann aufdecken:</p>
+  <div id="tbtns"></div>
+  <div id="treveal" class="reveal"></div>
+</section>
+
+<section id="quiz">
+  <h2>5 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>6 · Stolpersteine</h2>
+  <ol>
+    <li><b>Ränder nicht vergessen!</b> Der Radius gibt nur das offene Intervall; $u=\pm r$ getrennt prüfen (können konvergent ODER divergent sein).</li>
+    <li><b>Rücksubstitution einschränken:</b> $u=x^2+1$ ist immer $\ge 1$; $u=\sqrt{x-3}$ ist $\ge 0$ → das $x$-Intervall wird dadurch kleiner (Blatt 2 Üb. 2.4).</li>
+    <li><b>Nullfolge-Check zuerst</b> am Rand: gehen die Glieder nicht gegen 0, ist es sofort divergent.</li>
+    <li>Quotientenkriterium-Konvention: $r=\lim\left|\frac{a_k}{a_{k+1}}\right|$ (nicht $\frac{a_{k+1}}{a_k}$ verwechseln, das ist $1/r$).</li>
+    <li>Bei alternierender Reihe am Rand an <b>Leibniz</b> denken — oft konvergiert genau ein Rand.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Thema 9 · interaktiv · Quelle: Blatt 2 (Üb. 2.1–2.4 + Musterlösung), Altklausur 2024 Aufg. 7.
+  Quellnotiz <code>09_Potenzreihen_Uebungen.md</code>. Ergebnisse gegen Musterlösung geprüft. (MathJax via CDN.)
+</footer>
+<script>
+var SER=[
+ {l:"\\sum_{k=2}^{\\infty}\\frac{k}{k^2-1}x^{k}\\ \\text{(Klausur 2024/7)}",
+  calc:"a_k=\\tfrac{k}{k^2-1},\\ r=\\lim\\left|\\tfrac{a_k}{a_{k+1}}\\right|=1\\Rightarrow x\\in(-1,1).\\ \\text{Rand }x=1:\\ \\sum\\tfrac{k}{k^2-1}\\sim\\sum\\tfrac1k\\ \\text{divergiert.}\\ x=-1:\\ \\sum(-1)^k\\tfrac{k}{k^2-1}\\ \\text{(Leibniz, }b_k\\to0\\text{ monoton) konvergiert.}",
+  res:"x\\in[-1,\\,1)"},
+ {l:"\\sum_{k=1}^{\\infty}\\frac{2^{k}}{4(k+1)}(x^2+1)^{k}\\ \\text{(Blatt 2.4.1)}",
+  calc:"u=x^2+1,\\ a_k=\\tfrac{2^k}{4(k+1)},\\ r=\\lim\\left|\\tfrac{a_k}{a_{k+1}}\\right|=\\tfrac12\\cdot\\lim\\tfrac{k+2}{k+1}=\\tfrac12\\ (\\text{Radius }2\\ \\text{für }u)\\Rightarrow u\\in(-2,2).\\ \\text{Aber }u=x^2+1\\ge1\\Rightarrow 1\\le u<2\\Rightarrow x^2<1\\Rightarrow x\\in(-1,1).",
+  res:"x\\in(-1,\\,1)"},
+ {l:"\\sum_{k=1}^{\\infty}\\frac{1}{3^{k+1}}(x-3)^{k/2}\\ \\text{(Blatt 2.4.2, }x\\ge3)",
+  calc:"u=\\sqrt{x-3}\\ge0,\\ (x-3)^{k/2}=u^{k},\\ a_k=\\tfrac{1}{3^{k+1}},\\ r=3\\Rightarrow u\\in(-3,3).\\ \\text{Mit }u\\ge0:\\ u\\in[0,3)\\Rightarrow \\sqrt{x-3}<3\\Rightarrow x-3<9\\Rightarrow x\\in[3,12).",
+  res:"x\\in[3,\\,12)"}
+];
+(function(){
+  var wrap=document.getElementById('tbtns'), rev=document.getElementById('treveal');
+  SER.forEach(function(it){
+    var b=document.createElement('button'); b.className='sec'; b.innerHTML='$'+it.l.replace(/\\ \\text\{[^}]*\}/g,'')+'$';
+    b.onclick=function(){ rev.className='reveal show';
+      rev.innerHTML='<div style="margin-bottom:6px">$'+it.l+'$</div><div style="margin:6px 0">$'+it.calc+'$</div><div class="box ok" style="margin:6px 0 0"><b>Konvergenzgebiet: $'+it.res+'$</b></div>';
+      if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([rev]);}
+    };
+    wrap.appendChild(b);
+  });
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([wrap]);}
+})();
+var Q=[
+ {q:"Was gibt der Konvergenzradius $r$ an?",
+  o:["die Reihe konvergiert überall","Konvergenz für $|x-x_0|<r$, Divergenz für $>r$, Ränder extra","nur den Randwert","die Summe der Reihe"],c:1,
+  fb:"Innerhalb $r$ konvergent, außerhalb divergent; $|x-x_0|=r$ einzeln prüfen."},
+ {q:"$r=\\lim\\left|\\frac{a_k}{a_{k+1}}\\right|$ — was ist der erste Schritt bei $\\sum a_k(\\frac x2-3)^k$?",
+  o:["direkt Ränder prüfen","Substitution $u=\\frac x2-3$","ableiten","integrieren"],c:1,
+  fb:"Erst substituieren, damit eine reine $\\sum a_k u^k$-Form entsteht."},
+ {q:"Am Rand: die Glieder gehen nicht gegen 0. Die Reihe ist …",
+  o:["konvergent","divergent","unbestimmt","= 0"],c:1,
+  fb:"Nullfolge ist notwendig — keine Nullfolge ⇒ divergent."},
+ {q:"$u=x^2+1$, Konvergenz für $u\\in(-2,2)$. Welches $x$-Intervall?",
+  o:["$(-2,2)$","$(-1,1)$ (weil $u\\ge1$)","$(-\\sqrt2,\\sqrt2)$","alle $x$"],c:1,
+  fb:"$u=x^2+1\\ge1$, also $1\\le u<2\\Rightarrow x^2<1\\Rightarrow x\\in(-1,1)$."},
+ {q:"$\\sum(-1)^k b_k$ mit $b_k\\ge0$ monoton fallend, $b_k\\to0$ — konvergiert nach …",
+  o:["Quotientenkriterium","Leibniz","Integralkriterium","gar nicht"],c:1,
+  fb:"Leibniz-Kriterium für alternierende Reihen."}
+];
+(function(){
+  var c=document.getElementById('quiz');
+  Q.forEach(function(item,qi){
+    var w=document.createElement('div'); var pq=document.createElement('p'); pq.innerHTML='<b>'+(qi+1)+'.</b> '+item.q; w.appendChild(pq);
+    item.o.forEach(function(opt,oi){ var b=document.createElement('button'); b.className='qa'; b.innerHTML=opt;
+      b.onclick=function(){ var fb=w.querySelector('.qfb'); Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(el){el.classList.remove('correct','wrong');});
+        if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;} else {b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}
+        if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([w]);} };
+      w.appendChild(b); });
+    var fb=document.createElement('div'); fb.className='qfb'; w.appendChild(fb); c.appendChild(w);
+  });
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([c]);}
+})();
+</script>
+</body>
+</html>

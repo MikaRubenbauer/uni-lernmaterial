@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing · Block 2 — Marktforschung &amp; Fragetechniken</title>
+<style>
+  :root{--akz:#c2185b;--akz2:#8c0f43;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#fdeef4;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:#1c2530;background:var(--bg);line-height:1.55;-webkit-text-size-adjust:100%;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:26px 20px;}
+  header h1{margin:0 0 4px;font-size:1.45rem}
+  header p{margin:2px 0;opacity:.93;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);
+      display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}
+  nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;
+          box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}
+  .ok{background:var(--ok);border-left:4px solid #3aa765}
+  .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em}
+  li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#fbeef3;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}
+  details[open]>summary::before{content:"▼ "}
+  details>summary:hover{background:#f6e0ea}
+  .det-body{padding:8px 16px 14px}
+  .pts{float:right;background:var(--akz);color:#fff;border-radius:20px;padding:1px 9px;font-size:.78rem;font-weight:600}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;margin:8px 0}
+  th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left;vertical-align:top}
+  th{background:var(--note)}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);
+      border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)}
+  .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600}
+  .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 16px;color:#5a6675;min-height:1.1em}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+  code{background:#f3e6ec;padding:1px 5px;border-radius:4px;font-size:.9em}
+  .tag{display:inline-block;background:#f3e6ec;color:var(--akz2);border-radius:5px;padding:1px 7px;font-size:.78rem;margin-right:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Block 2 — Marktforschung &amp; Fragetechniken</h1>
+  <p>Marketing · Prof. Kleinknecht · Klausur 28.07.2026 (F492) · entspricht Aufgabe 2</p>
+  <p>Interaktives Lernblatt — grounded in Klausurfragen-Musterlösung + Altklausuren 2022/2025.</p>
+</header>
+<nav>
+  <a href="#ueber">Überblick</a>
+  <a href="#analyse">Analyse vs. Beobachtung</a>
+  <a href="#erhebung">Primär/Sekundär</a>
+  <a href="#phasen">Phasen</a>
+  <a href="#umfeld">Externe Komponenten</a>
+  <a href="#fragen">Fragetechniken</a>
+  <a href="#drill">Altklausur-Drill</a>
+  <a href="#quiz">Selbsttest</a>
+</nav>
+<main>
+
+<section id="ueber">
+  <h2>0 · Worum geht es in Aufgabe 2?</h2>
+  <p>Aufgabe 2 kombiniert 2–3 Bausteine der Marktforschung: <b>Marktanalyse vs. Marktbeobachtung</b>,
+  <b>Primär- vs. Sekundärerhebung</b> (mit Beispiel) und immer wieder <b>Fragetechniken</b> (je ein Beispiel).</p>
+  <p><span class="tag">Prüfungsbezug</span> 2025 A2 (2+4+4 P) · 2022 A2 (Fragetechniken) · Nachklausur A2 · Klausurfragen.</p>
+  <div class="box ok"><b>Verifiziert gegen Skript „Marketing 2".</b> Alle Definitionen (inkl. Fragetechniken) stammen jetzt
+  direkt aus dem Vorlesungsskript.</div>
+</section>
+
+<section id="analyse">
+  <h2>1 · Marktanalyse vs. Marktbeobachtung <span class="pts">2 P</span></h2>
+  <table>
+    <tr><th></th><th>Marktanalyse</th><th>Marktbeobachtung</th></tr>
+    <tr><th>Zeitbezug</th><td>zeit<b>punkt</b>bezogen (Momentaufnahme)</td><td>zeit<b>raum</b>bezogen (laufend)</td></tr>
+    <tr><th>Häufigkeit</th><td>einmalig oder in Intervallen</td><td>fortlaufend / wiederholt</td></tr>
+    <tr><th>Erkenntnis</th><td>aktuelle Marktsituation <i>jetzt</i></td><td><b>Entwicklung</b> eines Marktes über die Zeit</td></tr>
+  </table>
+  <div class="box note"><b>Merksatz.</b> Analyse = <b>Foto</b> (ein Zeitpunkt), Beobachtung = <b>Film</b> (Verlauf).
+  Als drittes nennt das Skript die <b>Marktprognose</b> = wahrscheinliche <i>zukünftige</i> Entwicklung des Marktes.</div>
+</section>
+
+<section id="erhebung">
+  <h2>2 · Primär- vs. Sekundärerhebung <span class="pts">4 P</span></h2>
+  <table>
+    <tr><th></th><th>Primärerhebung (field research)</th><th>Sekundärerhebung (desk research)</th></tr>
+    <tr><th>Was</th><td>Erhebung <b>neuer</b>, origineller Daten</td><td>Auswertung <b>bereits vorhandener</b> Daten</td></tr>
+    <tr><th>Beispiel</th><td>eigene Umfrage, Beobachtung, Experiment, Stichprobe</td><td>Statistiken, Marktforschungs-Studien, Behörden-/Verbandsdaten, eigene Verkaufszahlen</td></tr>
+    <tr><th>Vorteil</th><td>genau auf Fragestellung zugeschnitten</td><td>schnell, günstig</td></tr>
+    <tr><th>Nachteil</th><td>teuer, aufwändig</td><td>evtl. veraltet / nicht passgenau</td></tr>
+  </table>
+  <details><summary>Modellantwort mit Beispiel (4 P)</summary><div class="det-body">
+    <p><b>Primärerhebung:</b> Erheben neuer Daten speziell für die Fragestellung — z. B. eine <i>eigene
+    Kundenbefragung</i> zur Zufriedenheit mit einer neuen App.</p>
+    <p><b>Sekundärerhebung:</b> Auswertung schon vorhandener Daten — z. B. <i>Branchenstatistiken eines
+    Marktforschungsinstituts</i> zur wirtschaftlichen Entwicklung.</p>
+  </div></details>
+</section>
+
+<section id="phasen">
+  <h2>3 · Phasen der Informationsgewinnung</h2>
+  <ol>
+    <li><b>Definitionsphase</b> — Problemdefinition, Erhebungsziele festlegen.</li>
+    <li><b>Designphase</b> — Erhebung gestalten (z. B. Fragebogen, Methode, Stichprobe).</li>
+    <li><b>Feldphase</b> — Durchführung/Datenerhebung + Dokumentation.</li>
+    <li><b>Analysephase</b> — Auswertung und Interpretation.</li>
+    <li><b>Kommunikationsphase</b> — Ergebnisse aufbereiten und vorstellen.</li>
+  </ol>
+  <div class="box note"><b>Eselsbrücke:</b> <b>De–De–Fe–A–K</b> (Definition, Design, Feld, Analyse, Kommunikation).</div>
+</section>
+
+<section id="umfeld">
+  <h2>4 · Externe Komponenten der Situationsanalyse <span class="pts">2,5 P</span></h2>
+  <p>Das <b>Makroumfeld</b> (marktliches Umfeld) — mind. 5 nennen, je mit Beispiel. Deckt sich mit den 6 Umfeldern der
+  Marktprozesstheorie (Block 1):</p>
+  <table>
+    <tr><th>Komponente</th><th>Beispiel</th></tr>
+    <tr><td><b>gesellschaftlich</b></td><td>Trends, Demografie</td></tr>
+    <tr><td><b>kulturell</b></td><td>Traditionen, Werte</td></tr>
+    <tr><td><b>rechtlich/politisch</b></td><td>Verbraucherschutz, Regulierung, Steuern</td></tr>
+    <tr><td><b>ökonomisch</b></td><td>Kaufkraft, Konjunktur/Wirtschaftskrise</td></tr>
+    <tr><td><b>ökologisch</b></td><td>Rohstoffe, Umweltkatastrophen (Lieferausfälle)</td></tr>
+    <tr><td><b>technologisch</b></td><td>neue Technologien, Grundlagenforschung</td></tr>
+  </table>
+</section>
+
+<section id="fragen">
+  <h2>5 · Fragetechniken (je 1 Beispiel) <span class="pts">4 P</span></h2>
+  <p>Zwei Achsen: <b>direkt/indirekt</b> (wird direkt nach der Meinung gefragt, oder projektiv über Dritte?) und
+  <b>offen/geschlossen</b> (freie Antwort vs. vorgegebene Antwortmöglichkeiten).</p>
+  <table>
+    <tr><th>Typ</th><th>Definition (Skript)</th><th>Beispiel</th></tr>
+    <tr><td><b>Direkt, offen</b></td><td>direkt gefragt, beliebige Antwort möglich</td><td>„Was können wir aus Ihrer Sicht verbessern?"</td></tr>
+    <tr><td><b>Direkt, geschlossen</b></td><td>direkt gefragt, im Grunde nur ja/nein</td><td>„Werden Sie uns weiterempfehlen?"</td></tr>
+    <tr><td><b>Indirekt, offen</b></td><td>im Nebensatz formuliert, freie Antwort</td><td>„Viele meinen, die Maßnahmen gehen zu weit. Was meinen Sie dazu?"</td></tr>
+    <tr><td><b>Indirekt, geschlossen</b></td><td>im Nebensatz, ja/nein</td><td>„Die meisten Kunden sind sehr zufrieden. Stimmen Sie zu?"</td></tr>
+    <tr><td><b>Einstiegsfrage</b></td><td>weniger offensiver Gesprächseinstieg</td><td>„Welche Themen stehen heute auf der Agenda?"</td></tr>
+    <tr><td><b>Selektivfrage</b></td><td>Testperson kann <b>mehrere Antwortmöglichkeiten auswählen</b></td><td>„Wie sind Sie auf uns aufmerksam geworden? Empfehlung / Flyer / Website / Social Media"</td></tr>
+    <tr><td><b>Tendenzfrage</b> (Suggestivfrage)</td><td>legt eine erwünschte Antwort nahe</td><td>„Sind Sie nicht auch der Meinung, dass …?"</td></tr>
+    <tr><td><b>Motivationsfrage</b></td><td>regt Denk-/Redebereitschaft an</td><td>„Wie kamen Sie auf diese tolle Idee?"</td></tr>
+    <tr><td><b>Kontrollfrage</b></td><td>überprüft einen Sachverhalt</td><td>„Habe ich Sie richtig verstanden?"</td></tr>
+  </table>
+  <div class="box warn"><b>Prüfungsfalle:</b> Verlangt wird meist <u>je ein Beispiel</u> — nicht die Definition. „Offen" = freie
+  Antwort, „geschlossen" = ja/nein. <b>Selektivfrage</b> ≠ Filterfrage, sondern Mehrfachauswahl.</div>
+</section>
+
+<section id="drill">
+  <h2>6 · Altklausur-Drill</h2>
+  <details><summary>2025 A2a — Unterschied Marktanalyse / Marktbeobachtung <span class="pts">2 P</span></summary>
+  <div class="det-body"><p>Analyse = zeitpunktbezogene Momentaufnahme; Beobachtung = laufende, zeitraumbezogene Verfolgung der Entwicklung.</p></div></details>
+  <details><summary>2025 A2b — Primär- &amp; Sekundärerhebung je mit Beispiel <span class="pts">4 P</span></summary>
+  <div class="det-body"><p>→ Modellantwort Abschnitt 2 (eigene Umfrage vs. Branchenstatistik).</p></div></details>
+  <details><summary>2022 A2 / 2025 A2c — Fragetechniken, je 1 Beispiel <span class="pts">4 P</span></summary>
+  <div class="det-body"><p>→ Tabelle Abschnitt 5. In 2025 gefragt: direkt offen, direkt geschlossen, indirekt offen, Motivationsfrage.</p></div></details>
+</section>
+
+<section id="quiz">
+  <h2>7 · Selbsttest</h2>
+  <div class="quiz">
+    <p><b>F1.</b> Eine laufende, zeitraumbezogene Untersuchung ist eine …</p>
+    <button class="qa" data-c="0">Marktbeobachtung</button>
+    <button class="qa" data-c="1">Marktanalyse</button>
+    <button class="qa" data-c="1">Sekundärerhebung</button>
+    <div class="qfb"></div>
+
+    <p><b>F2.</b> „Auswertung von Branchenstatistiken eines Instituts" ist …</p>
+    <button class="qa" data-c="0">Sekundärerhebung</button>
+    <button class="qa" data-c="1">Primärerhebung</button>
+    <button class="qa" data-c="1">ein Experiment</button>
+    <div class="qfb"></div>
+
+    <p><b>F3.</b> „Kaufen Sie Marke X? (ja/nein)" ist eine …</p>
+    <button class="qa" data-c="0">direkte, geschlossene Frage</button>
+    <button class="qa" data-c="1">indirekte, offene Frage</button>
+    <button class="qa" data-c="1">Selektivfrage</button>
+    <div class="qfb"></div>
+
+    <p><b>F4.</b> Welche Reihenfolge der Phasen stimmt?</p>
+    <button class="qa" data-c="0">Definition → Design → Feld → Analyse → Kommunikation</button>
+    <button class="qa" data-c="1">Feld → Definition → Analyse → Design → Kommunikation</button>
+    <button class="qa" data-c="1">Design → Feld → Definition → Kommunikation → Analyse</button>
+    <div class="qfb"></div>
+  </div>
+</section>
+
+</main>
+<footer>
+  <p>Block 2/10 · Marketing-Lernreihe (Altklausur-getrieben) · Quelle: Klausurfragen-Musterlösung + Altklausuren 2022/2025/Nachklausur.
+  Fragetechnik-Kategorien im Skript gegenprüfen. Erstellt 2026-07-10.</p>
+</footer>
+<script>
+  document.querySelectorAll('.quiz').forEach(function(q){
+    q.querySelectorAll('.qa').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var prev=btn; while(prev&&prev.tagName!=='P'){prev=prev.previousElementSibling;}
+        var fbEl=btn; while(fbEl&&!(fbEl.classList&&fbEl.classList.contains('qfb'))){fbEl=fbEl.nextElementSibling;}
+        if(btn.dataset.c==='0'){btn.classList.add('correct'); if(fbEl){fbEl.textContent='✓ Richtig.';fbEl.style.color='#2e7d32';}}
+        else{btn.classList.add('wrong'); if(fbEl){fbEl.textContent='✗ Nicht ganz — richtige Antwort grün.';fbEl.style.color='#c62828';}
+          var s=prev?prev.nextElementSibling:null;
+          while(s&&s.classList&&s.classList.contains('qa')){ if(s.dataset.c==='0')s.classList.add('correct'); s=s.nextElementSibling;}
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>

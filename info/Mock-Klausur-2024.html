@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info – Mock-Klausur (Prof-Altklausur 2024)</title>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.55;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:22px 20px;}
+  header h1{margin:0 0 4px;font-size:1.35rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  .timerbar{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--bd);display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 16px}
+  #clock{font-family:"JetBrains Mono",Consolas,monospace;font-size:1.5rem;font-weight:700;color:var(--akz2);min-width:96px}
+  #clock.warn{color:#d9534f} #prog{font-size:.85rem;color:#5a6675}
+  main{max-width:880px;margin:0 auto;padding:16px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 20px;margin:14px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .4em;font-size:1.12rem}
+  .pts{float:right;background:var(--note);color:var(--akz2);border-radius:6px;padding:2px 9px;font-size:.8rem;font-weight:700}
+  .box{border-radius:9px;padding:10px 14px;margin:10px 0;font-size:.94rem}
+  .ok{background:var(--ok);border-left:4px solid #3aa765} .warn{background:var(--warn);border-left:4px solid #d9534f} .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.2em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:10px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none} details>summary::before{content:"Lösung ▶ ";font-size:.82em;color:var(--akz)} details[open]>summary::before{content:"Lösung ▼ "}
+  .det-body{padding:8px 16px 14px}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:8px 13px;font-size:.9rem;cursor:pointer;margin:2px} button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  mono,.mono{font-family:"JetBrains Mono",Consolas,monospace} code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-family:"JetBrains Mono",Consolas,monospace;font-size:.9em}
+  table{border-collapse:collapse;font-size:.9rem;margin:6px 0} th,td{border:1px solid var(--bd);padding:4px 8px;text-align:center} th{background:var(--note)}
+  pre{background:var(--note);padding:8px 10px;border-radius:8px;font-family:"JetBrains Mono",Consolas,monospace;font-size:.9rem;overflow-x:auto}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Mock-Klausur — Theoretische Informatik II</h1>
+  <p>Prof-Altklausur 2024 · 8 Aufgaben · 90 Punkte · 90 Minuten · Bestehensgrenze konservativ 45 P (50 %)</p>
+  <p>So arbeiten: Timer starten, alles auf Papier lösen, <b>erst danach</b> die Lösungen aufklappen. Detail-Erklärungen in den Themen-Lernskripten 01–05.</p>
+</header>
+<div class="timerbar">
+  <span id="clock">90:00</span>
+  <button onclick="tStart()">▶ Start</button><button class="sec" onclick="tPause()">⏸ Pause</button><button class="sec" onclick="tReset()">⟲ Reset</button>
+  <span id="prog">Aufgeklappte Lösungen: 0 / 8</span>
+</div>
+<main>
+
+<section>
+  <h2>Aufgabe 1 — Komplexität <span class="pts">8 P</span></h2>
+  <pre>1  Algorithmus Compute(n)
+2  for j=1…n do
+3      p(n)
+4      for k=1…n do
+5          q(n)      T_p(n)=c_p·n²,  T_q(n)=c_q·log n</pre>
+  <p>a) Aufwand + Anzahl Aufrufe je Zeile (4). b) Asymptotische Laufzeit (3). c) Einfachste Klasse (1).</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <table><tr><th>Zeile</th><th>Aufwand</th><th>Anzahl</th><th>Beitrag</th></tr>
+      <tr><td>3 p(n)</td><td>c_p·n²</td><td>n</td><td>c_p·n³</td></tr>
+      <tr><td>5 q(n)</td><td>c_q·log n</td><td>n²</td><td>c_q·n²·log n</td></tr></table>
+    <div class="box ok mono">T(n)=c_p·n³ + c_q·n²log n → dominanter Term n³ → <b>Θ(n³)</b>.</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 2 — Zahldarstellung / IEEE-754 <span class="pts">15 P</span></h2>
+  <p>a) 117 in Binär &amp; Oktal (3). b) 0,625 in Binär (3). c) −117,25 im half-Format + Hex (7). d) −117,625 ohne Runden darstellbar? (2)</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p class="mono">a) 117 = 1110101₂ = 165₈</p>
+    <p class="mono">b) 0,625 = 0,101₂</p>
+    <p class="mono">c) −117,25 = 1110101,01₂ = 1,11010101·2⁶ → v=1, e=6+15=21=10101, m=1101010100 → <b>D754₁₆</b></p>
+    <p class="mono">d) Ja: 117,625 = 1110101,101₂ = 1,110101101·2⁶ → 9 Mantissenbits ≤ 10 → exakt (kein Runden).</p>
+    <div class="box ok mono">Verifiziert (numpy float16).</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 3 — Heap &amp; Heap-Sort <span class="pts">12 P</span></h2>
+  <p>Baum: 1 (Kinder 4, 3; darunter 5, 9 unter 4 und 8 unter 3). a) Max-Heap beschreiben (1). b) BFS als Array (2). c) Max-Heap erzeugen, Zwischenzustände (4). d) A=[9,5,8,1,4,3] mit Heap-Sort, Zwischenzustände (5).</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p class="mono">b) BFS = [1,4,3,5,9,8]</p>
+    <p class="mono">c) siftDown Idx2→[1,4,8,5,9,3], Idx1→[1,9,8,5,4,3], Idx0→[9,5,8,1,4,3]</p>
+    <p class="mono">d) [9,5,8,1,4,3]→(9 fix)8,5,3,1,4→(8)5,4,3,1→(5)4,1,3→(4)3,1→(3) → [1,3,4,5,8,9]</p>
+    <div class="box ok mono">Max-Heap [9,5,8,1,4,3]; sortiert [1,3,4,5,8,9]. Verifiziert.</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 4 — KMP-Textsuche <span class="pts">8 P</span></h2>
+  <p>Wort „anfang". a) Größte Ränder + Randlängen der Teilstrings (4). b) KMP-Suche von „anfang" in „anfahrt am anfang" (4).</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p class="mono">a) π = [0,0,0,1,2,0] — Ränder: anfa→„a", anfan→„an", sonst –.</p>
+    <p class="mono">b) i=0–3 Aufbau a→an→anf→anfa; i=4 „h" Mismatch → Reset; i=8 „a"; i=11–16 anfang → Treffer bei Startindex 11.</p>
+    <div class="box ok mono">Genau 1 Fundstelle: Index 11. Verifiziert.</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 5 — AVL-Bäume <span class="pts">15 P</span></h2>
+  <p>a) In Baum A = 7(0(·,1),8) die Werte 5, 4, 2 einfügen (7). b) Aus Baum B = 5(3(·,4),8(6(·,7),9)) die Werte 4, 5, 4 löschen (8).</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p class="mono">a) +5: Linksrot. an 0 → 7(1(0,5),8); +4: LR an 7 → 5(1(0,4),7(·,8)); +2 → <b>5(1(0,4(2,·)),7(·,8))</b></p>
+    <p class="mono">b) −4: RL an 5 → 6(5(3,·),8(7,9)); −5 → <b>6(3,8(7,9))</b></p>
+    <div class="box warn mono">Der 3. Löschwert „4" existiert nicht mehr → Reproduktionsfehler der Altklausur.</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 6 — Zyklische Codes <span class="pts">12 P</span></h2>
+  <p>p = x⁴+x²+1 in ℤ₂[x]/(x¹²+1). a) Binärfolge von p (2). b) Nachweis Generatorpolynom (4). c) Systematischer Code von (1,1,1,0,1,1,0,1) (6).</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p class="mono">a) p = 10101</p>
+    <p class="mono">b) x⁴+x²+1 = (x²+x+1)²; teilt x¹²+1 → Generator (n=12, k=8).</p>
+    <p class="mono">c) x⁴·m mod p = 0001 → Codewort [11101101 | 0001] = <b>111011010001</b> (c mod p = 0 ✓).</p>
+    <div class="box ok mono">Verifiziert (GF(2)-Polynomdivision).</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 7 — Dijkstra <span class="pts">10 P</span></h2>
+  <p>Kanten A–B 4, A–C 12, A–D 9, B–D 3, C–D 2. a) Gewichtete Adjazenzmatrix (3). b) Gewicht des Pfades [A,B],[B,D],[D,A],[A,C] (1). c) Dijkstra kürzester Weg A→C (6).</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p class="mono">b) 4+3+9+12 = 28</p>
+    <p class="mono">c) Settle A(0)→B(4)→D(7)→C(9). C über D: 7+2=9 &lt; 12.</p>
+    <div class="box ok mono">Kürzester A→C = 9, Pfad A→B→D→C. Verifiziert.</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Aufgabe 8 — Huffman <span class="pts">10 P</span></h2>
+  <p>Quelle A:9, B:16, E:39, G:4, L:28, R:12. a) Huffman-Codebaum (7). b) ALGEBRA kodieren + Länge (3).</p>
+  <details><summary>anzeigen</summary><div class="det-body">
+    <p class="mono">Verschmelzen: G+A=13, +R=25, +B=41, L+E=67, +41=108. Codelängen: E2 L2 B2 R3 A4 G4.</p>
+    <p class="mono">Gesamtlänge = 254 Bit. ALGEBRA: 4+2+4+2+2+3+4 = <b>21 Bit</b>.</p>
+    <div class="box ok mono">Verifiziert (Codelängen eindeutig).</div>
+  </div></details>
+</section>
+
+<section>
+  <h2>Selbstauswertung</h2>
+  <p>Trage deine erreichten Punkte ein (max 90):</p>
+  <div style="display:flex;gap:6px;flex-wrap:wrap" id="scoreInputs"></div>
+  <div class="box note"><b id="scoreOut">Summe: 0 / 90 P — 0 %</b></div>
+  <div class="box"><b>Ampel:</b> &lt; 45 P → nachlegen · 45–63 P → bestanden, Puffer dünn · &gt; 63 P → sicher.</div>
+</section>
+
+</main>
+<footer>
+  Mock-Klausur Info · Prof-Altklausur 2024 (alle 8 Aufgaben) · alle Lösungen programmatisch verifiziert (Python + Node).
+  Detail-Erklärungen: Lernskripte 01 (A2) · 02 (A5) · 03 (A3, A8) · 04 (A4, A1) · 05 (A7, A6). Erstellt Master-Session 2026-07-10.
+</footer>
+<script>
+/* Timer */
+var total=90*60, left=total, tick=null;
+function fmt(s){var m=Math.floor(s/60),ss=s%60;return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;}
+function render(){var c=document.getElementById('clock');c.textContent=fmt(left);c.className=left<=300?'warn':'';}
+function tStart(){if(tick)return;tick=setInterval(function(){if(left>0){left--;render();}else{clearInterval(tick);tick=null;alert('Zeit vorbei (90 min).');}},1000);}
+function tPause(){clearInterval(tick);tick=null;}
+function tReset(){tPause();left=total;render();}
+render();
+/* Aufgeklappt-Zähler */
+var dets=document.querySelectorAll('section details');
+function upd(){var n=0;dets.forEach(function(d){if(d.open)n++;});document.getElementById('prog').textContent='Aufgeklappte Lösungen: '+n+' / 8';}
+dets.forEach(function(d){d.addEventListener('toggle',upd);});
+/* Score */
+var pts=[8,15,12,8,15,12,10,10];var box=document.getElementById('scoreInputs');
+pts.forEach(function(p,i){var w=document.createElement('span');w.innerHTML='A'+(i+1)+' ';var inp=document.createElement('input');inp.type='number';inp.min=0;inp.max=p;inp.value=0;inp.style.width='52px';inp.style.padding='6px';inp.style.border='1px solid #e2e6ec';inp.style.borderRadius='6px';inp.oninput=score;inp.id='sc'+i;w.appendChild(inp);w.appendChild(document.createTextNode('/'+p));box.appendChild(w);});
+function score(){var s=0;pts.forEach(function(p,i){var v=parseInt(document.getElementById('sc'+i).value)||0;v=Math.max(0,Math.min(p,v));s+=v;});var pct=Math.round(s/90*100);document.getElementById('scoreOut').textContent='Summe: '+s+' / 90 P — '+pct+'%'+(s>=45?' ✓ bestanden':' ✗ unter 50 %');}
+score();
+</script>
+</body>
+</html>

@@ -180,7 +180,18 @@ window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$
     <tr><td>57 / 58</td><td>Rot-Schwarz</td><td>Werte einfügen (5,6 bzw. 3,7). <span class="badge">Restrisiko-Pool</span></td></tr>
     <tr><td>59 / 60</td><td>Klassifikation</td><td>Ist der Baum AVL und/oder Rot-Schwarz? RS ggf. zeichnen.</td></tr>
   </table>
-  <div class="box note"><b>Fokus „sicher bestehen":</b> 55/56 sind das direkte AVL-Training. Rot-Schwarz (57–60)
+  <details><summary>AH 55 — Baum <span class="mono">2(1,5(4,6))</span>: +3 einfügen, dann 5 löschen</summary><div class="det-body">
+    <p class="mono">+3: 3 hängt links unter 4 → Wurzel 2 wird BF −2 (rechts-links) → <b>RL an 2</b> → 4(2(1,3),5(·,6))</p>
+    <p class="mono">−5: 5 hat nur rechtes Kind 6 → durch 6 ersetzen → <b>4(2(1,3),6)</b></p>
+    <div class="box ok mono">Endbaum 4(2(1,3),6) — als gültiger AVL-Baum verifiziert.</div>
+  </div></details>
+  <details><summary>AH 56 — Baum <span class="mono">6(2(1,3),7)</span>: +5 einfügen, dann 2 löschen</summary><div class="det-body">
+    <p class="mono">+5: 5 hängt rechts unter 3 → Wurzel 6 wird BF +2 (links-rechts) → <b>LR an 6</b> → 3(2(1,·),6(5,7))</p>
+    <p class="mono">−2: 2 hat nur linkes Kind 1 → durch 1 ersetzen → <b>3(1,6(5,7))</b></p>
+    <div class="box ok mono">Endbaum 3(1,6(5,7)) — als gültiger AVL-Baum verifiziert.</div>
+  </div></details>
+
+  <div class="box note"><b>Fokus „sicher bestehen":</b> 55/56 sind das direkte AVL-Training (oben komplett vorgerechnet). Rot-Schwarz (57–60)
   kam 2024 nicht dran → nur am Mock-Tag überfliegen.</div>
 </section>
 

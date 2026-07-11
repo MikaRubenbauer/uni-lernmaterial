@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info Thema 5 (+8) – Dijkstra &amp; zyklische Codes</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  :root{--akz:#28508c;--akz2:#1d3a66;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#eef3fb;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.55;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:24px 20px;}
+  header h1{margin:0 0 4px;font-size:1.4rem} header p{margin:2px 0;opacity:.92;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap} nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f} .ok{background:var(--ok);border-left:4px solid #3aa765} .note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em} li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#f0f3f8;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none} details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)} details[open]>summary::before{content:"▼ "}
+  .det-body{padding:6px 16px 14px}
+  button{background:var(--akz);color:#fff;border:0;border-radius:8px;padding:9px 13px;font-size:.9rem;cursor:pointer;margin:3px} button:hover{background:var(--akz2)} button.sec{background:#eef1f6;color:var(--akz2)}
+  input[type=text]{padding:8px 10px;border:1px solid var(--bd);border-radius:7px;font-size:.95rem;font-family:"JetBrains Mono",Consolas,monospace}
+  .calc-row{display:flex;gap:8px;margin:6px 0;align-items:center;flex-wrap:wrap} .calc-row label{font-size:.85rem;color:#5a6675;min-width:140px}
+  mono,.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em;font-family:"JetBrains Mono",Consolas,monospace}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;margin:8px 0} th,td{border:1px solid var(--bd);padding:6px 9px;text-align:center} th{background:var(--note)} td.mono,th.mono{font-family:"JetBrains Mono",Consolas,monospace}
+  .badge{display:inline-block;background:#28508c;color:#fff;border-radius:6px;padding:2px 8px;font-size:.78rem;font-weight:700;margin-right:6px} .badge.top{background:#b3261e} .badge.str{background:#8a6d1a}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)} .qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600} .qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 14px;color:#5a6675;min-height:1.1em}
+  .out{margin-top:10px;padding:12px 14px;background:var(--ok);border-radius:9px;font-size:.93rem;display:none;overflow-x:auto} .out.show{display:block}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thema 5 — Dijkstra &amp; Graphen <span style="font-size:.8rem;opacity:.85">(+ Thema 8 zyklische Codes, Stretch)</span></h1>
+  <p>Theoretische Informatik II · Prof. Ritterbusch · Klausur 31.07.2026, 09:00 · <b>Lernblock Mi 29.07</b></p>
+  <p><span class="badge">HOCH</span> Dijkstra 10 P (A7) · <span class="badge str">STRETCH</span> zyklische Codes 12 P (A6) · Arbeitsheft 73–74, 79–80 &amp; 101–102 · Skript Kap. 4 / 5.3</p>
+</header>
+<nav>
+  <a href="#konzept">Graphen</a><a href="#rez">Dijkstra-Rezept</a><a href="#trainer">Dijkstra-Trainer</a><a href="#klausur">Klausur A7</a>
+  <a href="#anim">Animationen</a><a href="#zyk">Zyklische Codes</a><a href="#zykklausur">Klausur A6</a><a href="#drills">AH-Drills</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
+</nav>
+<main>
+
+<section id="konzept">
+  <h2>1 · Graphen &amp; Adjazenzmatrix</h2>
+  <p>Ein gewichteter Graph $G=(V,E)$ mit Kantengewichten. Die <b>gewichtete Adjazenzmatrix</b> hat in Zeile $u$,
+  Spalte $v$ das Kantengewicht $w(u,v)$ (bei ungerichtet symmetrisch), $\infty$ (oder –) wenn keine Kante, $0$ auf der Diagonale.</p>
+  <div class="box note"><b>Dijkstra</b> findet die <b>kürzesten Wege von einem Startknoten</b> zu allen anderen — bei
+  <b>nicht-negativen</b> Gewichten. Greedy: immer den nächstgelegenen noch offenen Knoten „fest" machen.</div>
+</section>
+
+<section id="rez">
+  <h2>2 · Dijkstra — Rezept</h2>
+  <ol>
+    <li><b>Init:</b> $d(\text{Start})=0$, alle anderen $=\infty$. Alle Knoten „offen".</li>
+    <li><b>Wähle</b> den offenen Knoten $u$ mit kleinstem $d(u)$ → mache ihn <b>fest</b> (settled).</li>
+    <li><b>Relaxieren:</b> für jede Kante $u\to v$: wenn $d(u)+w(u,v) &lt; d(v)$, setze $d(v)=d(u)+w(u,v)$ und Vorgänger $=u$.</li>
+    <li>Wiederhole 2–3, bis alle fest (oder das Ziel fest ist). Weg per Vorgänger rückwärts auslesen.</li>
+  </ol>
+  <div class="box warn"><b>Tabelle mitführen!</b> Spalten = Knoten, Zeilen = Iterationen; in jede Zelle die aktuelle
+  Distanz (und Vorgänger). Klausur will den Ablauf sehen, nicht nur das Ergebnis.</div>
+</section>
+
+<section id="trainer">
+  <h2>3 · Dijkstra-Trainer</h2>
+  <p>Kanten als <code>U-V:Gewicht</code>, Komma-getrennt (ungerichtet). Start/Ziel angeben.</p>
+  <div class="calc-row"><label>Kanten</label><input type="text" id="edges" value="A-B:4,A-C:12,A-D:9,B-D:3,C-D:2" size="40"></div>
+  <div class="calc-row"><label>Start / Ziel</label><input type="text" id="src" value="A" size="4"><input type="text" id="dst" value="C" size="4">
+    <button onclick="runDij()">▶ Dijkstra</button>
+    <button class="sec" onclick="document.getElementById('edges').value='A-B:4,A-C:12,A-D:9,B-D:3,C-D:2';document.getElementById('src').value='A';document.getElementById('dst').value='C';runDij()">Klausur A7</button></div>
+  <div id="dijOut" class="out"></div>
+</section>
+
+<section id="klausur">
+  <h2>4 · Prof-Altklausur 2024, Aufgabe 7 (10 P)</h2>
+  <p>Kanten: A–B = 4, A–C = 12, A–D = 9, B–D = 3, C–D = 2 (ungerichtet).</p>
+  <details><summary>a) Gewichtete Adjazenzmatrix (3 P)</summary><div class="det-body">
+    <table><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+      <tr><th>A</th><td>0</td><td>4</td><td>12</td><td>9</td></tr>
+      <tr><th>B</th><td>4</td><td>0</td><td>∞</td><td>3</td></tr>
+      <tr><th>C</th><td>12</td><td>∞</td><td>0</td><td>2</td></tr>
+      <tr><th>D</th><td>9</td><td>3</td><td>2</td><td>0</td></tr></table>
+    <div class="box note mono">Symmetrisch; ∞ (oder –) für fehlende Kante B–C. Diagonale 0.</div>
+  </div></details>
+  <details><summary>b) Gewicht des Pfades [A,B],[B,D],[D,A],[A,C] (1 P)</summary><div class="det-body">
+    <p class="mono">w(A,B)+w(B,D)+w(D,A)+w(A,C) = 4 + 3 + 9 + 12 = <b>28</b></p>
+  </div></details>
+  <details><summary>c) Dijkstra: kürzester Weg A → C (6 P)</summary><div class="det-body">
+    <table><tr><th>fest gemacht</th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+      <tr><td>Init</td><td>0</td><td>∞</td><td>∞</td><td>∞</td></tr>
+      <tr><td><b>A</b> (0)</td><td>0*</td><td>4<sub>A</sub></td><td>12<sub>A</sub></td><td>9<sub>A</sub></td></tr>
+      <tr><td><b>B</b> (4)</td><td>0*</td><td>4*</td><td>12<sub>A</sub></td><td>7<sub>B</sub></td></tr>
+      <tr><td><b>D</b> (7)</td><td>0*</td><td>4*</td><td>9<sub>D</sub></td><td>7*</td></tr>
+      <tr><td><b>C</b> (9)</td><td>0*</td><td>4*</td><td>9*</td><td>7*</td></tr></table>
+    <p>Über D wird C auf <span class="mono">7+2 = 9</span> verbessert (statt direkt 12).</p>
+    <div class="box ok mono">Kürzester Weg A → C = <b>9</b>, Pfad <b>A → B → D → C</b> (4+3+2). Verifiziert.</div>
+  </div></details>
+</section>
+
+<section id="anim">
+  <h2>5 · Animationen zum Thema</h2>
+  <ul>
+    <li><a href="../../Animations/Dijkstra-Animation.html"><b>Dijkstra-Animation</b></a> — Distanz-Update &amp; Settle-Schritte (Kernthema A7).</li>
+    <li><a href="../../Animations/Spannbaum%20Animation.html">Spannbaum-Animation (MST)</a> <span class="badge str">Restrisiko</span> — minimale Spannbäume (Prim/Kruskal, AH 77–78).</li>
+    <li><a href="../../Animations/BFS-DFS%20Animation%20(standalone).html">BFS/DFS-Animation</a> <span class="badge str">Restrisiko</span> — Graphtraversierung.</li>
+  </ul>
+</section>
+
+<section id="zyk">
+  <h2>6 · Zyklische Codes / Generatorpolynom <span class="badge str">STRETCH</span></h2>
+  <div class="box warn"><b>Nur, wenn die 7 Kernverfahren sicher sitzen.</b> 12 P, aber rechenintensiv (Polynome über $\mathbb{Z}_2$).</div>
+  <p>Rechnen in $\mathbb{Z}_2[x]/(x^n+1)$: Koeffizienten sind Bits, <b>Addition = XOR</b> (kein Übertrag), Länge $n$.</p>
+  <h3>Rezepte</h3>
+  <ol>
+    <li><b>Binärfolge von $p$:</b> Koeffizienten von $x^{\text{hoch}}\dots x^0$ als Bits. $x^4+x^2+1 \to$ <span class="mono">10101</span>.</li>
+    <li><b>Generatorpolynom-Nachweis:</b> $g$ ist Generator eines zyklischen Codes der Länge $n$ ⟺ $g \mid x^n+1$ (Rest der Polynomdivision $=0$).</li>
+    <li><b>Systematisch kodieren</b> (Nachricht $m$, $\deg g = n-k$): $r(x) = x^{\,n-k}\,m(x) \bmod g(x)$; Codewort $c(x)=x^{\,n-k}m(x) + r(x)$ → <b>[Nachricht | Prüfbits]</b>. Kontrolle: $g \mid c$.</li>
+  </ol>
+  <h3>GF(2)-Encoder-Trainer</h3>
+  <div class="calc-row"><label>Generator g (Bits)</label><input type="text" id="gp" value="10101" size="14">
+    <label style="min-width:auto">n</label><input type="text" id="nn" value="12" size="4">
+    <button class="sec" onclick="genCheck()">g | xⁿ+1 ?</button></div>
+  <div id="genOut" class="out"></div>
+  <div class="calc-row"><label>Nachricht m (Bits)</label><input type="text" id="msg" value="11101101" size="14">
+    <button onclick="encode()">Systematisch kodieren</button>
+    <button class="sec" onclick="document.getElementById('gp').value='10101';document.getElementById('nn').value='12';document.getElementById('msg').value='11101101';genCheck();encode()">Klausur A6</button></div>
+  <div id="encOut" class="out"></div>
+</section>
+
+<section id="zykklausur">
+  <h2>7 · Prof-Altklausur 2024, Aufgabe 6 (12 P) — p = x⁴+x²+1</h2>
+  <details><summary>a) Binärfolge von p in ℤ₂[x]/(x¹²+1) (2 P)</summary><div class="det-body">
+    <p class="mono">x⁴+x²+1 → Koeffizienten x⁴x³x²x¹x⁰ = <b>10101</b></p>
+  </div></details>
+  <details><summary>b) Nachweis: p ist Generatorpolynom (4 P)</summary><div class="det-body">
+    <p>Zeige $p \mid x^{12}+1$ über $\mathbb{Z}_2$. Kurzweg über Faktorisierung:</p>
+    <p class="mono">x⁴+x²+1 = (x²+x+1)²  (über GF(2), da 2·x³ = 0)</p>
+    <p class="mono">x¹²+1 = (x⁶+1)² = ((x+1)(x²+x+1))²·… = (x+1)⁴(x²+x+1)⁴</p>
+    <p>Da $(x^2+x+1)^2$ als Faktor in $x^{12}+1$ steckt, ist $p \mid x^{12}+1$ → <b>gültiges Generatorpolynom</b> (Länge $n=12$, $k = 12-4 = 8$).</p>
+    <div class="box ok mono">Polynomdivision x¹²+1 : p ergibt Rest 0 — verifiziert.</div>
+  </div></details>
+  <details><summary>c) Systematischer Code von (1,1,1,0,1,1,0,1) (6 P)</summary><div class="det-body">
+    <p class="mono">m(x) = 11101101  (8 Bit, k=8),  n−k = 4</p>
+    <p class="mono">x⁴·m(x) = 111011010000</p>
+    <p class="mono">Rest r(x) = x⁴·m mod p = 0001  (Prüfbits, Grad &lt; 4)</p>
+    <p class="mono">Codewort c = [m | r] = <b>1110 1101 0001</b> = 111011010001</p>
+    <div class="box ok mono">Kontrolle: c mod p = 0 ✓ (verifiziert). Länge 12, Prüfbits 0001.</div>
+  </div></details>
+</section>
+
+<section id="drills">
+  <h2>8 · Arbeitsheft-Drills</h2>
+  <table style="text-align:left"><tr><th>Aufg.</th><th>Thema</th></tr>
+    <tr><td>73 / 74</td><td>Adjazenzmatrix ↔ Graph.</td></tr>
+    <tr><td>79 / 80</td><td>Dijkstra: bester Weg (C→A bzw. D→A) — Kernübung für A7.</td></tr>
+    <tr><td>77 / 78</td><td>Minimaler Spannbaum <span class="badge str">Restrisiko</span> (Spannbaum-Animation).</td></tr>
+    <tr><td>75 / 76</td><td>Topologische Sortierung <span class="badge str">Restrisiko</span>.</td></tr>
+    <tr><td>101 / 102</td><td>Generatorpolynom-Nachweis (ℤ₂[x]/(x⁷+1)) <span class="badge str">Stretch</span> — im GF(2)-Trainer prüfen.</td></tr></table>
+</section>
+
+<section id="quiz">
+  <h2>9 · Selbsttest</h2>
+  <div id="quiz"></div>
+</section>
+
+<section id="fallen">
+  <h2>10 · Stolpersteine</h2>
+  <ol>
+    <li><b>Dijkstra braucht nicht-negative Gewichte.</b> Bei negativen Kanten falsch.</li>
+    <li><b>Immer den kleinsten offenen Knoten fest machen</b> — dann alle seine Kanten relaxieren.</li>
+    <li><b>Distanz nur verbessern</b> ($&lt;$), Vorgänger mitschreiben → Pfad rekonstruierbar.</li>
+    <li>A→C direkt (12) ist <b>nicht</b> kürzeste: über B–D–C nur 9.</li>
+    <li><b>ℤ₂-Addition = XOR</b>, kein Übertrag; $x^4+x^2+1=(x^2+x+1)^2$.</li>
+    <li><b>Generator ⟺ $g \mid x^n+1$.</b> Prüfbits = Rest von $x^{n-k}m(x)$ mod $g$.</li>
+  </ol>
+</section>
+
+</main>
+<footer>
+  Lernskript Info Thema 5 (+8) · Session 5 des Master-Chats (2026-07-10) · Quellen: Prof-Altklausur 2024 A7 (Dijkstra A→C=9) + A6 (zyklischer Code, Codewort 111011010001),
+  Arbeitsheft 73–80 &amp; 101–102, Skript Kap. 4 / 5.3. Dijkstra &amp; GF(2)-Polynomarithmetik programmatisch verifiziert (Python + Node).
+</footer>
+<script>
+function el(id){return document.getElementById(id);}
+function show(id,html){var e=el(id);e.className='out show';e.innerHTML=html;}
+/* ===== Dijkstra ===== */
+function runDij(){
+  var raw=el('edges').value.split(/[ ,]+/).filter(function(x){return x;});
+  var adj={},nodes={};
+  raw.forEach(function(e){var m=e.split(':'),uv=m[0].split('-'),w=parseInt(m[1],10);
+    if(uv.length!==2||isNaN(w))return; var u=uv[0],v=uv[1];
+    adj[u]=adj[u]||[];adj[v]=adj[v]||[];adj[u].push([v,w]);adj[v].push([u,w]);nodes[u]=nodes[v]=1;});
+  var src=el('src').value.trim(),dst=el('dst').value.trim();
+  if(!nodes[src]){show('dijOut','Startknoten nicht im Graph.');return;}
+  var N=Object.keys(nodes).sort(),dist={},prev={},done={};
+  N.forEach(function(n){dist[n]=Infinity;});dist[src]=0;
+  var rows='<tr><th>fest</th>'+N.map(function(n){return '<th>'+n+'</th>';}).join('')+'</tr>';
+  rows+='<tr><td>Init</td>'+N.map(function(n){return '<td class="mono">'+(dist[n]===Infinity?'∞':dist[n])+'</td>';}).join('')+'</tr>';
+  for(var it=0;it<N.length;it++){
+    var u=null,best=Infinity;
+    N.forEach(function(n){if(!done[n]&&dist[n]<best){best=dist[n];u=n;}});
+    if(u===null)break; done[u]=1;
+    (adj[u]||[]).forEach(function(e){var v=e[0],w=e[1];if(!done[v]&&dist[u]+w<dist[v]){dist[v]=dist[u]+w;prev[v]=u;}});
+    rows+='<tr><td><b>'+u+'</b> ('+best+')</td>'+N.map(function(n){
+      return '<td class="mono">'+(dist[n]===Infinity?'∞':dist[n])+(prev[n]?'<sub>'+prev[n]+'</sub>':'')+(done[n]?'*':'')+'</td>';}).join('')+'</tr>';
+  }
+  var path=[dst],t=dst; while(prev[t]){t=prev[t];path.push(t);} path.reverse();
+  var ok=dist[dst]!==Infinity;
+  show('dijOut','<table>'+rows+'</table><div class="box ok mono" style="margin:8px 0 0">kürzester '+src+' → '+dst+' = '+
+    (ok?dist[dst]+', Pfad '+path.join(' → '):'nicht erreichbar')+'</div>');
+}
+/* ===== GF(2) ===== */
+function bitlen(x){var n=0;while(x>0){x=x>>>1;n++;}return n;}
+function deg(p){return bitlen(p)-1;}
+function polmod(a,g){var dg=deg(g);while(a!==0&&deg(a)>=dg){a^=g<<(deg(a)-dg);}return a>>>0;}
+function parseBits(s){s=s.replace(/[^01]/g,'');return {v:s.length?parseInt(s,2):0,len:s.length};}
+function genCheck(){
+  var g=parseBits(el('gp').value).v, n=parseInt(el('nn').value,10);
+  if(!g||isNaN(n)){show('genOut','g (Bits) und n angeben.');return;}
+  var xn1=((1<<n)>>>0)^1, r=polmod(xn1,g);
+  show('genOut','<span class="mono">g = '+el('gp').value.replace(/[^01]/g,'')+' , x^'+n+'+1 mod g = '+r+' → '+
+    (r===0?'<b>g ist Generatorpolynom</b> (teilt x^'+n+'+1), k = '+(n-deg(g)):'<b>KEIN Teiler</b> → kein Generator für n='+n)+'</span>');
+}
+function encode(){
+  var g=parseBits(el('gp').value).v, mB=parseBits(el('msg').value);
+  if(!g||!mB.len){show('encOut','g und Nachricht angeben.');return;}
+  var degg=deg(g), shift=(mB.v<<degg)>>>0, r=polmod(shift,g), code=(shift^r)>>>0;
+  var par=r.toString(2); while(par.length<degg)par='0'+par;
+  var codeStr=code.toString(2); while(codeStr.length<mB.len+degg)codeStr='0'+codeStr;
+  var msgStr=el('msg').value.replace(/[^01]/g,'');
+  show('encOut','<span class="mono">x^'+degg+'·m(x) = '+shift.toString(2)+'<br>Rest r(x) = '+par+' (Prüfbits, Grad &lt; '+degg+')<br>'+
+    'Codewort c = ['+msgStr+' | '+par+'] = <b>'+codeStr+'</b></span>'+
+    '<div class="box ok mono" style="margin:6px 0 0">Kontrolle c mod g = '+polmod(code,g)+' ✓</div>');
+}
+/* ===== Quiz ===== */
+var Q=[
+ {q:"Voraussetzung für Dijkstra?",o:["negative Gewichte erlaubt","nicht-negative Kantengewichte","azyklisch","nur Bäume"],c:1,fb:"Dijkstra braucht w ≥ 0."},
+ {q:"Welchen Knoten macht Dijkstra als Nächstes fest?",o:["den zuletzt besuchten","den offenen mit kleinster Distanz","einen zufälligen","den mit größtem Grad"],c:1,fb:"Greedy: kleinstes d(u) unter den offenen."},
+ {q:"Kürzester Weg A→C in A7 (A-B4,A-C12,A-D9,B-D3,C-D2)?",o:["12 direkt","9 über B-D-C","7","11"],c:1,fb:"A-B-D-C = 4+3+2 = 9 < 12."},
+ {q:"Wann ist g Generatorpolynom eines zyklischen Codes der Länge n?",o:["wenn g Primzahl","wenn g | xⁿ+1","wenn deg g = n","immer"],c:1,fb:"g muss xⁿ+1 teilen (Rest 0)."},
+ {q:"ℤ₂: x⁴+x²+1 = ?",o:["(x²+1)²","(x²+x+1)²","(x+1)⁴","irreduzibel"],c:1,fb:"(x²+x+1)² = x⁴+x²+1 über GF(2)."},
+ {q:"Systematisches Codewort von 11101101 (g=10101)?",o:["111011010001","111011011111","000111011101","111011010000"],c:0,fb:"Prüfbits 0001 → 111011010001 (c mod g = 0)."}
+];
+(function(){var c=el('quiz');Q.forEach(function(item,qi){var w=document.createElement('div');var p=document.createElement('p');p.innerHTML='<b>'+(qi+1)+'.</b> '+item.q;w.appendChild(p);
+  item.o.forEach(function(opt,oi){var b=document.createElement('button');b.className='qa';b.innerHTML=opt;b.onclick=function(){var fb=w.querySelector('.qfb');Array.prototype.forEach.call(w.querySelectorAll('.qa'),function(x){x.classList.remove('correct','wrong');});if(oi===item.c){b.classList.add('correct');fb.innerHTML='✓ Richtig. '+item.fb;}else{b.classList.add('wrong');w.querySelectorAll('.qa')[item.c].classList.add('correct');fb.innerHTML='✗ '+item.fb;}};w.appendChild(b);});
+  var fb=document.createElement('div');fb.className='qfb';w.appendChild(fb);c.appendChild(w);});})();
+runDij(); genCheck(); encode();
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing · Block 3 — Porter, SWOT &amp; BCG</title>
+<style>
+  :root{--akz:#c2185b;--akz2:#8c0f43;--bg:#f7f8fa;--card:#fff;--warn:#fdeded;--ok:#ebf7ee;--note:#fdeef4;--bd:#e2e6ec;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2530;background:var(--bg);line-height:1.55;}
+  header{background:linear-gradient(135deg,var(--akz),var(--akz2));color:#fff;padding:26px 20px}
+  header h1{margin:0 0 4px;font-size:1.45rem}header p{margin:2px 0;opacity:.93;font-size:.9rem}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--bd);display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;font-size:.84rem}
+  nav a{color:var(--akz);text-decoration:none;padding:4px 8px;border-radius:6px;white-space:nowrap}nav a:hover{background:var(--note)}
+  main{max-width:880px;margin:0 auto;padding:18px 16px 60px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  h2{color:var(--akz);margin:.1em 0 .5em;font-size:1.2rem;border-bottom:2px solid var(--note);padding-bottom:6px}
+  h3{color:var(--akz2);font-size:1.02rem;margin:1em 0 .3em}
+  .box{border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+  .warn{background:var(--warn);border-left:4px solid #d9534f}.ok{background:var(--ok);border-left:4px solid #3aa765}.note{background:var(--note);border-left:4px solid var(--akz)}
+  ol,ul{padding-left:1.3em}li{margin:.25em 0}
+  details{border:1px solid var(--bd);border-radius:9px;margin:10px 0;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;background:#fbeef3;font-weight:600;color:var(--akz2);list-style:none}
+  details>summary::-webkit-details-marker{display:none}details>summary::before{content:"▶ ";font-size:.8em;color:var(--akz)}details[open]>summary::before{content:"▼ "}
+  details>summary:hover{background:#f6e0ea}.det-body{padding:8px 16px 14px}
+  .pts{float:right;background:var(--akz);color:#fff;border-radius:20px;padding:1px 9px;font-size:.78rem;font-weight:600}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;margin:8px 0}th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--note)}
+  .qa{display:block;width:100%;text-align:left;background:#fff;color:#1c2530;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:.95rem}
+  .qa:hover{border-color:var(--akz)}.qa.correct{background:var(--ok);border-color:#3aa765;font-weight:600}.qa.wrong{background:var(--warn);border-color:#d9534f}
+  .qfb{font-size:.9rem;margin:4px 0 16px;color:#5a6675;min-height:1.1em}
+  footer{max-width:880px;margin:0 auto;padding:0 16px 40px;color:#8a93a0;font-size:.82rem}
+  code{background:#f3e6ec;padding:1px 5px;border-radius:4px;font-size:.9em}
+  .tag{display:inline-block;background:#f3e6ec;color:var(--akz2);border-radius:5px;padding:1px 7px;font-size:.78rem;margin-right:4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:8px 0}
+  .cell{border:1px solid var(--bd);padding:8px;font-size:.85rem}.cell b{color:var(--akz2)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Block 3 — Porter (5 Forces), SWOT &amp; BCG</h1>
+  <p>Marketing · Prof. Kleinknecht · Klausur 28.07.2026 · entspricht Aufgabe 3 · verifiziert gegen Skript „Marketing 3"</p>
+  <p>Interaktives Lernblatt — Modellantworten aufklappen, Altklausur-Drill + Selbsttest.</p>
+</header>
+<nav>
+  <a href="#ueber">Überblick</a><a href="#porter">5 Forces</a><a href="#swot">SWOT</a><a href="#bcg">BCG</a>
+  <a href="#drill">Altklausur-Drill</a><a href="#quiz">Selbsttest</a>
+</nav>
+<main>
+
+<section id="ueber">
+  <h2>0 · Worum geht es in Aufgabe 3?</h2>
+  <p>Aufgabe 3 = <b>Situationsanalyse</b>: fast immer <b>Porter 5 Forces</b> (Vorgehen beschreiben, 5 P) +
+  <b>SWOT-Analyse</b> für ein reales Unternehmen (Matrix + eine Maßnahme, 5 P). Die <b>BCG-Portfolioanalyse</b>
+  taucht in älteren Klausuren auf — mitnehmen.</p>
+  <p><span class="tag">Prüfungsbezug</span> 2022 A3 · 2025 A3 · Altklausur A1 (SWOT + BCG).</p>
+</section>
+
+<section id="porter">
+  <h2>1 · Branchenstruktur- &amp; Wettbewerbsanalyse — „5 Forces" nach Porter <span class="pts">5 P</span></h2>
+  <p><b>Ziel:</b> (1) die Regeln des Wettbewerbs kennenlernen und (2) Art &amp; Intensität des Wettbewerbs verstehen —
+  um das Gewinnpotential der Branche einzuschätzen. Dazu laufend <b>fünf Kräfte</b> analysieren:</p>
+  <ol>
+    <li><b>Bedrohung durch neue Anbieter</b> (Markteintritt neuer Konkurrenten) — „Gibt es neue Anbieter? Welche Bedrohung entsteht?"</li>
+    <li><b>Verhandlungsmacht der Abnehmer</b> — „Wie mächtig/abhängig sind die Kunden uns gegenüber?"</li>
+    <li><b>Bedrohung durch Ersatzprodukte</b> (Substitute) — „Gibt es Ersatzprodukte? Wie groß die Bedrohung?"</li>
+    <li><b>Verhandlungsmacht der Lieferanten</b> — „Wie mächtig sind die Lieferanten, wie abhängig sind wir?"</li>
+    <li><b>Intensität der Rivalität</b> unter den bestehenden Wettbewerbern — „Stärken/Schwächen der Konkurrenten?"</li>
+  </ol>
+  <div class="box note"><b>Merke:</b> in der Mitte steht die <b>Rivalität</b> (5), umgeben von den 4 äußeren Kräften
+  (neue Anbieter oben, Ersatzprodukte unten, Lieferanten links, Abnehmer rechts).</div>
+  <details><summary>Modellantwort „Vorgehen 5 Forces beschreiben" (5 P)</summary><div class="det-body">
+  <p>Man analysiert systematisch fünf Wettbewerbskräfte einer Branche: die Bedrohung durch <b>neue Anbieter</b> und
+  durch <b>Ersatzprodukte</b>, die Verhandlungsmacht der <b>Lieferanten</b> und der <b>Abnehmer</b> sowie die
+  <b>Rivalität</b> unter den bestehenden Wettbewerbern. Je stärker diese Kräfte, desto geringer das Gewinnpotential.
+  Ziel ist, Regeln, Art und Intensität des Wettbewerbs zu verstehen und daraus die Strategie abzuleiten.</p></div></details>
+</section>
+
+<section id="swot">
+  <h2>2 · SWOT-Analyse <span class="pts">5 P</span></h2>
+  <p><b>SWOT</b> = <b>S</b>trengths (Stärken), <b>W</b>eaknesses (Schwächen), <b>O</b>pportunities (Chancen),
+  <b>T</b>hreats (Risiken).</p>
+  <table>
+    <tr><th>Interne Analyse → Stärken/Schwächen</th><th>Externe Analyse → Chancen/Risiken</th></tr>
+    <tr><td>Marktanteil, Kundenzufriedenheit, Produktqualität, Kapitalstruktur, Aufbau-/Ablauforganisation</td>
+    <td>Mikro- &amp; Makroumfeld: Markt wächst, Förderungen, Trends (bio/vegan/online), neue Technologien; Risiken: Wettbewerb ↑, Politik</td></tr>
+  </table>
+  <p><b>Logik:</b> Trifft eine Umweltentwicklung auf eine Stärke → <b>Chance</b>; trifft sie auf eine Schwäche → <b>Risiko</b>.</p>
+  <h3>SWOT-Matrix — 4 Kombinationen</h3>
+  <div class="grid2">
+    <div class="cell"><b>SO</b> (Stärke×Chance): Stärken nutzen, um Chancen zu ergreifen</div>
+    <div class="cell"><b>ST</b> (Stärke×Risiko): mit Stärken Risiken abwehren</div>
+    <div class="cell"><b>WO</b> (Schwäche×Chance): Schwächen abbauen, um Chancen zu nutzen</div>
+    <div class="cell"><b>WT</b> (Schwäche×Risiko): Schwächen + Risiken meiden/absichern</div>
+  </div>
+  <div class="box warn"><b>Prüfungsauftrag genau lesen:</b> „SWOT-Matrix + <u>eine sinnvolle Maßnahme/ein Ziel</u>" — also nach der
+  Matrix mindestens eine konkrete Maßnahme ableiten (meist aus einer SO- oder WT-Kombination).</div>
+  <details><summary>Beispiel-Matrix (reales Unternehmen, z. B. ALDI)</summary><div class="det-body">
+  <table>
+    <tr><th></th><th>Chancen (O)</th><th>Risiken (T)</th></tr>
+    <tr><th>Stärken (S)</th><td>preisbewusste Kundschaft × günstige Preise → Marktanteil ausbauen</td><td>hohe Bekanntheit × viel Konkurrenz → gute Marktposition halten</td></tr>
+    <tr><th>Schwächen (W)</th><td>Nachfrage nach Qualität × keine Markenprodukte → Eigenmarken aufwerten</td><td>Wertewandel × geringe Auswahl → Sortiment gezielt erweitern</td></tr>
+  </table>
+  <p><b>Maßnahme (SO):</b> mit dem Preisvorteil die preisbewusste Kundschaft über gezielte Kampagnen ausbauen.</p></div></details>
+</section>
+
+<section id="bcg">
+  <h2>3 · BCG-Portfolioanalyse (Strategiebewertung)</h2>
+  <p>Bewertet den Beitrag einzelner SGF/Produkte anhand zweier Achsen: <b>Marktwachstum</b> (y) × <b>relativer
+  Marktanteil</b> (x). Ziel: ausgewogenes Portfolio prüfen und Strategie anpassen.</p>
+  <table>
+    <tr><th>Marktwachstum ↓ / rel. Marktanteil →</th><th>niedrig</th><th>hoch</th></tr>
+    <tr><th>hoch</th><td><b>Question Marks</b> (?) — investieren oder aufgeben</td><td><b>Stars</b> ★ — fördern</td></tr>
+    <tr><th>niedrig</th><td><b>Poor Dogs</b> 🐶 — desinvestieren</td><td><b>Cash Cows</b> 💰 — abschöpfen</td></tr>
+  </table>
+  <p><b>Idealpfad:</b> Question Mark → Star → Cash Cow. Ein Unternehmen sollte in jedem Feld ein SGF haben.</p>
+  <details><summary>Beispiel Apple (aus Musterlösung)</summary><div class="det-body">
+  <p>Question Mark: Apple TV · Star: iPhone · Cash Cow: MacBook · Poor Dog: iPod.</p></div></details>
+</section>
+
+<section id="drill">
+  <h2>4 · Altklausur-Drill</h2>
+  <details><summary>2022/2025 A3a — Vorgehen bei der 5-Forces-Analyse <span class="pts">5 P</span></summary><div class="det-body"><p>→ Abschnitt 1: 5 Kräfte + Ziel (Regeln/Art/Intensität des Wettbewerbs).</p></div></details>
+  <details><summary>2022/2025 A3b — SWOT für reales Unternehmen + Matrix + Maßnahme/Ziel <span class="pts">5 P</span></summary><div class="det-body"><p>→ Abschnitt 2: intern S/W, extern O/T, Matrix SO/ST/WO/WT, dann 1 konkrete Maßnahme.</p></div></details>
+  <details><summary>Altklausur A1c — Prinzip der BCG-Portfolioanalyse <span class="pts">2 P</span></summary><div class="det-body"><p>→ Abschnitt 3: Achsen Marktwachstum × relativer Marktanteil, 4 Felder, Idealpfad.</p></div></details>
+</section>
+
+<section id="quiz">
+  <h2>5 · Selbsttest</h2>
+  <div class="quiz">
+    <p><b>F1.</b> „Verhandlungsmacht der Lieferanten" ist …</p>
+    <button class="qa" data-c="0">eine der 5 Forces</button>
+    <button class="qa" data-c="1">Teil der SWOT-Matrix</button>
+    <button class="qa" data-c="1">ein BCG-Feld</button>
+    <div class="qfb"></div>
+    <p><b>F2.</b> Chancen und Risiken gehören zur …</p>
+    <button class="qa" data-c="0">externen Analyse</button>
+    <button class="qa" data-c="1">internen Analyse</button>
+    <button class="qa" data-c="1">Preisanalyse</button>
+    <div class="qfb"></div>
+    <p><b>F3.</b> Hohes Marktwachstum + hoher relativer Marktanteil = …</p>
+    <button class="qa" data-c="0">Star</button>
+    <button class="qa" data-c="1">Cash Cow</button>
+    <button class="qa" data-c="1">Poor Dog</button>
+    <div class="qfb"></div>
+    <p><b>F4.</b> Welche SWOT-Kombination wehrt mit Stärken ein Risiko ab?</p>
+    <button class="qa" data-c="0">ST (Stärke×Risiko)</button>
+    <button class="qa" data-c="1">WO (Schwäche×Chance)</button>
+    <button class="qa" data-c="1">SO (Stärke×Chance)</button>
+    <div class="qfb"></div>
+  </div>
+</section>
+</main>
+<footer><p>Block 3/10 · Quelle: Skript „Marketing 3" (Kleinknecht) + Altklausuren + Klausurfragen. Erstellt 2026-07-10.</p></footer>
+<script>
+document.querySelectorAll('.quiz').forEach(function(q){q.querySelectorAll('.qa').forEach(function(btn){btn.addEventListener('click',function(){
+  var prev=btn;while(prev&&prev.tagName!=='P'){prev=prev.previousElementSibling;}
+  var fbEl=btn;while(fbEl&&!(fbEl.classList&&fbEl.classList.contains('qfb'))){fbEl=fbEl.nextElementSibling;}
+  if(btn.dataset.c==='0'){btn.classList.add('correct');if(fbEl){fbEl.textContent='✓ Richtig.';fbEl.style.color='#2e7d32';}}
+  else{btn.classList.add('wrong');if(fbEl){fbEl.textContent='✗ Richtige Antwort grün.';fbEl.style.color='#c62828';}
+    var s=prev?prev.nextElementSibling:null;while(s&&s.classList&&s.classList.contains('qa')){if(s.dataset.c==='0')s.classList.add('correct');s=s.nextElementSibling;}}
+});});});
+</script>
+</body>
+</html>
