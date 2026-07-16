@@ -44,7 +44,7 @@ window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$
   <p>Interaktiv — erst eine komplette DGL gelöst, dann Rezepte, char.-Polynom-Trainer, Ansatz-Tabelle, Quiz.</p>
 </header>
 <nav>
-  <a href="#konzept">Konzept</a><a href="#durchlauf">Komplett-Beispiel</a><a href="#sep">Separabel</a><a href="#lin">Linear</a>
+  <a href="#konzept">Konzept</a><a href="#durchlauf">Komplett-Beispiel</a><a href="#sep">Separabel</a><a href="#richtungsfeld">Richtungsfeld</a><a href="#lin">Linear</a>
   <a href="#trainer">char.-Polynom-Trainer</a><a href="#ansatz">Ansatz-Tabelle</a><a href="#laplace">Laplace</a><a href="#quiz">Quiz</a><a href="#fallen">Stolpersteine</a>
 </nav>
 <main>
@@ -101,6 +101,17 @@ window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$
   </div></details>
 </section>
 
+<section id="richtungsfeld">
+  <h2>2b · Richtungsfeld zeichnen (Prof-Standard)</h2>
+  <p>Bei einer DGL 1. Ordnung $y'=f(x,y)$ gibt jeder Punkt eine <b>Steigung</b> vor. Vorgehen wie der Prof:</p>
+  <ol>
+    <li>DGL nach $y'$ auflösen: $y'=f(x,y)$.</li>
+    <li><b>Steigungstabelle</b>: an mehreren Gitterpunkten $y'$ ausrechnen (auch $y'=0$ und $y'\to\infty$ notieren).</li>
+    <li>An jedem Punkt ein <b>kurzes Geradenstück</b> mit dieser Steigung; die Lösung folgt tangential diesen Strichen.</li>
+  </ol>
+  <div class="box note"><b>Beispiel (Übungsklausur, Aufg. 7):</b> $y'y^2x=1\Rightarrow y'=\dfrac{1}{y^2x}$. Bei kleinem $x$ steile Striche ($y'$ groß), nach rechts flacher. Anschließend separabel lösen: $y^2\,dy=\tfrac1x\,dx\Rightarrow \tfrac13 y^3=\ln|x|+C\Rightarrow y=\sqrt[3]{3\ln|x|+C}$.</div>
+</section>
+
 <section id="lin">
   <h2>3 · Typ B — Linear, konstante Koeffizienten</h2>
   <ol>
@@ -118,10 +129,22 @@ window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$
   <div id="tbtns"></div>
   <div id="treveal" class="reveal"></div>
   <div class="box note" style="margin-top:10px"><b>Drei Fälle:</b> zwei verschiedene reelle $\lambda_1\ne\lambda_2$ → $c_1e^{\lambda_1x}+c_2e^{\lambda_2x}$; &nbsp;doppelte $\lambda$ → $c_1e^{\lambda x}+c_2\,x\,e^{\lambda x}$; &nbsp;komplex $a\pm bi$ → $e^{ax}(c_1\cos bx+c_2\sin bx)$.</div>
+  <p><b>Vollständige Basislösungen-Tabelle (Skript):</b></p>
+  <table>
+    <tr><th>Nullstelle der char. Gleichung</th><th>Basislösungen der DGL</th></tr>
+    <tr><td>$\lambda$ 1-fach reell</td><td>$e^{\lambda x}$</td></tr>
+    <tr><td>$\lambda$ $k$-fach reell</td><td>$e^{\lambda x},\ x e^{\lambda x},\ \dots,\ x^{k-1}e^{\lambda x}$</td></tr>
+    <tr><td>$\lambda=a\pm ib$ 1-fach komplex</td><td>$e^{ax}\cos(bx),\ e^{ax}\sin(bx)$</td></tr>
+    <tr><td>$\lambda=a\pm ib$ $k$-fach komplex</td><td>$e^{ax}\cos bx,\ e^{ax}\sin bx,\ \dots,\ x^{k-1}e^{ax}\cos bx,\ x^{k-1}e^{ax}\sin bx$</td></tr>
+  </table>
+  <div class="box note"><b>Störglied $e^{ax}\sin/\cos(bx)$ (Skript, Beispiel 6.7):</b> Ansatz $y_s=q_1(x)e^{ax}\sin(bx)+q_2(x)e^{ax}\cos(bx)$ (bei Resonanz $\cdot x^k$). Für $y'-y=\sin x$: $s_{11}\sin x+s_{21}\cos x$ mit $s_{11}=s_{21}=-\tfrac12$.</div>
 </section>
 
 <section id="ansatz">
   <h2>5 · Ansatz-Tabelle für die spezielle Lösung</h2>
+  <div class="box note"><b>Prof-Systematik (Übungsklausur, Aufg. 5):</b> rechte Seite als $p(x)\,e^{ax}\cos(bx)$ schreiben, $p,a,b$ ablesen,
+  prüfen ob $a\pm bi$ eine Nullstelle des char. Polynoms ist. <b>Nein</b> → Ansatz $y_s=q(x)\,e^{ax}\cos(bx)$; <b>ja</b> (Resonanz) → Ansatz zusätzlich $\cdot x$.
+  Beispiel $-e^{2x}$: $p=-1,a=2,b=0$; $2$ ist keine Nullstelle von $(\lambda-1)^2$ → $y_s=c\,e^{2x}$, einsetzen $\Rightarrow c=-1$.</div>
   <table>
     <tr><th>Rechte Seite $s(x)$</th><th>Ansatz $y_s$</th></tr>
     <tr><td>Konstante $k$</td><td>$q_0$</td></tr>
@@ -142,7 +165,10 @@ window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$
 </section>
 
 <section id="laplace">
-  <h2>6 · Laplace-Methode (Alternative, Blatt 11 Üb. 10.3)</h2>
+  <h2>6 · Laplace-Transformation (zweiter Standardweg des Profs)</h2>
+  <div class="box ok"><b>Der Prof löst inhomogene DGLs oft direkt per Laplace</b> (Übungsklausur Aufg. 6). Wichtige Korrespondenzen:
+  $\;1\leftrightarrow\tfrac1s,\quad e^{ax}\leftrightarrow\tfrac{1}{s-a},\quad x e^{ax}\leftrightarrow\tfrac{1}{(s-a)^2},\quad
+  \mathcal L\{y'\}=sY-y(0),\ \ \mathcal L\{y''\}=s^2Y-s\,y(0)-y'(0).$</div>
   <p>Für dieselbe DGL $y''-4y'+4y=4$, $y(0)=1,y'(0)=1$:</p>
   <ol>
     <li>Transformieren mit $\mathcal L\{y'\}=sY-y(0)$, $\mathcal L\{y''\}=s^2Y-sy(0)-y'(0)$, $\mathcal L\{4\}=\frac4s$.</li>

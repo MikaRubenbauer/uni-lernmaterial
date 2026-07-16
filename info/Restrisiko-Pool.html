@@ -73,6 +73,18 @@
   <div class="card"><h3>Boyer-Moore</h3><p>Vergleich von <b>rechts</b> nach links; bei Mismatch großer Sprung per Bad-Character-/Good-Suffix-Regel. Oft schneller als KMP.</p><p class="anim">AH 46 · <a href="../../Animations/Boyer-Moore%20Aufgabe%2046.html">Boyer-Moore-Animation</a></p></div>
 </section>
 
+<section>
+  <h2>Fehlererkennung &amp; Prüfsummen (Kap. 5, Blatt 10)</h2>
+  <div class="grid">
+    <div class="card"><h3>ISBN-10 / EAN-13 Prüfziffer</h3>
+      <p>ISBN-10: <span class="mono">Σ k·z<sub>k</sub> (k=1..10) ≡ 0 (mod 11)</span> (Prüfzeichen ggf. X = 10). EAN-13: gewichtete Summe (1,3,1,3,…) <span class="mono">≡ 0 (mod 10)</span>. Erkennt Einzelziffer-Fehler und die meisten Nachbar-Vertauschungen — genau die Analyse aus Blatt 10 A1.</p>
+      <p class="anim">Blatt 10 A1 · <a href="../../Animations/EAN13-ISBN10-Erklaerer.standalone.html">ISBN/EAN-Erklärer-Animation</a></p></div>
+    <div class="card"><h3>Block- &amp; Dreiecksparität</h3>
+      <p>Gerade Parität: pro Zeile/Spalte (Block) bzw. Diagonale (Dreieck) ein Prüfbit, sodass die Zahl der Einsen gerade ist. Ein Einzelfehler liegt am Kreuzungspunkt der verletzten Paritäten → lokalisier- und korrigierbar; mehrere Fehler i. A. nur erkennbar (Blatt 10 A2).</p>
+      <p class="anim">Blatt 10 A2 · <a href="../../Animations/Block-Dreiecks-Paritaet.html">Block-/Dreiecksparität-Animation</a></p></div>
+  </div>
+</section>
+
 <div class="box warn" style="max-width:900px;margin:12px auto"><b>Priorität:</b> Diese Themen NUR anschauen, wenn die 8 Kernverfahren (Lernskripte 01–05) sicher sitzen. Für „sicher bestehen" reichen die Kernthemen (≥ 78 % der Punkte).</div>
 
 </main>

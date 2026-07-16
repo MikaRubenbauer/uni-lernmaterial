@@ -125,6 +125,9 @@ window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$
     <li>$f(x) = \sqrt{1 + a_0 + a_1 x}$ → <b>quadrieren:</b> $y^2 - 1 = a_0 + a_1x$ → $y$-Vektor $(y_i^2 - 1)$. (2024/A5.5)</li>
   </ul>
   <h3>R3 — Newton-Interpolation (2024/A5 verlangt genau diese 4 Schritte)</h3>
+  <div class="box ok"><b>So rechnet es der Prof (Übungsklausur, Aufg. 1):</b> Ansatz hinschreiben, die Punkte <b>der Reihe nach einsetzen</b>
+  und das gestaffelte LGS <b>von oben nach unten</b> lösen — $a_0$ aus $P_1$, $a_1$ aus $P_2$, $a_2$ aus $P_3$, … Die Differenzentabelle
+  ist nur die Kurzform; in der Klausur genügt das Einsetz-System.</div>
   <ol>
     <li><b>Ansatz:</b> $p(x) = b_0 + b_1(x-x_0) + b_2(x-x_0)(x-x_1) + b_3(x-x_0)(x-x_1)(x-x_2)$.</li>
     <li><b>Gleichungssystem:</b> Punkte der Reihe nach einsetzen — es ist gestaffelt (Dreiecksform).</li>

@@ -121,6 +121,9 @@ window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$
     <li>Optimalen Wert $Q^* = h(x^*)$ angeben.</li>
   </ol>
   <h3>Weg B — Lagrange (der „offizielle" Weg, gibt die Methodik-Punkte)</h3>
+  <div class="box ok"><b>So schreibt es der Prof (Übungsklausur, Aufg. 3):</b> statt der $L$-Funktion direkt die Gradienten-Bedingung
+  $\nabla Q+\lambda\,\nabla g=\mathbf 0$ komponentenweise, plus die Restriktion als dritte Gleichung. Beispiel $Q=y-x^2$, $g=y-2x+1$:
+  $\binom{-2x}{1}+\lambda\binom{-2}{1}=\binom00$ und $y-2x+1=0$ $\Rightarrow \lambda=-1,\ x=1,\ y=1$. Identisch zur $L$-Funktion, nur kürzer.</div>
   <ol>
     <li>Restriktion auf Nullform bringen: $g(x,y) = 0$ (z.B. $y - ax = 0$).</li>
     <li>$L(x,y,\lambda) = Q(x,y) + \lambda\, g(x,y)$ aufstellen.</li>
